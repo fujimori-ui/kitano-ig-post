@@ -2,6 +2,8 @@
 """北野工作所 Instagram 自動投稿(クラウド版)
 
 posts/ にある NN_slug.jpg + NN_slug.txt を番号順に1本ずつ投稿する。
+NN_slug.mp4(make_videos.py で作るアニメーション)があればリール(フィードにも表示)で投稿し、
+jpg は表紙に使う。mp4 が無ければ画像で投稿。
 投稿済みは state.json に記録(GitHub Actions がコミットで書き戻す)。
 画像は公開リポジトリの raw URL を Instagram API(graph.instagram.com)に渡す。
 
@@ -51,10 +53,14 @@ def api_post(path, data):
     return j
 
 
-def publish(user_id, token, image_url, caption):
-    c = api_post(f"{user_id}/media", {"image_url": image_url, "caption": caption, "access_token": token})
+def publish(user_id, token, image_url, caption, video_url=None):
+    if video_url:
+        c = api_post(f"{user_id}/media", {"media_type": "REELS", "video_url": video_url, "cover_url": image_url,
+                                          "share_to_feed": "true", "caption": caption, "access_token": token})
+    else:
+        c = api_post(f"{user_id}/media", {"image_url": image_url, "caption": caption, "access_token": token})
     cid = c["id"]
-    for _ in range(30):
+    for _ in range(60):  # 動画は取り込みに時間がかかる(最大5分待つ)
         s = requests.get(f"{API}/{cid}", params={"fields": "status_code,status", "access_token": token}, timeout=60).json()
         if s.get("status_code") == "FINISHED":
             break
@@ -87,11 +93,12 @@ def main():
     user_id = os.environ["KITANO_IG_USER_ID"]
     token = os.environ["KITANO_IG_ACCESS_TOKEN"]
     # 画像URLが公開されているか確認(push直後は数十秒かかることがある)
-    for _ in range(12):
-        if requests.head(image_url, timeout=30).status_code == 200:
-            break
-        time.sleep(10)
-    mid, url = publish(user_id, token, image_url, caption)
+    for u in filter(None, [image_url, video_url]):
+        for _ in range(12):
+            if requests.head(u, timeout=30).status_code == 200:
+                break
+            time.sleep(10)
+    mid, url = publish(user_id, token, image_url, caption, video_url)
     state["posted"][item] = {"date": time.strftime("%Y-%m-%d %H:%M"), "media_id": mid, "url": url}
     STATE.write_text(json.dumps(state, ensure_ascii=False, indent=1), encoding="utf-8")
     remaining = len([s for s in sorted(p.stem for p in POSTS.glob('*.jpg')) if s not in state["posted"]])

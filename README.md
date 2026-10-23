@@ -15,6 +15,10 @@
 `posts/NN_slug.jpg`(1080×1350)と `posts/NN_slug.txt`(本文+ハッシュタグ)を同じ名前で置いて push するだけ。
 画像は `make_posts.py` で作っています(サイト kashiba-yanereform.com の文章・写真が元)。
 
+**アニメーション(リール)**: `python make_videos.py` で各 jpg から `NN_slug.mp4`(約8秒・9:16)を作って一緒に push。
+mp4 があるネタはリール(フィードにも表示・表紙は jpg)で投稿、無いネタは今まで通り画像で投稿されます。
+画像を作り直したら `python make_videos.py 03_kawara` のように動画も作り直してください。
+
 - 特定のネタを今すぐ投稿: Actions → kitano-ig-post → Run workflow → slug に `03_kawara` など
 - 投稿せず次の1本を見る: dry_run を true
 - やり直し(同じネタをもう一度出す): `state.json` からその項目を消して push
