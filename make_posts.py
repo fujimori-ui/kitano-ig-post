@@ -18,8 +18,8 @@ YELLOW = (255, 224, 51)    # #ffe033
 INK = (35, 24, 21)         # ロゴの黒 #231815
 GRAY = (107, 114, 128)
 WHITE = (255, 255, 255)
-FB = "/mnt/c/Windows/Fonts/BIZ-UDGothicB.ttc"
-FR = "/mnt/c/Windows/Fonts/BIZ-UDGothicR.ttc"
+FB = "/mnt/c/Windows/Fonts/YuGothB.ttc"   # サイトと同じ游ゴシック(太字)
+FR = "/mnt/c/Windows/Fonts/YuGothM.ttc"   # 游ゴシック(中字)
 LOGO = Image.open(HERE / "logo_color.png").convert("RGBA")
 
 def font(size, bold=True):
@@ -77,7 +77,7 @@ def base(subtitle="香芝市の屋根・雨漏り修理"):
     d.rectangle([0, 1230, W, H], fill=BLUE)
     f1 = font(34); t1 = "点検・お見積り 無料　☎ 0745-76-4335"
     d.text(((W - f1.getlength(t1)) / 2, 1252), t1, font=f1, fill=WHITE)
-    f2 = font(24, False); t2 = "@kashiba_yanereform　創業1920年(大正9年)・奈良県香芝市"
+    f2 = font(23, False); t2 = "対応エリア 香芝市・大和高田市・橿原市・葛城市・広陵町・王寺町・上牧町・河合町"
     d.text(((W - f2.getlength(t2)) / 2, 1300), t2, font=f2, fill=LIGHT)
     return im, d
 
@@ -110,7 +110,7 @@ def save(im, n, slug, caption):
     (OUT / f"{n:02d}_{slug}.txt").write_text(caption.strip() + "\n\n" + TAGS, encoding="utf-8")
     print("saved", n, slug)
 
-TAGS = "#北野工作所 #香芝市 #香芝 #奈良県 #橿原市 #大和高田市 #広陵町 #王寺町 #屋根工事 #屋根修理 #雨漏り修理 #雨漏り #屋根リフォーム #瓦屋根 #瓦修理 #棟板金 #雨樋交換 #カバー工法 #葺き替え #板金工事 #奈良屋根 #香芝屋根 #まちの屋根屋さん #創業大正9年"
+TAGS = "#北野工作所 #香芝市 #香芝 #奈良県 #橿原市 #大和高田市 #広陵町 #王寺町 #屋根工事 #屋根修理 #雨漏り修理 #雨漏り #屋根リフォーム #瓦屋根 #瓦修理 #棟板金 #雨樋交換 #カバー工法 #葺き替え #板金工事 #葛城市 #上牧町 #河合町 #五位堂 #香芝市屋根修理 #香芝市雨漏り #まちの屋根屋さん #創業大正9年"
 CTA = """
 
 ────────────
@@ -118,6 +118,7 @@ CTA = """
 株式会社北野工作所(奈良県香芝市五位堂)
 ☎ 0745-76-4335(8:00〜18:00)
 現地調査・お見積りは無料です
+香芝市・大和高田市・橿原市・葛城市・広陵町・王寺町・上牧町・河合町 すぐ伺います
 LINE・ホームページはプロフィールのリンクから
 ────────────"""
 # ---------- 1 代表あいさつ ----------
@@ -414,6 +415,39 @@ def post13():
 気になったら、無理にご自身で登らず、ぜひプロにお任せください。安全にしっかり点検・清掃します。""" + CTA
     save(im, 13, "amadoi", cap)
 
+# ---------- 14 対応エリア ----------
+def post14():
+    im, d = base()
+    title_block(d, "香芝市と、そのまわり。\nすぐ伺います", size=54)
+    truck = Image.open("/mnt/c/Users/藤森　保弘/Desktop/北野工作所/インスタ/track.png").convert("RGBA")
+    tw = 660; truck = truck.resize((tw, int(truck.height * tw / truck.width)), Image.LANCZOS)
+    im.paste(truck, (int((W - tw) / 2), 330), truck)
+    y = 330 + truck.height + 30
+    f = font(34); d.text((W / 2 - f.getlength("対応エリア") / 2, y), "対応エリア", font=f, fill=BLUE); y += 60
+    areas = ["香芝市", "大和高田市", "橿原市", "葛城市", "広陵町", "王寺町", "上牧町", "河合町"]
+    fa = font(36); bw, bh, gap = 220, 70, 16
+    for i, a in enumerate(areas):
+        x = 48 + 8 + (i % 4) * (bw + gap); yy = y + (i // 4) * (bh + gap)
+        rounded(d, [x, yy, x + bw, yy + bh], 14, LIGHT)
+        d.text((x + (bw - fa.getlength(a)) / 2, yy + 14), a, font=fa, fill=INK)
+    band_note(d, "近鉄五位堂駅から西へ300m。地元の屋根屋です", y=1150)
+    cap = """北野工作所の事務所は、近鉄五位堂駅から西へ300m(徒歩5分)。香芝市五位堂で106年、屋根の仕事をしています。
+
+対応エリアは、香芝市と、そのまわりの町です。
+・香芝市
+・大和高田市
+・橿原市
+・葛城市
+・広陵町
+・王寺町
+・上牧町
+・河合町
+
+近いので、「ちょっと見てほしい」にすぐ動けます。雨漏りの応急処置、瓦1枚の補修、雨どいの掃除。大きな工事でなくても大丈夫です。
+
+同じ地域に住んでいる屋根屋だからこそ、直したあとも、ずっとお付き合いできます。""" + CTA
+    save(im, 14, "area", cap)
+
 if __name__ == "__main__":
-    for fn in [post01, post02, post03, post04, post05, post06, post07, post08, post09, post10, post11, post12, post13]:
+    for fn in [post01, post02, post03, post04, post05, post06, post07, post08, post09, post10, post11, post12, post13, post14]:
         fn()
