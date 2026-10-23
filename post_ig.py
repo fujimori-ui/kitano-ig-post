@@ -86,6 +86,9 @@ def main():
     title = caption.split("\n", 1)[0][:40]
     log(f"次の投稿: {item} / {title}")
     log(f"画像: {image_url}")
+    video_url = RAW_BASE + f"{item}.mp4" if (POSTS / f"{item}.mp4").exists() else None
+    if video_url:
+        log(f"動画(リール): {video_url}")
     if dry:
         log("RESULT: DRY_RUN " + item)
         print(caption)
