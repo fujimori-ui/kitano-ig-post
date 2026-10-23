@@ -1,0 +1,37 @@
+name: kitano-ig-refresh-token
+
+# Instagramのアクセストークンは約60日で切れる。
+# 毎週1回、期限が切れる前に延長して GitHub Secrets (KITANO_IG_ACCESS_TOKEN) に書き戻す。
+# 延長できるのは「発行から24時間以上たった、まだ有効なトークン」だけ。
+on:
+  schedule:
+    - cron: "0 20 * * 0"   # 毎週月曜 5:00 JST
+  workflow_dispatch:
+
+concurrency:
+  group: kitano-ig-post
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: トークンを延長して Secrets に書き戻す
+        env:
+          IG_TOKEN: ${{ secrets.KITANO_IG_ACCESS_TOKEN }}
+          GH_TOKEN: ${{ secrets.PHOTOS_TOKEN }}
+        run: |
+          set -e
+          echo "::add-mask::$IG_TOKEN"
+          RES=$(curl -s "https://graph.instagram.com/refresh_access_token?grant_type=ig_refresh_token&access_token=$IG_TOKEN")
+          NEW=$(echo "$RES" | python3 -c 'import sys,json; print(json.load(sys.stdin).get("access_token",""))')
+          DAYS=$(echo "$RES" | python3 -c 'import sys,json; print(json.load(sys.stdin).get("expires_in",0)//86400)')
+          if [ -z "$NEW" ]; then
+            echo "::error::トークンの延長に失敗しました。Meta for Developers で発行し直してください。"
+            echo "$RES" | python3 -c 'import sys,json; print(json.load(sys.stdin).get("error",{}).get("message",""))'
+            exit 1
+          fi
+          echo "::add-mask::$NEW"
+          gh secret set KITANO_IG_ACCESS_TOKEN --repo "$GITHUB_REPOSITORY" --body "$NEW"
+          echo "延長しました。新しい有効期限: 約${DAYS}日後"

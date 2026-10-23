@@ -1,0 +1,53 @@
+name: kitano-ig-post
+
+# 北野工作所 Instagram に posts/ の次の1本を投稿する。
+# 起動は claude.ai の定期ルーティン(毎朝)から workflow_dispatch で行う。
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "投稿せず次の1本を表示するだけなら true"
+        required: false
+        default: "false"
+      slug:
+        description: "この番号のネタを今すぐ投稿(例 03_kawara。通常は空)"
+        required: false
+        default: ""
+
+concurrency:
+  group: kitano-ig-post
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      TZ: Asia/Tokyo
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests
+      - name: Instagram に投稿
+        env:
+          KITANO_IG_USER_ID: ${{ secrets.KITANO_IG_USER_ID }}
+          KITANO_IG_ACCESS_TOKEN: ${{ secrets.KITANO_IG_ACCESS_TOKEN }}
+        run: |
+          ARGS=""
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then ARGS="$ARGS --dry-run"; fi
+          if [ -n "${{ github.event.inputs.slug }}" ]; then ARGS="$ARGS --slug ${{ github.event.inputs.slug }}"; fi
+          python post_ig.py $ARGS
+      - name: state.json を書き戻す
+        if: ${{ github.event.inputs.dry_run != 'true' }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add state.json
+          git diff --cached --quiet || git commit -m "Update state [skip ci]"
+          git pull --rebase origin main
+          git push
