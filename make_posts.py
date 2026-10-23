@@ -118,7 +118,7 @@ CTA = """
 🏠 株式会社北野工作所(奈良県香芝市五位堂)
 📞 0745-76-4335(8:00〜18:00)
 ✅ 現地調査・お見積りは無料です
-🚗 香芝市・大和高田市・橿原市・葛城市・広陵町・王寺町・上牧町・河合町 なるべく早くうかがいます
+🚗 香芝市・大和高田市・橿原市・葛城市・広陵町・王寺町・上牧町・河合町 なるべく早くお伺いします
 🔗 LINE・ホームページはプロフィールのリンクから
 ────────────"""
 # ---------- 1 代表あいさつ ----------
@@ -418,7 +418,7 @@ def post13():
 # ---------- 14 対応エリア ----------
 def post14():
     im, d = base()
-    title_block(d, "香芝市と、そのまわり。\nなるべく早くうかがいます", size=54)
+    title_block(d, "香芝市と、そのまわり。\nなるべく早くお伺いします", size=54)
     truck = Image.open("/mnt/c/Users/藤森　保弘/Desktop/北野工作所/インスタ/track.png").convert("RGBA")
     tw = 660; truck = truck.resize((tw, int(truck.height * tw / truck.width)), Image.LANCZOS)
     im.paste(truck, (int((W - tw) / 2), 330), truck)
