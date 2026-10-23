@@ -145,7 +145,7 @@ def post01():
 def post02():
     im, d = base()
     title_block(d, "数字で見る、北野工作所")
-    boxes = [("1920", "年 創業(大正9年)", "香芝で106年"),
+    boxes = [("1920", "年創業", "大正9年・香芝で106年"),
              ("3,000", "件以上", "解決した雨漏り"),
              ("57", "件", "先月のお問い合わせ"),
              ("0", "円", "点検・診断・お見積り")]
@@ -154,10 +154,14 @@ def post02():
         x = 48 + (i % 2) * (bw + 44); y = 300 + (i // 2) * (bh + 40)
         rounded(d, [x, y, x + bw, y + bh], 24, LIGHT)
         d.rectangle([x, y, x + bw, y + 10], fill=BLUE)
-        f = font(110); fu = font(34); fl = font(32, False)
-        nw = f.getlength(num); uw = fu.getlength(unit)
+        size = 110
+        while True:  # 枠(左右30px余白)に収まるまで数字を小さくする
+            f = font(size); fu = font(34); fl = font(32, False)
+            nw = f.getlength(num); uw = fu.getlength(unit)
+            if nw + uw + 8 <= bw - 60 or size <= 70: break
+            size -= 4
         sx = x + (bw - nw - uw - 8) / 2
-        d.text((sx, y + 70), num, font=f, fill=BLUE)
+        d.text((sx, y + 70 + (110 - size) // 2), num, font=f, fill=BLUE)
         d.text((sx + nw + 8, y + 140), unit, font=fu, fill=INK)
         d.text((x + (bw - fl.getlength(label)) / 2, y + 250), label, font=fl, fill=INK)
     band_note(d, "地元・香芝市で、顔の見える屋根屋です", y=1130)
