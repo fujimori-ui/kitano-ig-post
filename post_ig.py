@@ -39,6 +39,8 @@ def next_item(state, slug=None):
     items = sorted(p.stem for p in POSTS.glob("*.jpg") if (POSTS / f"{p.stem}.txt").exists())
     if slug:
         return slug if slug in items else None
+    # 毎月のチラシ(flyer_YYYYMM)は配った月のうちに出したいので先に
+    items = sorted(items, key=lambda s: (not s.startswith("flyer_"), s))
     for s in items:
         if s not in state["posted"]:
             return s

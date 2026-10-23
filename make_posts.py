@@ -464,22 +464,50 @@ def check_icon(d, x, y, s=56):
     d.rounded_rectangle([x, y, x + s, y + s], radius=10, outline=BLUE, width=5, fill=WHITE)
     d.line([(x + 12, y + s * 0.52), (x + s * 0.42, y + s - 14), (x + s - 8, y + 8)], fill=YELLOW if False else BLUE, width=8)
 
-def komari_post(n, slug, label, items, note, cap):
+PERSON = Image.open(HERE / "person_cut.png").convert("RGBA")
+
+def person(im, d, x, y, size, ring=LIGHT):
+    """社長の切り抜き写真を水色の丸の上に置く"""
+    d.ellipse([x + size * 0.06, y + size * 0.1, x + size * 0.94, y + size * 0.98], fill=ring)
+    pc = PERSON.resize((size, size), Image.LANCZOS)
+    mask = Image.new("L", (size, size), 0)
+    ImageDraw.Draw(mask).ellipse([size * 0.06, -size, size * 0.94, size * 0.98], fill=255)  # 丸からはみ出す肩を切る
+    a = Image.composite(pc.getchannel("A"), Image.new("L", (size, size), 0), mask)
+    pc.putalpha(a)
+    im.paste(pc, (x, y), pc)
+
+def bubble(d, box, text, f):
+    x0, y0, x1, y1 = box
+    rounded(d, box, 24, WHITE)
+    d.rounded_rectangle(box, radius=24, outline=BLUE, width=4)
+    d.polygon([(x0 + 120, y1 - 2), (x0 + 160, y1 - 2), (x0 + 150, y1 + 34)], fill=WHITE, outline=BLUE)
+    d.line([(x0 + 122, y1 - 2), (x0 + 158, y1 - 2)], fill=WHITE, width=6)
+    draw_text(d, ((x0 + x1) / 2, y0 + 18), text, f, INK, spacing=1.35, align="center")
+
+def photo_from(post, top_skip=80):
+    """既存の施工写真投稿から写真部分だけを切り出す(Before札は避ける)"""
+    return Image.open(OUT / f"{post}.jpg").convert("RGB").crop((48, 290 + top_skip, 1032, 700))
+
+def komari_post(n, slug, label, photo, items, note, cap):
     im, d = base()
     pill(d, f"屋根のお困りごと｜{label}")
-    draw_text(d, (48, 262), "こんなこと、\nありませんか？", font(64), INK, spacing=1.25)
-    y = 450; fi = font(42); fs = font(28, False)
+    d.text((48, 248), "こんなこと、ありませんか？", font=font(58), fill=INK)
+    ph = cover(photo, 984, 270)
+    im.paste(ph, (48, 340))
+    y = 632; fi = font(35); fs = font(25, False)
     for head, sub in items:
-        rounded(d, [48, y, W - 48, y + 140], 22, LIGHT)
-        check_icon(d, 80, y + 42)
-        d.text((170, y + 24), head, font=fi, fill=INK)
-        d.text((170, y + 84), sub, font=fs, fill=GRAY)
-        y += 160
+        rounded(d, [48, y, 735, y + 112], 18, LIGHT)
+        check_icon(d, 70, y + 32, 48)
+        d.text((136, y + 16), head, font=fi, fill=INK)
+        d.text((136, y + 66), sub, font=fs, fill=GRAY)
+        y += 122
+    person(im, d, 745, 805, 320)
+    bubble(d, (752, 640, 1040, 770), "ひとつでも\n当てはまったら\nご相談ください！", font(26))
     band_note(d, note, y=1150, bg=YELLOW, fg=INK)
     save(im, n, slug, cap)
 
 def post15():
-    komari_post(15, "komari_yane", "屋根編",
+    komari_post(15, "komari_yane", "屋根編", photo_from("03_kawara"),
         [("瓦がズレている・浮いて見える", "地震や強風のあとは特に要注意"),
          ("屋根にコケや色あせが目立つ", "表面の防水が弱ってきたサインかも"),
          ("棟(てっぺん)の漆喰が崩れている", "下に白いかけらが落ちていませんか"),
@@ -497,7 +525,7 @@ def post15():
 ひとつでも当てはまったら、お気軽にご相談ください。点検・お見積りは無料です。屋根の上の写真をお見せしながら、今の状態をご説明します📷""" + CTA)
 
 def post16():
-    komari_post(16, "komari_amadoi", "雨どい編",
+    komari_post(16, "komari_amadoi", "雨どい編", photo_from("13_amadoi", top_skip=0),
         [("雨の日に、雨どいから水があふれる", "落ち葉や土が詰まっているかも"),
          ("雨どいが傾いている・たわんでいる", "雪や金具のゆるみが原因のことも"),
          ("雨どいから草が生えている", "中に土がたまっているサインです"),
@@ -515,7 +543,7 @@ def post16():
 雨どいの掃除・つまり直し、金具のゆるみ直しは3,000円〜(税抜)。高いところなので、ご自身で登らずにお任せください🙌""" + CTA)
 
 def post17():
-    komari_post(17, "komari_bankin", "トタン・板金編",
+    komari_post(17, "komari_bankin", "トタン・板金編", photo_from("07_mune_bankin"),
         [("屋根の釘やビスが浮いている", "そこから雨水が入りやすくなります"),
          ("トタンや板金にサビが出ている", "放っておくと穴があくことも"),
          ("風の強い日にバタバタ音がする", "板金が浮いている可能性があります"),
@@ -533,7 +561,7 @@ def post17():
 トタン屋根の釘・ビス打ち直し、棟板金の釘浮き補修は5,000円〜(税抜)。小さな補修で済むうちにご相談ください😊""" + CTA)
 
 def post18():
-    komari_post(18, "komari_namiita", "テラス・カーポート編",
+    komari_post(18, "komari_namiita", "テラス・カーポート編", photo_from("06_namiita"),
         [("波板が黄ばんで、下が暗い", "光を通しにくくなっています"),
          ("波板にヒビ・割れがある", "古くなると硬く割れやすくなります"),
          ("風でカタカタ・バタバタうるさい", "留め具(フック)が外れているかも"),
@@ -554,8 +582,9 @@ def post18():
 def mame_post(n, slug, no, title, points, note, cap):
     im, d = base()
     pill(d, f"屋根の豆知識  No.{no}", bg=YELLOW, fg=INK)
-    draw_text(d, (48, 262), title, font(56), INK, maxw=984, spacing=1.28)
-    y = 470; fn = font(46); fh = font(38); fs = font(29, False)
+    draw_text(d, (48, 262), title, font(48), INK, maxw=680, spacing=1.3)
+    person(im, d, 735, 150, 320)
+    y = 492; fn = font(46); fh = font(38); fs = font(29, False)
     for i, (head, desc) in enumerate(points):
         lines = wrap(desc, fs, 830); bh = max(170, 80 + len(lines) * 42 + 24)
         rounded(d, [48, y, W - 48, y + bh], 22, LIGHT)
@@ -563,7 +592,7 @@ def mame_post(n, slug, no, title, points, note, cap):
         t = str(i + 1); d.text((76 + 38 - fn.getlength(t) / 2, y + 34), t, font=fn, fill=WHITE)
         d.text((180, y + 26), head, font=fh, fill=BLUE)
         draw_text(d, (180, y + 82), desc, fs, INK, maxw=830, spacing=1.45)
-        y += bh + 22
+        y += bh + 20
     band_note(d, note, y=1150)
     save(im, n, slug, cap)
 
