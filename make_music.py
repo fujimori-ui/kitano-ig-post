@@ -8,7 +8,7 @@
 投稿ごとに番号で a→b→c と順番に使う(同じ曲が続かない)。
 
 購入した曲(Audiostock など)を使うときは music/private/ に mp3/wav を置く。あればそちらを優先して使う
-(複数あれば番号順に交代)。music/private/ は .gitignore 済み=公開リポジトリには上げない(再配布NGのため)。
+(複数あれば投稿ごとにランダムに1曲、曲のどこを使うかもランダム。ただし静かな部分・無音にはかからない)。music/private/ は .gitignore 済み=公開リポジトリには上げない(再配布NGのため)。
 完成した mp4 だけを push する。
 
 使い方: python make_music.py                 # 曲を作る(music/ に無ければ)
@@ -17,7 +17,7 @@
 make_videos.py / make_flyer.py は動画を作った後に自動で add_music() を呼ぶ。
 必要: numpy, ffmpeg
 """
-import subprocess, sys, wave, zlib
+import random, subprocess, sys, wave, zlib
 from pathlib import Path
 import numpy as np
 
@@ -242,15 +242,37 @@ def build(force=False):
         print("saved", p.name)
 
 
-def pick(slug):
-    """番号順に交代。番号が無い名前(flyer_…)は名前から決める。購入曲があればそちらを使う。"""
-    head = slug.split("_", 1)[0]
-    i = int(head) - 1 if head.isdigit() else zlib.crc32(slug.encode())
+def pick(slug, d):
+    """使う曲と開始位置(秒)を決める。購入曲があれば、その中から投稿ごとにランダムに1曲・使う部分もランダム。
+    乱数は投稿名から決まるので、作り直しても同じ選び方になる。購入曲が無ければ自前BGMを番号順に交代で頭から。"""
     bought = sorted(p for p in PRIVATE.glob("*") if p.suffix.lower() in (".mp3", ".wav", ".m4a")) if PRIVATE.exists() else []
-    if bought:
-        return bought[i % len(bought)]
-    keys = sorted(SONGS)
-    return MUSIC / f"bgm_{keys[i % len(keys)]}.wav"
+    if not bought:
+        head = slug.split("_", 1)[0]
+        i = int(head) - 1 if head.isdigit() else zlib.crc32(slug.encode())
+        keys = sorted(SONGS)
+        build()
+        return MUSIC / f"bgm_{keys[i % len(keys)]}.wav", 0.0
+    r = random.Random(zlib.crc32(slug.encode()))
+    track = r.choice(bought)
+    rms = loudness(track)
+    win = int(np.ceil(d / STEP)) + 1
+    # 動画の長さ分ずっと音が鳴っている(曲の静かな部分・最後の無音にかからない)開始位置だけを候補にする
+    lows = np.array([rms[k:k + win].min() for k in range(len(rms) - win)])
+    ok = [k for k in range(int(1 / STEP), len(lows)) if lows[k] >= 0.35 * np.median(rms)]
+    return track, (r.choice(ok) * STEP if ok else 0.0)
+
+
+STEP = 0.5  # 開始位置の刻み(秒)
+
+
+def loudness(track):
+    """曲を STEP 秒ごとの音の大きさ(RMS)の列にする"""
+    raw = subprocess.run(["ffmpeg", "-v", "error", "-i", str(track), "-ac", "1", "-ar", "8000", "-f", "s16le", "-"],
+                         capture_output=True, check=True).stdout
+    x = np.frombuffer(raw, "<i2").astype(float)
+    n = int(8000 * STEP)
+    x = x[:len(x) // n * n].reshape(-1, n)
+    return np.sqrt((x ** 2).mean(axis=1))
 
 
 def duration(mp4):
@@ -260,19 +282,17 @@ def duration(mp4):
 
 
 def add_music(mp4):
-    """mp4 の映像はそのまま、音だけ BGM(最初0.3秒・最後1.5秒フェード)に差し替える。"""
+    """mp4 の映像はそのまま、音だけ BGM(最初0.5秒・最後1.5秒フェード)に差し替える。"""
     mp4 = Path(mp4)
-    wav = pick(mp4.stem)
-    if wav.parent == MUSIC:
-        build()
     d = duration(mp4)
+    wav, start = pick(mp4.stem, d)
     tmp = mp4.with_suffix(".tmp.mp4")
-    af = f"atrim=0:{d:.2f},afade=t=in:d=0.3,afade=t=out:st={max(0, d - 1.5):.2f}:d=1.5,loudnorm=I=-16:TP=-1.5"
+    af = f"atrim={start:.2f}:{start + d:.2f},asetpts=PTS-STARTPTS,afade=t=in:d=0.5,afade=t=out:st={max(0, d - 1.5):.2f}:d=1.5,loudnorm=I=-16:TP=-1.5"
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(mp4), "-i", str(wav),
                     "-map", "0:v", "-map", "1:a", "-c:v", "copy", "-af", af, "-ar", "44100",
                     "-c:a", "aac", "-b:a", "160k", "-t", f"{d:.2f}", "-movflags", "+faststart", str(tmp)], check=True)
     tmp.replace(mp4)
-    print(f"music {mp4.name} <- {wav.name}  {d:.1f}秒")
+    print(f"music {mp4.name} <- {wav.name} {start:.1f}秒から  {d:.1f}秒")
 
 
 if __name__ == "__main__":
