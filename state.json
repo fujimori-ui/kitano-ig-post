@@ -1,36 +1,5 @@
 {
- "posted": {
-  "01_greeting": {
-   "date": "2026-10-24 17:32",
-   "media_id": "17962303650220304",
-   "url": "https://www.instagram.com/reel/De3tZ-FDuyo/"
-  },
-  "02_numbers": {
-   "date": "2026-10-24 17:33",
-   "media_id": "18128139388867579",
-   "url": "https://www.instagram.com/reel/De3thXAkuex/"
-  },
-  "03_kawara": {
-   "date": "2026-10-24 17:34",
-   "media_id": "18373460446215682",
-   "url": "https://www.instagram.com/reel/De3tpGrjR3Z/"
-  },
-  "04_mune_tsumi": {
-   "date": "2026-10-24 17:35",
-   "media_id": "18157771015513564",
-   "url": "https://www.instagram.com/reel/De3twrZE76a/"
-  },
-  "15_komari_yane": {
-   "date": "2026-10-24 17:41",
-   "media_id": "17915097405500624",
-   "url": "https://www.instagram.com/reel/De3ufdxD5gd/"
-  },
-  "flyer_202610": {
-   "date": "2026-10-24 17:42",
-   "media_id": "17952398583050958",
-   "url": "https://www.instagram.com/reel/De3um62gOB1/"
-  }
- },
+ "posted": {},
  "replaced": {
   "01_greeting": {
    "date": "2026-10-23 14:12",
@@ -69,6 +38,42 @@
    "media_id": "18096149792127880",
    "url": "https://www.instagram.com/reel/De3oEyTjTHt/",
    "memo": "BGM付きで出し直すため外した(2026-10-24)。新しい投稿が出たらアプリでこの旧投稿を削除"
+  },
+  "01_greeting_2": {
+   "date": "2026-10-24 17:32",
+   "media_id": "17962303650220304",
+   "url": "https://www.instagram.com/reel/De3tZ-FDuyo/",
+   "memo": "3曲ランダムBGMで再度出し直し(2026-10-24)。アプリでこの旧投稿を削除"
+  },
+  "02_numbers_2": {
+   "date": "2026-10-24 17:33",
+   "media_id": "18128139388867579",
+   "url": "https://www.instagram.com/reel/De3thXAkuex/",
+   "memo": "3曲ランダムBGMで再度出し直し(2026-10-24)。アプリでこの旧投稿を削除"
+  },
+  "03_kawara_2": {
+   "date": "2026-10-24 17:34",
+   "media_id": "18373460446215682",
+   "url": "https://www.instagram.com/reel/De3tpGrjR3Z/",
+   "memo": "3曲ランダムBGMで再度出し直し(2026-10-24)。アプリでこの旧投稿を削除"
+  },
+  "04_mune_tsumi_2": {
+   "date": "2026-10-24 17:35",
+   "media_id": "18157771015513564",
+   "url": "https://www.instagram.com/reel/De3twrZE76a/",
+   "memo": "3曲ランダムBGMで再度出し直し(2026-10-24)。アプリでこの旧投稿を削除"
+  },
+  "15_komari_yane_2": {
+   "date": "2026-10-24 17:41",
+   "media_id": "17915097405500624",
+   "url": "https://www.instagram.com/reel/De3ufdxD5gd/",
+   "memo": "3曲ランダムBGMで再度出し直し(2026-10-24)。アプリでこの旧投稿を削除"
+  },
+  "flyer_202610_2": {
+   "date": "2026-10-24 17:42",
+   "media_id": "17952398583050958",
+   "url": "https://www.instagram.com/reel/De3um62gOB1/",
+   "memo": "3曲ランダムBGMで再度出し直し(2026-10-24)。アプリでこの旧投稿を削除"
   }
  }
 }
