@@ -7,7 +7,11 @@ jpg は表紙に使う。mp4 が無ければ画像で投稿。
 投稿済みは state.json に記録(GitHub Actions がコミットで書き戻す)。
 画像は公開リポジトリの raw URL を Instagram API(graph.instagram.com)に渡す。
 
-使い方: python post_ig.py [--dry-run] [--slug 03_kawara]
+1日2本(朝・夜)を確実に出すため、自動投稿は「今の時間帯(朝=14時まで/夜=14時から)に今日まだ出ていないとき」だけ投稿する。
+--backup(GitHubの予備スケジュールから起動)は、さらに決まった時間内(朝7〜12時/夜20〜23時半)だけ動く。
+--slug での手動投稿はこの判定をしない(時間帯の1本には数えない)。
+
+使い方: python post_ig.py [--dry-run] [--slug 03_kawara] [--backup]
 環境変数: KITANO_IG_USER_ID, KITANO_IG_ACCESS_TOKEN
 """
 import json, os, sys, time
@@ -47,6 +51,21 @@ def next_item(state, slug=None):
     return None
 
 
+def slot_now():
+    """今の時間帯 'morning' / 'evening'(TZ=Asia/Tokyo 前提)"""
+    return "morning" if time.localtime().tm_hour < 14 else "evening"
+
+
+def slot_done(state, slot):
+    today = time.strftime("%Y-%m-%d")
+    return any(v.get("slot") == slot and v["date"].startswith(today) for v in state["posted"].values())
+
+
+def in_backup_window(slot):
+    m = time.localtime().tm_hour * 60 + time.localtime().tm_min
+    return 7 * 60 <= m < 12 * 60 if slot == "morning" else 20 * 60 <= m < 23 * 60 + 30
+
+
 def api_post(path, data):
     r = requests.post(f"{API}/{path}", data=data, timeout=60)
     j = r.json()
@@ -79,6 +98,13 @@ def main():
     dry = "--dry-run" in sys.argv
     slug = sys.argv[sys.argv.index("--slug") + 1] if "--slug" in sys.argv else None
     state = load_state()
+    slot = None if slug else slot_now()
+    if slot and "--backup" in sys.argv and not in_backup_window(slot):
+        log(f"RESULT: SKIP 予備起動が時間外のため何もしません({time.strftime('%H:%M')})")
+        return
+    if slot and slot_done(state, slot):
+        log(f"RESULT: ALREADY_POSTED 今日の{'朝' if slot == 'morning' else '夜'}の分は投稿済みです")
+        return
     item = next_item(state, slug)
     if not item:
         log("RESULT: QUEUE_EMPTY 投稿できるネタがありません(posts/ に新しい画像と本文を追加してください)")
@@ -105,6 +131,8 @@ def main():
             time.sleep(10)
     mid, url = publish(user_id, token, image_url, caption, video_url)
     state["posted"][item] = {"date": time.strftime("%Y-%m-%d %H:%M"), "media_id": mid, "url": url}
+    if slot:
+        state["posted"][item]["slot"] = slot
     STATE.write_text(json.dumps(state, ensure_ascii=False, indent=1), encoding="utf-8")
     remaining = len([s for s in sorted(p.stem for p in POSTS.glob('*.jpg')) if s not in state["posted"]])
     log(f"RESULT: POSTED {item} | {title} | {url} | 残り{remaining}本")
