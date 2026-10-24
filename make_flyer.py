@@ -10,6 +10,7 @@ flyer_ で始まる投稿は post_ig.py が他より先に出す(配った月の
 必要: pymupdf, Pillow, ffmpeg
 """
 import subprocess, sys
+from make_music import add_music
 from pathlib import Path
 import pymupdf
 from PIL import Image, ImageDraw, ImageFilter
@@ -107,6 +108,7 @@ def video(card, front, back, out):
     ff.stdin.close()
     if ff.wait() != 0:
         raise RuntimeError("ffmpeg 失敗")
+    add_music(out)
 
 
 def mp_ease(t):

@@ -1,2 +1,4 @@
 photos_hd/
 __pycache__/
+music/
+*.tmp.mp4

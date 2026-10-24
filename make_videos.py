@@ -5,7 +5,8 @@
   ヘッダー: 上からスッと降りる / フッター: 下からせり上がる
   写真など大きいブロック: 左→右にワイプしながら少しズームが戻る
   文字など小さいブロック: ふわっと下から浮き上がる
-最後のコマは元の画像と同じ。1080×1920(9:16)の中央に 1080×1350 の画像を置くので、
+最後のコマは元の画像と同じ。音は make_music.py のBGM(自前で合成)を入れる。
+1080×1920(9:16)の中央に 1080×1350 の画像を置くので、
 フィードでは画像と同じ見え方、リール画面では上下に余白が付く。
 
 使い方: python make_videos.py            # 全部(mp4が無い/古いものだけ)
@@ -16,6 +17,7 @@ import subprocess, sys
 from pathlib import Path
 import numpy as np
 from PIL import Image
+from make_music import add_music
 
 HERE = Path(__file__).parent
 POSTS = HERE / "posts"
@@ -115,6 +117,7 @@ def make(slug):
     ff.stdin.close()
     if ff.wait() != 0:
         raise RuntimeError(f"ffmpeg 失敗: {slug}")
+    add_music(out)  # 無音の動画にさわやかなBGMを入れる
     print(f"saved {out.name}  {total:.1f}秒  ブロック{len(blocks)}個 {blocks}")
 
 

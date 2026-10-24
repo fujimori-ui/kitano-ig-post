@@ -19,6 +19,9 @@
 mp4 があるネタはリール(フィードにも表示・表紙は jpg)で投稿、無いネタは今まで通り画像で投稿されます。
 画像を作り直したら `python make_videos.py 03_kawara` のように動画も作り直してください。
 
+**BGM**: 動画には `make_music.py` で自前合成したさわやかなBGM(`music/bgm_a〜c.wav`、著作権フリー)が自動で入ります。番号順に a→b→c と交代。
+既存の mp4 の音だけ入れ直すときは `python make_music.py add 05_hisashi`(全部なら `add-all`)。
+
 - 特定のネタを今すぐ投稿: Actions → kitano-ig-post → Run workflow → slug に `03_kawara` など
 - 投稿せず次の1本を見る: dry_run を true
 - やり直し(同じネタをもう一度出す): `state.json` からその項目を消して push
