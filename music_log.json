@@ -159,6 +159,71 @@
   "start": 49.0,
   "len": 9.0
  },
+ "33_company_106": {
+  "track": "audiostock_41606.mp3",
+  "start": 214.5,
+  "len": 10.0
+ },
+ "34_company_riyuu5": {
+  "track": "audiostock_1085297.mp3",
+  "start": 56.0,
+  "len": 9.5
+ },
+ "35_company_shikaku": {
+  "track": "audiostock_41606.mp3",
+  "start": 118.0,
+  "len": 10.0
+ },
+ "36_faq_1": {
+  "track": "audiostock_1085297.mp3",
+  "start": 3.5,
+  "len": 8.5
+ },
+ "37_faq_2": {
+  "track": "audiostock_41606.mp3",
+  "start": 86.5,
+  "len": 9.0
+ },
+ "38_case_mitsumori_fuan": {
+  "track": "audiostock_1085297.mp3",
+  "start": 8.5,
+  "len": 9.0
+ },
+ "39_case_akiya": {
+  "track": "audiostock_41606.mp3",
+  "start": 189.0,
+  "len": 9.5
+ },
+ "40_hafu_galva": {
+  "track": "audiostock_1085297.mp3",
+  "start": 13.5,
+  "len": 11.0
+ },
+ "41_amadoi_naka": {
+  "track": "audiostock_41606.mp3",
+  "start": 58.0,
+  "len": 10.5
+ },
+ "42_company_dekiru": {
+  "track": "audiostock_1085297.mp3",
+  "start": 18.5,
+  "len": 10.5
+ },
+ "43_blog_shimi": {
+  "track": "audiostock_41606.mp3",
+  "start": 37.5,
+  "len": 9.0
+ },
+ "44_news_toiawase57": {
+  "track": "audiostock_1085297.mp3",
+  "start": 23.5,
+  "len": 11.0
+ },
+ "45_company_access": {
+  "track": "audiostock_41606.mp3",
+  "start": 14.0,
+  "len": 10.0
+ },
  "flyer_202610": {
   "track": "audiostock_41613.mp3",
   "start": 34.0,
