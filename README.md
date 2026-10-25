@@ -13,7 +13,16 @@
    同じ時間帯に2本出ることはない。予備は朝7〜11時/昼12〜17時/夜20〜23時半の間だけ動く(深夜投稿なし)。
 6. 今月のチラシ(posts/flyer_YYYYMM.jpg)がまだ無いと、朝の結果メールの件名に「・今月のチラシ未作成」が付く → 表裏PDFをもらって `make_flyer.py` で作る。
 
-## ネタの追加
+## ネタの自動作成(2026-10-26〜)
+
+毎週月曜5:00に claude.ai のルーティン「北野工作所IG: 毎週月曜 来週分21本を自動作成→メール報告」(trig_01SV6ZwBzUZry2VyU4opVGSW)が動き、
+`AUTO_GENERATE.md` の手順で来週分21本の中身を `content/auto_YYYYMMDD.json` に書いて push → `build.yml` が画像(Notoフォント)と動画(BGM付き)を作って `posts/` に commit → 一覧画像(`content/preview/`)のリンク付きでGmail報告。
+- BGM(購入曲)と高画質写真は非公開リポ `fujimori-ui/kitano-ig-private` に置き、Actions が `PHOTOS_TOKEN` で取り込む
+- 直したい投稿があれば、その JSON を直して push し直す(画像を作り直すときは Actions → kitano-ig-build → Run workflow → force にファイル名)。外したい投稿は `posts/NN_slug.*` と JSON の項目を消す
+- 自分のPCで試す: `python3 build_auto.py --check content/xxx.json` → `KITANO_FONT=noto python3 build_auto.py`
+- 施工事例(Before/After)は写真が必要なので自動では作らない。写真をもらったら `make_posts.py` の `ba_post` で手作業
+
+## ネタの追加(手作業)
 
 `posts/NN_slug.jpg`(1080×1350)と `posts/NN_slug.txt`(本文+ハッシュタグ)を同じ名前で置いて push するだけ。
 画像は `make_posts.py` で作っています(サイト kashiba-yanereform.com の文章・写真が元)。
