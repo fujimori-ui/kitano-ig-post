@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """北野工作所 Instagram 自動投稿(クラウド版)
 
-posts/ にある NN_slug.jpg + NN_slug.txt を番号順に1本ずつ投稿する。
+posts/ にある NN_slug.jpg + NN_slug.txt を1本ずつ投稿する。
+順番は「種類(施工事例/豆知識/訪問販売注意/会社紹介/お困りごと)がまんべんなく回る」ように、
+いちばん久しく出ていない種類の中で番号が小さいものを選ぶ(同じ種類ばかり続かない)。
+種類は投稿名のキーワードで判定(CATEGORY_RULES / CATEGORY_OVERRIDE)。--plan 30 でこれからの順番を確認できる。
 NN_slug.mp4(make_videos.py で作るアニメーション)があればリール(フィードにも表示)で投稿し、
 jpg は表紙に使う。mp4 が無ければ画像で投稿。
 投稿済みは state.json に記録(GitHub Actions がコミットで書き戻す)。
@@ -14,7 +17,7 @@ jpg は表紙に使う。mp4 が無ければ画像で投稿。
 毎月のチラシ(flyer_YYYYMM)は必ず月1回出す: その月の7日前から他より先に投稿する。
 今月分のチラシがまだ posts/ に無いときは、朝の結果(RESULT行)に「⚠ 今月のチラシ未作成」を付けてメールで知らせる。
 
-使い方: python post_ig.py [--dry-run] [--slug 03_kawara] [--backup]
+使い方: python post_ig.py [--dry-run] [--slug 03_kawara] [--backup] [--plan 30]
 環境変数: KITANO_IG_USER_ID, KITANO_IG_ACCESS_TOKEN
 """
 import datetime, json, os, sys, time
@@ -42,16 +45,82 @@ def load_state():
     return {"posted": {}}
 
 
-def next_item(state, slug=None):
-    items = sorted(p.stem for p in POSTS.glob("*.jpg") if (POSTS / f"{p.stem}.txt").exists())
+# ---- 投稿の種類(カテゴリ)。同じ種類ばかり続かないよう、いちばん久しく出ていない種類から順番に出す ----
+# 種類の見分けは投稿名(slug)のキーワードで行う。上から順に最初に当たったもの。
+CATEGORY_RULES = [
+    ("chuui",   ["houmon", "cooling_off", "news_tenken", "news_kimari", "news_kasai", "news_bundenban", "chuui_"]),
+    ("komari",  ["komari_"]),
+    ("mame",    ["mame_", "sign_", "season_", "amamori_sign"]),
+    ("jirei",   ["kawara", "mune_tsumi", "hisashi", "namiita", "mune_bankin", "parapet", "hafu_", "amadoi_naka",
+                 "case_", "blog_", "jirei_", "ba_"]),
+]
+CATEGORY_NAMES = {"jirei": "施工事例", "mame": "豆知識", "chuui": "訪問販売注意", "company": "会社紹介",
+                  "komari": "お困りごと", "flyer": "チラシ"}
+# 久しさが同じとき(まだ一度も出ていない種類が複数あるとき)の優先順
+CATEGORY_ORDER = ["mame", "chuui", "jirei", "company", "komari"]
+
+
+CATEGORY_OVERRIDE = {"13_amadoi": "mame", "43_blog_shimi": "mame"}  # キーワードで決めにくいもの
+
+
+def category(slug):
+    if slug.startswith("flyer_"):
+        return "flyer"
+    if slug in CATEGORY_OVERRIDE:
+        return CATEGORY_OVERRIDE[slug]
+    body = slug.split("_", 1)[1] if "_" in slug else slug
+    for cat, keys in CATEGORY_RULES:
+        if any(k in body for k in keys):
+            return cat
+    return "company"
+
+
+def all_items():
+    return sorted(p.stem for p in POSTS.glob("*.jpg") if (POSTS / f"{p.stem}.txt").exists())
+
+
+def next_item(state, slug=None, posted=None):
+    """次に出す1本。posted を渡すと state の代わりにその dict(slug→{"date":..}) を使う(予定表示用)。"""
+    items = all_items()
     if slug:
         return slug if slug in items else None
+    posted = state["posted"] if posted is None else posted
     # 毎月のチラシ(flyer_YYYYMM)は配った月のうちに必ず出したいので先に(ただし早すぎる月のものはまだ出さない)
-    items = sorted(items, key=lambda s: (not s.startswith("flyer_"), s))
     for s in items:
-        if s not in state["posted"] and (not s.startswith("flyer_") or flyer_ready(s)):
+        if s.startswith("flyer_") and s not in posted and flyer_ready(s):
             return s
-    return None
+    todo = [s for s in items if s not in posted and not s.startswith("flyer_")]
+    if not todo:
+        return None
+    # 種類ごとの「最後に出した日時」。まだ出ていない種類は "" で最優先
+    # (この仕組みを入れた 2026-10-26 より前の投稿には category が無いので数えない → 今日から豆知識で始まる)
+    last = {}
+    for s, v in posted.items():
+        if "category" not in v:
+            continue
+        c = v["category"]
+        last[c] = max(last.get(c, ""), v.get("date", ""))
+    cats = sorted({category(s) for s in todo},
+                  key=lambda c: (last.get(c, ""), CATEGORY_ORDER.index(c) if c in CATEGORY_ORDER else 99))
+    cat = cats[0]
+    return [s for s in todo if category(s) == cat][0]
+
+
+def plan(state, n=30):
+    """これから出る順番を n 本ぶん表示(投稿はしない)。1日3本で日付も添える"""
+    posted = {k: dict(v) for k, v in state["posted"].items()}
+    day = datetime.date.today()
+    slots = ["morning", "noon", "evening"]
+    i = len([1 for v in posted.values() if v.get("date", "").startswith(day.isoformat())])
+    for _ in range(n):
+        s = next_item(state, posted=posted)
+        if not s:
+            print("(ここでネタ切れ)")
+            break
+        d = day + datetime.timedelta(days=i // 3)
+        print(f"{d.month}/{d.day} {SLOTS[slots[i % 3]]}  {s:24s} [{CATEGORY_NAMES[category(s)]}]")
+        posted[s] = {"date": f"{d.isoformat()} {['07:00', '12:30', '20:00'][i % 3]}", "category": category(s)}
+        i += 1
 
 
 def flyer_ready(slug):
@@ -123,6 +192,10 @@ def main():
     dry = "--dry-run" in sys.argv
     slug = sys.argv[sys.argv.index("--slug") + 1] if "--slug" in sys.argv else None
     state = load_state()
+    if "--plan" in sys.argv:
+        i = sys.argv.index("--plan")
+        plan(state, int(sys.argv[i + 1]) if len(sys.argv) > i + 1 and sys.argv[i + 1].isdigit() else 30)
+        return
     slot = None if slug else slot_now()
     if slot and "--backup" in sys.argv and not in_backup_window(slot):
         log(f"RESULT: SKIP 予備起動が時間外のため何もしません({time.strftime('%H:%M')})")
@@ -138,7 +211,8 @@ def main():
     caption = (POSTS / f"{item}.txt").read_text(encoding="utf-8").strip()
     image_url = RAW_BASE + f"{item}.jpg"
     title = caption.split("\n", 1)[0][:40]
-    log(f"次の投稿: {item} / {title}")
+    cat = CATEGORY_NAMES[category(item)]
+    log(f"次の投稿: {item} [{cat}] / {title}")
     log(f"画像: {image_url}")
     video_url = RAW_BASE + f"{item}.mp4" if (POSTS / f"{item}.mp4").exists() else None
     if video_url:
@@ -156,12 +230,14 @@ def main():
                 break
             time.sleep(10)
     mid, url = publish(user_id, token, image_url, caption, video_url)
-    state["posted"][item] = {"date": time.strftime("%Y-%m-%d %H:%M"), "media_id": mid, "url": url}
+    state["posted"][item] = {"date": time.strftime("%Y-%m-%d %H:%M"), "media_id": mid, "url": url, "category": category(item)}
     if slot:
         state["posted"][item]["slot"] = slot
     STATE.write_text(json.dumps(state, ensure_ascii=False, indent=1), encoding="utf-8")
-    remaining = len([s for s in sorted(p.stem for p in POSTS.glob('*.jpg')) if s not in state["posted"]])
-    log(f"RESULT: POSTED {item} | {title} | {url} | 残り{remaining}本(1日3本なので約{remaining // 3}日分){warn}")
+    todo = [s for s in all_items() if s not in state["posted"]]
+    stock = " ".join(f"{CATEGORY_NAMES[c]}{n}" for c, n in
+                     sorted(((c, len([s for s in todo if category(s) == c])) for c in set(map(category, todo))), key=lambda x: -x[1]))
+    log(f"RESULT: POSTED {item} [{cat}] | {title} | {url} | 残り{len(todo)}本(1日3本なので約{len(todo) // 3}日分、内訳: {stock}){warn}")
 
 
 if __name__ == "__main__":

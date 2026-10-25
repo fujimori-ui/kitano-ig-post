@@ -224,6 +224,46 @@
   "start": 14.0,
   "len": 10.0
  },
+ "46_chuui_muryou_tenken": {
+  "track": "audiostock_1085297.mp3",
+  "start": 29.0,
+  "len": 11.5
+ },
+ "47_chuui_kotowari_kata": {
+  "track": "audiostock_41606.mp3",
+  "start": 140.5,
+  "len": 10.5
+ },
+ "48_chuui_oya_mamoru": {
+  "track": "audiostock_1085297.mp3",
+  "start": 34.0,
+  "len": 11.1
+ },
+ "49_chuui_mitsumori_mikata": {
+  "track": "audiostock_41606.mp3",
+  "start": 66.0,
+  "len": 8.5
+ },
+ "50_mame_amamori_genin": {
+  "track": "audiostock_1085297.mp3",
+  "start": 39.0,
+  "len": 9.0
+ },
+ "51_mame_cover_fukikae": {
+  "track": "audiostock_41606.mp3",
+  "start": 94.5,
+  "len": 10.0
+ },
+ "52_mame_koke": {
+  "track": "audiostock_1085297.mp3",
+  "start": 43.0,
+  "len": 11.0
+ },
+ "53_mame_shikkui": {
+  "track": "audiostock_41606.mp3",
+  "start": 180.5,
+  "len": 11.0
+ },
  "flyer_202610": {
   "track": "audiostock_41613.mp3",
   "start": 34.0,
