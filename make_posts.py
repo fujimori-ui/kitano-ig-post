@@ -268,9 +268,10 @@ def post08():
 # ---------- 9 雨漏りのサイン ----------
 def post09():
     im, d = base()
-    title_block(d, "天井に染みができたら、もう遅い？", size=50)
-    ph = cover(Image.open(HD / "news_post-81-3-2-2-2-2-2-2-2-2_0.png").convert("RGB"), 984, 420)
-    im.paste(ph, (48, 280))
+    title_block(d, "天井に染みができたら、もう遅い？", size=44, maxw=780)
+    person(im, d, 850, 105, 200)
+    ph = cover(Image.open(HD / "news_post-81-3-2-2-2-2-2-2-2-2_0.png").convert("RGB"), 984, 400)
+    im.paste(ph, (48, 312))
     f = font(36); y = 730
     d.text((48, y), "こんな症状が出たら、すぐご相談ください", font=f, fill=BLUE); y += 70
     items = ["天井の染みや変色", "壁紙のふくらみ・剥がれ", "雨の日だけ「ポタポタ」音がする", "押し入れや収納がじめじめする"]

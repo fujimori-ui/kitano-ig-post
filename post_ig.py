@@ -230,9 +230,13 @@ def main():
                 break
             time.sleep(10)
     mid, url = publish(user_id, token, image_url, caption, video_url)
+    old = state["posted"].get(item, {})
     state["posted"][item] = {"date": time.strftime("%Y-%m-%d %H:%M"), "media_id": mid, "url": url, "category": category(item)}
     if slot:
         state["posted"][item]["slot"] = slot
+    elif old.get("slot") and old.get("date", "").startswith(time.strftime("%Y-%m-%d")):
+        # 今日出した分を --slug で出し直したときは、その時間帯の1本として数えたままにする(予備が重ねて出さないように)
+        state["posted"][item]["slot"] = old["slot"]
     STATE.write_text(json.dumps(state, ensure_ascii=False, indent=1), encoding="utf-8")
     todo = [s for s in all_items() if s not in state["posted"]]
     stock = " ".join(f"{CATEGORY_NAMES[c]}{n}" for c, n in
