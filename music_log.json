@@ -1,0 +1,117 @@
+{
+ "01_greeting": {
+  "track": "audiostock_41606.mp3",
+  "start": 74.0,
+  "len": 8.0
+ },
+ "02_numbers": {
+  "track": "audiostock_41613.mp3",
+  "start": 97.0,
+  "len": 8.0
+ },
+ "03_kawara": {
+  "track": "audiostock_41613.mp3",
+  "start": 67.0,
+  "len": 8.0
+ },
+ "04_mune_tsumi": {
+  "track": "audiostock_41613.mp3",
+  "start": 3.5,
+  "len": 8.0
+ },
+ "05_hisashi": {
+  "track": "audiostock_41613.mp3",
+  "start": 128.5,
+  "len": 8.0
+ },
+ "06_namiita": {
+  "track": "audiostock_41606.mp3",
+  "start": 103.0,
+  "len": 8.0
+ },
+ "07_mune_bankin": {
+  "track": "audiostock_1085297.mp3",
+  "start": 53.0,
+  "len": 8.0
+ },
+ "08_parapet": {
+  "track": "audiostock_41613.mp3",
+  "start": 79.0,
+  "len": 10.0
+ },
+ "09_amamori_sign": {
+  "track": "audiostock_1085297.mp3",
+  "start": 26.5,
+  "len": 9.5
+ },
+ "10_price": {
+  "track": "audiostock_41613.mp3",
+  "start": 50.5,
+  "len": 12.0
+ },
+ "11_flow": {
+  "track": "audiostock_1085297.mp3",
+  "start": 6.0,
+  "len": 9.0
+ },
+ "12_voice": {
+  "track": "audiostock_41613.mp3",
+  "start": 111.5,
+  "len": 9.5
+ },
+ "13_amadoi": {
+  "track": "audiostock_1085297.mp3",
+  "start": 37.0,
+  "len": 8.0
+ },
+ "14_area": {
+  "track": "audiostock_41613.mp3",
+  "start": 16.0,
+  "len": 8.0
+ },
+ "15_komari_yane": {
+  "track": "audiostock_41606.mp3",
+  "start": 24.5,
+  "len": 8.0
+ },
+ "16_komari_amadoi": {
+  "track": "audiostock_1085297.mp3",
+  "start": 16.0,
+  "len": 10.0
+ },
+ "17_komari_bankin": {
+  "track": "audiostock_41606.mp3",
+  "start": 202.5,
+  "len": 8.5
+ },
+ "18_komari_namiita": {
+  "track": "audiostock_1085297.mp3",
+  "start": 45.0,
+  "len": 10.0
+ },
+ "19_mame_timing": {
+  "track": "audiostock_41606.mp3",
+  "start": 172.5,
+  "len": 9.0
+ },
+ "20_mame_noboranai": {
+  "track": "audiostock_1085297.mp3",
+  "start": 59.5,
+  "len": 10.0
+ },
+ "21_mame_houmon": {
+  "track": "audiostock_41606.mp3",
+  "start": 48.0,
+  "len": 9.5
+ },
+ "22_mame_taifu": {
+  "track": "audiostock_1085297.mp3",
+  "start": 1.0,
+  "len": 10.5
+ },
+ "flyer_202610": {
+  "track": "audiostock_41613.mp3",
+  "start": 34.0,
+  "len": 18.0
+ }
+}

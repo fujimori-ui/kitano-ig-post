@@ -1,12 +1,13 @@
 name: kitano-ig-post
 
 # 北野工作所 Instagram に posts/ の次の1本を投稿する。
-# 起動は claude.ai の定期ルーティン(朝7:00/夜20:00)から workflow_dispatch で行う。
+# 起動は claude.ai の定期ルーティン(朝7:00/昼12:30/夜20:00)から workflow_dispatch で行う。
 # schedule は予備: ルーティンが失敗した日だけ投稿する(今日のその時間帯が投稿済みなら何もしない。
 # GitHub の遅延で時間外に動いたときも何もしない → 深夜に投稿されることはない)。
 on:
   schedule:
     - cron: "30 0 * * *"    # 9:30 JST 朝の予備
+    - cron: "30 5 * * *"    # 14:30 JST 昼の予備
     - cron: "0 13 * * *"    # 22:00 JST 夜の予備
   workflow_dispatch:
     inputs:

@@ -2,10 +2,13 @@
 """北野工作所 投稿画像(posts/NN_slug.jpg)からアニメーション付きリール動画(posts/NN_slug.mp4)を作る。
 
 完成画像を上から「ブロック」(タイトル・写真・帯など)に自動で分け、順番に動かして登場させる。
-  ヘッダー: 上からスッと降りる / フッター: 下からせり上がる
-  写真など大きいブロック: 左→右にワイプしながら少しズームが戻る
-  文字など小さいブロック: ふわっと下から浮き上がる
-最後のコマは元の画像と同じ。音は make_music.py のBGM(自前で合成)を入れる。
+動かし方は投稿ごとに組み合わせを変える(毎回同じに見えないように。投稿名から決まるので作り直しても同じ):
+  ヘッダー: 上から降りる / ふわっと出る / 左から入る
+  フッター: 下からせり上がる / ふわっと出る / 右から入る
+  写真など大きいブロック: 左→右ワイプ / 右→左ワイプ / ズームイン / 中央から開く / 縦じまブラインド / 左からスライド
+  文字など小さいブロック: 浮き上がる / ふわっと / 左から / 右から / ポップ / 左→右に現れる
+  出る順番: 上から / 下から / 写真先 / 文字先、速さ: 0.8〜1.25倍、最後の止め時間: 0〜3秒
+最後のコマは元の画像と同じ。音は make_music.py のBGM(購入曲、無ければ自前合成)を入れる。
 1080×1920(9:16)の中央に 1080×1350 の画像を置くので、
 フィードでは画像と同じ見え方、リール画面では上下に余白が付く。
 
@@ -13,7 +16,7 @@
         python make_videos.py 03_kawara  # 指定したものだけ作り直す
 必要: ffmpeg, Pillow, numpy
 """
-import subprocess, sys
+import random, subprocess, sys, zlib
 from pathlib import Path
 import numpy as np
 from PIL import Image
@@ -55,17 +58,93 @@ def find_blocks(card):
     return [(max(HEAD + 2, b0 - 4), min(FOOT - 1, b1 + 4)) for b0, b1 in blocks if b1 - b0 > 6]
 
 
+HEAD_STYLES = ["down", "fade", "slide_l"]
+FOOT_STYLES = ["up_in", "fade_in", "slide_r"]
+BIG_STYLES = ["wipe", "wipe_r", "zoom", "curtain", "blinds", "slide_l"]
+SMALL_STYLES = ["rise", "fade", "slide_l", "slide_r", "pop", "wipe_flat"]
+ORDERS = ["top", "bottom", "big_first", "small_first"]
+
+
+def choose_pattern(slug):
+    """投稿ごとに動かし方の組み合わせを決める(投稿名から決まるので作り直しても同じ)。"""
+    r = random.Random(zlib.crc32(slug.encode()) ^ 0x5eed)
+    return dict(head=r.choice(HEAD_STYLES), foot=r.choice(FOOT_STYLES), big=r.choice(BIG_STYLES),
+                small=r.choice(SMALL_STYLES), order=r.choice(ORDERS), speed=r.choice([0.8, 1.0, 1.0, 1.25]),
+                extra=r.choice([0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0]))
+
+
+def draw(fr, kind, im, y0, p, now, s, d):
+    """1つのブロックを進み具合 p(0〜1)で描く"""
+    pw, ph = im.size
+    y = OY + y0
+    if kind == "down":
+        fr.paste(blend(im, p), (0, y - int((1 - p) * 60)))
+    elif kind == "fade":
+        fr.paste(blend(im, p), (0, y))
+    elif kind == "slide_l":
+        fr.paste(blend(im, p), (-int((1 - p) * 160), y))
+    elif kind == "slide_r":
+        fr.paste(blend(im, p), (int((1 - p) * 160), y))
+    elif kind == "rise":
+        fr.paste(blend(im, p), (0, y + int((1 - p) * 40)))
+    elif kind in ("pop", "zoom"):
+        sc = (0.9 if kind == "pop" else 0.8) + (1 - (0.9 if kind == "pop" else 0.8)) * p
+        z = im.resize((max(1, int(pw * sc)), max(1, int(ph * sc))), Image.BILINEAR)
+        fr.paste(blend(z, p), ((pw - z.width) // 2, y + (ph - z.height) // 2))
+    elif kind == "wipe_flat":
+        cut = max(1, int(pw * p))
+        fr.paste(im.crop((0, 0, cut, ph)), (0, y))
+    elif kind in ("up_in", "fade_in"):
+        tall = Image.new("RGB", (VW, VH - y), BLUE)
+        tall.paste(im, (0, 0))
+        if kind == "up_in":
+            fr.paste(tall, (0, y + int((1 - p) * (VH - y))))
+        else:
+            fr.paste(blend(tall, p), (0, y))
+    elif kind in ("wipe", "wipe_r", "curtain", "blinds"):
+        sc = 1 + 0.06 * (1 - ease((now - s) / (d + 1.2)))
+        z = im.resize((int(pw * sc), int(ph * sc)), Image.BILINEAR)
+        ox, oy = (z.width - pw) // 2, (z.height - ph) // 2
+        z = z.crop((ox, oy, ox + pw, oy + ph))
+        if kind == "wipe":
+            cut = max(1, int(pw * p))
+            fr.paste(z.crop((0, 0, cut, ph)), (0, y))
+            if p < 1 and 48 < cut < W - 54:  # ワイプの境目に青い線(写真の幅の中だけ)
+                fr.paste(Image.new("RGB", (6, ph), BLUE), (cut, y))
+        elif kind == "wipe_r":
+            cut = max(1, int(pw * p))
+            fr.paste(z.crop((pw - cut, 0, pw, ph)), (pw - cut, y))
+            if p < 1 and 54 < pw - cut < W - 48:
+                fr.paste(Image.new("RGB", (6, ph), BLUE), (pw - cut - 6, y))
+        elif kind == "curtain":
+            half = max(1, int(pw * p / 2))
+            fr.paste(z.crop((pw // 2 - half, 0, pw // 2 + half, ph)), (pw // 2 - half, y))
+        else:  # blinds: 8本の縦じまが左から開く
+            n = 8
+            sw = pw // n
+            for k in range(n):
+                cut = max(1, int(sw * p))
+                fr.paste(z.crop((k * sw, 0, k * sw + cut, ph)), (k * sw, y))
+
+
 def make(slug):
     card = Image.open(POSTS / f"{slug}.jpg").convert("RGB")
     blocks = find_blocks(card)
+    pat = choose_pattern(slug)
+    sp = pat["speed"]
     # 登場の予定表: (開始秒, 長さ, 種類, 範囲)
-    plan = [(0.0, 0.6, "down", (0, HEAD)), (0.2, 0.6, "up_in", (FOOT, H))]
+    plan = [(0.0, 0.6 * sp, pat["head"], (0, HEAD)), (0.2, 0.6 * sp, pat["foot"], (FOOT, H))]
+    foot_end = 0.2 + 0.6 * sp
+    bigs = [b for b in blocks if b[1] - b[0] > 250]
+    smalls = [b for b in blocks if b[1] - b[0] <= 250]
+    order = {"top": blocks, "bottom": blocks[::-1], "big_first": bigs + smalls, "small_first": smalls + bigs}[pat["order"]]
     t = 0.5
-    for b0, b1 in blocks:
+    for b0, b1 in order:
         big = b1 - b0 > 250
-        plan.append((t, 0.8 if big else 0.55, "wipe" if big else "rise", (b0, b1)))
-        t += 0.75 if big else 0.4
-    total = max(8.0, t + 4.0)
+        plan.append((t, (0.8 if big else 0.55) * sp, pat["big"] if big else pat["small"], (b0, b1)))
+        t += (0.75 if big else 0.4) * sp
+    # 最後に止まって見せる時間も投稿ごとに変える(全体 8〜11 秒) → BGMの長さも投稿ごとに変わる
+    total = max(8.0, t + 4.0) + pat["extra"]
     nframes = int(total * FPS)
     done = max(s + d for s, d, _, _ in plan) + 0.3
 
@@ -85,40 +164,21 @@ def make(slug):
     for i in range(nframes):
         now = i / FPS
         fr = bg.copy()
-        if now < 0.8:  # 最初はフッター部分も白から始める
+        if now < foot_end:  # フッターが出そろうまでは下の青も白から始める
             fr.paste(WHITE, (0, OY + FOOT, VW, VH))
         for s, d, kind, im, y0 in pieces:
             p = ease((now - s) / d)
             if p <= 0:
                 continue
-            pw, ph = im.size
-            if kind == "down":
-                piece = blend(im, p)
-                fr.paste(piece, (0, OY + y0 - int((1 - p) * 60)))
-            elif kind == "up_in":
-                dy = int((1 - p) * (VH - OY - y0))
-                tall = Image.new("RGB", (VW, VH - OY - y0), BLUE)
-                tall.paste(im, (0, 0))
-                fr.paste(tall, (0, OY + y0 + dy))
-            elif kind == "rise":
-                fr.paste(blend(im, p), (0, OY + y0 + int((1 - p) * 40)))
-            elif kind == "wipe":
-                sc = 1 + 0.06 * (1 - ease((now - s) / (d + 1.2)))
-                z = im.resize((int(pw * sc), int(ph * sc)), Image.BILINEAR)
-                ox, oy = (z.width - pw) // 2, (z.height - ph) // 2
-                z = z.crop((ox, oy, ox + pw, oy + ph))
-                cut = max(1, int(pw * p))
-                fr.paste(z.crop((0, 0, cut, ph)), (0, OY + y0))
-                if p < 1 and 48 < cut < W - 54:  # ワイプの境目に青い線(写真の幅の中だけ)
-                    fr.paste(Image.new("RGB", (6, ph), BLUE), (cut, OY + y0))
+            draw(fr, kind, im, y0, p, now, s, d)
         if now >= done:  # 全部出そろったら元画像そのもの(取りこぼし防止)
             fr.paste(card, (0, OY))
         ff.stdin.write(fr.tobytes())
     ff.stdin.close()
     if ff.wait() != 0:
         raise RuntimeError(f"ffmpeg 失敗: {slug}")
-    add_music(out)  # 無音の動画にさわやかなBGMを入れる
-    print(f"saved {out.name}  {total:.1f}秒  ブロック{len(blocks)}個 {blocks}")
+    add_music(out)  # 無音の動画にBGMを入れる
+    print(f"saved {out.name}  {total:.1f}秒  ブロック{len(blocks)}個  動き={pat['head']}/{pat['foot']}/{pat['big']}/{pat['small']}/{pat['order']} x{sp}")
 
 
 def blend(im, p):
