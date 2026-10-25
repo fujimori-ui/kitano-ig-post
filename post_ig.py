@@ -22,7 +22,10 @@ jpg は表紙に使う。mp4 が無ければ画像で投稿。
 """
 import datetime, json, os, sys, time
 from pathlib import Path
-import requests
+try:
+    import requests   # 投稿にだけ必要。--plan や build_auto.py --stock では無くても動くように
+except ImportError:
+    requests = None
 
 HERE = Path(__file__).parent
 POSTS = HERE / "posts"

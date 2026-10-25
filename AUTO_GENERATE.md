@@ -34,13 +34,14 @@
    git add content/auto_YYYYMMDD.json && git commit -m "来週分の投稿21本(自動生成)" && git push
    ```
    push できないときは `gh api -X PUT repos/fujimori-ui/kitano-ig-post/contents/content/auto_YYYYMMDD.json -f message="来週分の投稿21本" -f content="$(base64 -w0 content/auto_YYYYMMDD.json)"`
-7. 画像・動画は push をきっかけに build.yml が自動で動く(15〜20分)。**自分で `gh workflow run` はしない**(二重に動く)。完了を待って結果を取る:
+7. 画像・動画は push をきっかけに build.yml が自動で動く(15〜20分)。**自分で `gh workflow run` はしない**(二重に動く)。
+   **待ち方の注意: バックグラウンド実行(run_in_background)や Monitor は使わない。使うとセッションが先に終わり、メールが送られない。** 次のコマンドを前面で実行して待つ(timeout は 25分=1500000ms に設定):
    ```
-   sleep 60; gh run list -R fujimori-ui/kitano-ig-post --workflow=build.yml --limit 1 --json databaseId,status,createdAt
-   gh run watch <databaseId> -R fujimori-ui/kitano-ig-post --exit-status
-   gh run view <databaseId> -R fujimori-ui/kitano-ig-post --log 2>/dev/null | grep -o "RESULT:.*\|PREVIEW.*" | head -3
+   sleep 60; RID=$(gh run list -R fujimori-ui/kitano-ig-post --workflow=build.yml --limit 1 --json databaseId -q '.[0].databaseId'); echo $RID
+   gh run watch $RID -R fujimori-ui/kitano-ig-post --exit-status > /dev/null 2>&1; gh run view $RID -R fujimori-ui/kitano-ig-post --log 2>/dev/null | grep -o "RESULT:.*\|PREVIEW.*\|NG.*" | head -5
    ```
    60秒待っても今回の push より新しい run が無ければ、そのときだけ `gh workflow run build.yml -R fujimori-ui/kitano-ig-post --ref main` で起動する。
+   (この環境では WebFetch・curl で外部サイトは開けない。調べものは WebSearch だけで行う。`pip install` が必要なら `python3 -m pip install --break-system-packages requests`)
 8. Gmail で fujimori@jibulabo.jp へ1通。件名「【北野IG】来週分21本を作りました」(失敗なら「【北野IG】来週分の作成に失敗(要確認)」)。本文はやさしい日本語で短く:
    - 作った21本のタイトル一覧(種類つき)
    - 確認用の一覧画像: `https://raw.githubusercontent.com/fujimori-ui/kitano-ig-post/main/<PREVIEW行のパス>`
