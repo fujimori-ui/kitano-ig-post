@@ -82,9 +82,19 @@ def base(subtitle="香芝市の屋根・雨漏り修理"):
     d.text(((W - f2.getlength(t2)) / 2, 1300), t2, font=f2, fill=LIGHT)
     return im, d
 
-def title_block(d, title, y=172, size=54, maxw=984):
+def title_hl(d, title, y, size, maxw, x=48, bg=YELLOW, fg=INK):
+    """メインタイトルを黄色のマーカー風の帯に乗せて目立たせる(ユーザー指示 2026-10-26)。1行ごとに帯を引く"""
     f = font(size)
-    return draw_text(d, (48, y), title, f, INK, maxw=maxw, spacing=1.3)
+    lh = int(size * 1.3)
+    for ln in wrap(title, f, maxw - 28):
+        tw = f.getlength(ln)
+        rounded(d, [x, y - 6, x + tw + 28, y + size + 10], 8, bg)
+        d.text((x + 14, y), ln, font=f, fill=fg)
+        y += lh
+    return y + 8
+
+def title_block(d, title, y=172, size=54, maxw=984):
+    return title_hl(d, title, y, size, maxw)
 
 def tag(im, d, xy, text, bg, fg):
     f = font(30)
@@ -179,7 +189,7 @@ def post02():
 # ---------- ビフォーアフター共通 ----------
 def ba_post(n, slug, title, before, after, note, cap, labels=("Before", "After")):
     im, d = base()
-    title_block(d, title, size=40, maxw=760)
+    title_block(d, title, size=44, maxw=800)
     person(im, d, 860, 152, 180)  # 社長写真(必ず入れる。青い線の下に収める)
     photo_pair(im, d, HD / before, HD / after, y0=350, ph=380, labels=labels)
     band_note(d, note, y=1150)
@@ -268,7 +278,7 @@ def post08():
 # ---------- 9 雨漏りのサイン ----------
 def post09():
     im, d = base()
-    title_block(d, "天井に染みができたら、もう遅い？", size=44, maxw=780)
+    title_block(d, "天井に染みができたら、もう遅い？", size=48, maxw=800)
     person(im, d, 860, 152, 180)
     ph = cover(Image.open(HD / "news_post-81-3-2-2-2-2-2-2-2-2_0.png").convert("RGB"), 984, 380)
     im.paste(ph, (48, 340))
@@ -298,7 +308,7 @@ def post09():
 # ---------- 10 料金の目安 ----------
 def post10():
     im, d = base()
-    title_block(d, "「これくらいで頼んでいいの？」\n小さな工事の料金目安", size=44, maxw=780)
+    title_block(d, "「これくらいで頼んでいいの？」\n小さな工事の料金目安", size=48, maxw=800)
     person(im, d, 860, 152, 180)
     rows = [("雨どい掃除・つまり直し", "3,000円〜"), ("雨どい金具のゆるみ直し", "3,000円〜"),
             ("屋根のコーキング補修(隙間埋め)", "3,000円〜"), ("トタン屋根の釘・ビス打ち直し", "5,000円〜"),
@@ -333,7 +343,7 @@ def post10():
 # ---------- 11 流れ ----------
 def post11():
     im, d = base()
-    title_block(d, "ご相談から工事までの流れ", size=54, maxw=780)
+    title_block(d, "ご相談から工事までの流れ", size=52, maxw=800)
     person(im, d, 860, 152, 180)
     steps = [("お問い合わせ", "電話・LINE・フォームから。\n「雨どいが壊れた」など簡単な内容でOK"),
              ("無料点検・診断", "現地で屋根・雨どいの状態を丁寧に点検。\n屋根の上の写真をお見せします"),
@@ -369,7 +379,7 @@ def post11():
 # ---------- 12 お客様の声 ----------
 def post12():
     im, d = base()
-    title_block(d, "お客様からいただいた言葉", size=54, maxw=780)
+    title_block(d, "お客様からいただいた言葉", size=52, maxw=800)
     person(im, d, 860, 152, 180)
     quotes = ["職人さんはテキパキと動かれ、見ていて気持ち良かったです。仕事も丁寧で、仕上がりは納得できるものでした。また頼むなら北野工作所にお願いすると思います。",
               "北野社長はとにかく話しやすく、雨漏りや板金工事など、お家の悩みなら何でもフラットに相談に乗ってくれます。",
@@ -400,7 +410,7 @@ def post12():
 # ---------- 13 雨の日は樋点検 ----------
 def post13():
     im, d = base()
-    title_block(d, "雨の日はチャンス。雨どいを見てみて", size=44, maxw=780)
+    title_block(d, "雨の日はチャンス。\n雨どいを見てみて", size=50, maxw=800)
     person(im, d, 860, 152, 180)
     ph = cover(Image.open(HD / "news_post-81-3-2-2-2-2-2-2-2-2_4.png").convert("RGB"), 984, 380)
     im.paste(ph, (48, 340))
@@ -429,7 +439,7 @@ def post13():
 # ---------- 14 対応エリア ----------
 def post14():
     im, d = base()
-    title_block(d, "香芝市と、そのまわり。\nなるべく早くお伺いします", size=54, maxw=780)
+    title_block(d, "香芝市と、そのまわり。\nなるべく早くお伺いします", size=52, maxw=800)
     person(im, d, 860, 152, 180)
     truck =Image.open("/mnt/c/Users/藤森　保弘/Desktop/北野工作所/インスタ/track.png").convert("RGBA")
     tw = 660; truck = truck.resize((tw, int(truck.height * tw / truck.width)), Image.LANCZOS)
@@ -498,7 +508,7 @@ def photo_from(post, top_skip=80):
 def komari_post(n, slug, label, photo, items, note, cap):
     im, d = base()
     pill(d, f"屋根のお困りごと｜{label}")
-    d.text((48, 248), "こんなこと、ありませんか？", font=font(58), fill=INK)
+    title_hl(d, "こんなこと、ありませんか？", 248, 56, 984)
     ph = cover(photo, 984, 270)
     im.paste(ph, (48, 340))
     y = 632; fi = font(35); fs = font(25, False)
@@ -589,7 +599,7 @@ def post18():
 def mame_post(n, slug, no, title, points, note, cap):
     im, d = base()
     pill(d, f"屋根の豆知識  No.{no}", bg=YELLOW, fg=INK)
-    draw_text(d, (48, 262), title, font(48), INK, maxw=680, spacing=1.3)
+    title_hl(d, title, 262, 48, 680)
     person(im, d, 735, 150, 320)
     y = 492; fn = font(46); fh = font(38); fs = font(29, False)
     for i, (head, desc) in enumerate(points):
@@ -698,7 +708,7 @@ def list_post(n, slug, pill_text, title, points, note, cap, pill_bg=BLUE, pill_f
     pill(d, pill_text, bg=pill_bg, fg=pill_fg)
     # 社長写真は必ず入れる(ユーザー指示 2026-10-26)。with_person=False は無視。
     # stat(大きな数字)はタイトルの下に黄色の横長札で出す(写真と両立)
-    draw_text(d, (48, 262), title, font(48 if len(title) < 26 else 44), INK, maxw=680, spacing=1.3)
+    title_hl(d, title, 262, 48 if len(title) < 26 else 44, 680)
     person(im, d, 735, 150, 320)
     if stat:
         big, small = stat
@@ -782,7 +792,7 @@ def post24():
         stat=("約3.4倍", "10年で相談件数"), source="出典: 国民生活センターまとめ(2026年7月報道)", note_bg=YELLOW, note_fg=INK)
 
 def post25():
-    list_post(25, "news_kimari_monku", "飛び込み営業にご注意", "突然の訪問で言われたら要注意\n「決まり文句」5つ",
+    list_post(25, "news_kimari_monku", "飛び込み営業にご注意", "突然の訪問で言われたら\n要注意の「決まり文句」5つ",
         [("「近くで工事をするのであいさつに来た」", "最初は工事と関係ない話から入ってきます。"),
          ("「自治体に委託されて回っている」", "市や町が業者に点検を頼んで回らせることは、まずありません。"),
          ("「屋根瓦が飛ぶとご近所に迷惑がかかる」", "不安をあおる代表的な言葉。まず落ち着いて。"),
@@ -1117,7 +1127,7 @@ def post39():
 部分修理は8,000円〜。106年の経験で、正直にご提案します🙏""")
 
 def post40():
-    ba_post(40, "hafu_galva", "破風板をガルバリウム鋼板でカバー工事",
+    ba_post(40, "hafu_galva", "破風板を\nガルバリウム鋼板でカバー工事",
             "1776381380801.png", "1776695017435.png",
             "塗装では直せない傷みも、板金でカバーして長持ち",
             """屋根の端にある「破風板(はふいた)」のカバー工事です🔧
@@ -1135,7 +1145,7 @@ def post40():
 破風板は普段あまり気にされない部分ですが、雨仕舞いにとても重要な箇所です。剥がれ・めくれが見えたら、早めにご相談ください。(香芝市)""" + CTA)
 
 def post41():
-    ba_post(41, "amadoi_naka", "見た目はきれいな雨どい。中をのぞくと…",
+    ba_post(41, "amadoi_naka", "見た目はきれいな雨どい。\n中をのぞくと…",
             "DSC_0748.png", "DSC_0747.png",
             "雨どい掃除・つまり直し 3,000円〜",
             labels=("外から見ると", "中をのぞくと"), cap="""「雨の日になると水があふれてくる」とご相談をいただき、さっそく現地へ🚗
