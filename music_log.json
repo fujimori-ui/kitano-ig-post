@@ -46,8 +46,8 @@
  },
  "10_price": {
   "track": "audiostock_41613.mp3",
-  "start": 50.5,
-  "len": 12.0
+  "start": 47.0,
+  "len": 11.5
  },
  "11_flow": {
   "track": "audiostock_1085297.mp3",
@@ -122,7 +122,7 @@
  "25_news_kimari_monku": {
   "track": "audiostock_41606.mp3",
   "start": 150.5,
-  "len": 10.0
+  "len": 9.5
  },
  "26_news_kasai_hoken": {
   "track": "audiostock_1085297.mp3",
@@ -227,7 +227,7 @@
  "46_chuui_muryou_tenken": {
   "track": "audiostock_1085297.mp3",
   "start": 29.0,
-  "len": 11.5
+  "len": 11.0
  },
  "47_chuui_kotowari_kata": {
   "track": "audiostock_41606.mp3",

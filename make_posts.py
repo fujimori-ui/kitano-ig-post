@@ -179,8 +179,9 @@ def post02():
 # ---------- ビフォーアフター共通 ----------
 def ba_post(n, slug, title, before, after, note, cap, labels=("Before", "After")):
     im, d = base()
-    title_block(d, title, size=50)
-    photo_pair(im, d, HD / before, HD / after, y0=290, ph=410, labels=labels)
+    title_block(d, title, size=40, maxw=760)
+    person(im, d, 830, 115, 230)  # 社長写真(必ず入れる)
+    photo_pair(im, d, HD / before, HD / after, y0=350, ph=380, labels=labels)
     band_note(d, note, y=1150)
     save(im, n, slug, cap)
 
@@ -296,7 +297,8 @@ def post09():
 # ---------- 10 料金の目安 ----------
 def post10():
     im, d = base()
-    title_block(d, "「これくらいで頼んでいいの？」\n小さな工事の料金目安", size=48)
+    title_block(d, "「これくらいで頼んでいいの？」\n小さな工事の料金目安", size=44, maxw=780)
+    person(im, d, 850, 105, 200)
     rows = [("雨どい掃除・つまり直し", "3,000円〜"), ("雨どい金具のゆるみ直し", "3,000円〜"),
             ("屋根のコーキング補修(隙間埋め)", "3,000円〜"), ("トタン屋根の釘・ビス打ち直し", "5,000円〜"),
             ("棟板金の釘浮き補修", "5,000円〜"), ("波板1枚の交換(ベランダ・物置)", "6,000円〜"),
@@ -330,7 +332,8 @@ def post10():
 # ---------- 11 流れ ----------
 def post11():
     im, d = base()
-    title_block(d, "ご相談から工事までの流れ", size=54)
+    title_block(d, "ご相談から工事までの流れ", size=54, maxw=780)
+    person(im, d, 850, 105, 200)
     steps = [("お問い合わせ", "電話・LINE・フォームから。\n「雨どいが壊れた」など簡単な内容でOK"),
              ("無料点検・診断", "現地で屋根・雨どいの状態を丁寧に点検。\n屋根の上の写真をお見せします"),
              ("お見積り・ご説明", "最適な直し方と費用を分かりやすく説明。\n後から追加費用が出ないようにします"),
@@ -365,11 +368,12 @@ def post11():
 # ---------- 12 お客様の声 ----------
 def post12():
     im, d = base()
-    title_block(d, "お客様からいただいた言葉", size=54)
+    title_block(d, "お客様からいただいた言葉", size=54, maxw=780)
+    person(im, d, 850, 105, 200)
     quotes = ["職人さんはテキパキと動かれ、見ていて気持ち良かったです。仕事も丁寧で、仕上がりは納得できるものでした。また頼むなら北野工作所にお願いすると思います。",
               "北野社長はとにかく話しやすく、雨漏りや板金工事など、お家の悩みなら何でもフラットに相談に乗ってくれます。",
               "良心的な工事費で、丁寧な仕事。短期間で工事が終了しました。すごく良かったです。"]
-    y = 290; fq = font(34, False); fm = font(70)
+    y = 312; fq = font(34, False); fm = font(70)
     for q in quotes:
         lines = wrap(q, fq, 900); bh = len(lines) * 50 + 64
         rounded(d, [48, y, W - 48, y + bh], 20, LIGHT)
@@ -395,9 +399,10 @@ def post12():
 # ---------- 13 雨の日は樋点検 ----------
 def post13():
     im, d = base()
-    title_block(d, "雨の日はチャンス。雨どいを見てみて", size=50)
-    ph = cover(Image.open(HD / "news_post-81-3-2-2-2-2-2-2-2-2_4.png").convert("RGB"), 984, 420)
-    im.paste(ph, (48, 280))
+    title_block(d, "雨の日はチャンス。雨どいを見てみて", size=44, maxw=780)
+    person(im, d, 850, 105, 200)
+    ph = cover(Image.open(HD / "news_post-81-3-2-2-2-2-2-2-2-2_4.png").convert("RGB"), 984, 400)
+    im.paste(ph, (48, 312))
     y = 730; f = font(36)
     d.text((48, y), "こんな様子は、詰まりや破損のサインです", font=f, fill=BLUE); y += 70
     fi = font(38)
@@ -423,8 +428,9 @@ def post13():
 # ---------- 14 対応エリア ----------
 def post14():
     im, d = base()
-    title_block(d, "香芝市と、そのまわり。\nなるべく早くお伺いします", size=54)
-    truck = Image.open("/mnt/c/Users/藤森　保弘/Desktop/北野工作所/インスタ/track.png").convert("RGBA")
+    title_block(d, "香芝市と、そのまわり。\nなるべく早くお伺いします", size=54, maxw=780)
+    person(im, d, 850, 105, 200)
+    truck =Image.open("/mnt/c/Users/藤森　保弘/Desktop/北野工作所/インスタ/track.png").convert("RGBA")
     tw = 660; truck = truck.resize((tw, int(truck.height * tw / truck.width)), Image.LANCZOS)
     im.paste(truck, (int((W - tw) / 2), 330), truck)
     y = 330 + truck.height + 30
@@ -689,16 +695,17 @@ def list_post(n, slug, pill_text, title, points, note, cap, pill_bg=BLUE, pill_f
     source は画像の下に小さく出典を書く(時事ネタ用)。"""
     im, d = base()
     pill(d, pill_text, bg=pill_bg, fg=pill_fg)
-    draw_text(d, (48, 262), title, font(48 if len(title) < 26 else 44), INK, maxw=680 if (with_person or stat) else 984, spacing=1.3)
-    if with_person:
-        person(im, d, 735, 150, 320)
-    elif stat:
+    # 社長写真は必ず入れる(ユーザー指示 2026-10-26)。with_person=False は無視。
+    # stat(大きな数字)はタイトルの下に黄色の横長札で出す(写真と両立)
+    draw_text(d, (48, 262), title, font(48 if len(title) < 26 else 44), INK, maxw=680, spacing=1.3)
+    person(im, d, 735, 150, 320)
+    if stat:
         big, small = stat
-        cx, cy, r = 890, 300, 128
-        d.ellipse([cx - r, cy - r, cx + r, cy + r], fill=YELLOW)
-        fbig = font(64 if len(big) <= 4 else 52); fsm = font(26, False)
-        d.text((cx - fbig.getlength(big) / 2, cy - 58), big, font=fbig, fill=INK)
-        d.text((cx - fsm.getlength(small) / 2, cy + 30), small, font=fsm, fill=INK)
+        fbig = font(44); fsm = font(24, False)
+        pw = int(fbig.getlength(big) + fsm.getlength(small) + 70)
+        rounded(d, [48, 404, 48 + pw, 474], 16, YELLOW)
+        d.text((72, 410), big, font=fbig, fill=INK)
+        d.text((72 + fbig.getlength(big) + 22, 430), small, font=fsm, fill=INK)
     y = 492
     end = 1108 if source else 1140
     rows = len(points); gap = 14
@@ -771,7 +778,7 @@ def post24():
 消費者ホットライン188(いやや)。契約してしまっても、訪問販売なら8日以内はクーリング・オフできます。
 
 北野工作所は香芝で創業100年あまり。「本当に直す必要があるのか見てほしい」というご相談だけでも、喜んでお伺いします🙌""",
-        with_person=False, stat=("約3.4倍", "10年で相談件数"), source="出典: 国民生活センターまとめ(2026年7月報道)", note_bg=YELLOW, note_fg=INK)
+        stat=("約3.4倍", "10年で相談件数"), source="出典: 国民生活センターまとめ(2026年7月報道)", note_bg=YELLOW, note_fg=INK)
 
 def post25():
     list_post(25, "news_kimari_monku", "飛び込み営業にご注意", "突然の訪問で言われたら要注意\n「決まり文句」5つ",
@@ -795,7 +802,7 @@ def post25():
 不安になったら、見積書をもらって、家族や地元の業者に相談してから決めて大丈夫です。
 
 北野工作所は、香芝市五位堂で大正9年から屋根一筋。地元の屋根屋として、「本当に直す必要があるか」のセカンドオピニオンもお受けしています😊""",
-        with_person=False, source="参考: 国民生活センター・各地の消費生活センターの注意喚起", note_bg=YELLOW, note_fg=INK)
+        source="参考: 国民生活センター・各地の消費生活センターの注意喚起", note_bg=YELLOW, note_fg=INK)
 
 def post26():
     list_post(26, "news_kasai_hoken", "注意喚起", "「火災保険で無料で直せます」\nと言われたら",
@@ -821,7 +828,7 @@ def post26():
 保険の請求は、本来ご自身でできる手続きです。先に代理店や保険会社に相談してください。
 
 北野工作所では、本当に風災で壊れた箇所について、申請に必要な写真やお見積りの作成をお手伝いしています。無理な申請はおすすめしません🙏""",
-        with_person=False, source="参考: 各地の消費生活センターの相談事例", note_bg=YELLOW, note_fg=INK)
+        source="参考: 各地の消費生活センターの相談事例", note_bg=YELLOW, note_fg=INK)
 
 def post27():
     list_post(27, "season_fuyumae", "季節のお手入れ", "冬が来る前に。\n11月中にしておきたい4つ",
@@ -909,7 +916,7 @@ def post30():
 
 「屋根が」「分電盤が」「床下が」と、点検商法は場所を変えてやってきます。突然の訪問は、まず疑ってみてください。
 屋根のことは、香芝の地元で100年あまり、北野工作所にご相談ください😊""",
-        with_person=False, stat=("160倍", "2年で相談件数"), source="出典: 国民生活センター(2026年9月16日発表)", note_bg=YELLOW, note_fg=INK)
+        stat=("160倍", "2年で相談件数"), source="出典: 国民生活センター(2026年9月16日発表)", note_bg=YELLOW, note_fg=INK)
 
 def post31():
     list_post(31, "season_jikka", "年末の帰省で", "実家の屋根、\n地上から見てほしい3か所",
@@ -1213,7 +1220,7 @@ def post44():
 詰まり・外れ・傾き。掃除・つまり直しは3,000円〜。
 
 ご覧のとおり、半分以上は小さな工事です。「これくらいで頼んでいいのかな?」と迷わず、遠慮なくご相談ください。今まで解決した雨漏りは3,000件以上。点検・お見積りは無料です😊""",
-        with_person=False, stat=("57件", "先月のお問い合わせ"), note_bg=YELLOW, note_fg=INK)
+        stat=("57件", "先月のお問い合わせ"), note_bg=YELLOW, note_fg=INK)
 
 def post45():
     list_post(45, "company_access", "事務所のご案内", "近鉄五位堂駅から徒歩5分。\n事務所にもお気軽にどうぞ",
@@ -1256,7 +1263,7 @@ def post46():
 
 頼んでいない点検は、屋根に上げない・その場で契約しないが鉄則です。
 北野工作所の無料点検は、お客様からご連絡をいただいてから伺います。「本当に直す必要があるか」の確認だけでも、どうぞお気軽に🙌""",
-        with_person=False, source="参考: 国民生活センター「点検商法」の注意喚起", note_bg=YELLOW, note_fg=INK)
+        source="参考: 国民生活センター「点検商法」の注意喚起", note_bg=YELLOW, note_fg=INK)
 
 def post47():
     list_post(47, "chuui_kotowari_kata", "訪問販売にご注意", "玄関先で使える\n「上手な断り方」3つ",
@@ -1279,7 +1286,7 @@ def post47():
 
 ドアを開ける必要はありません。インターホン越しに断って大丈夫です。
 「本当に屋根が傷んでいるのか気になる」ときは、地元の北野工作所にご連絡ください。頼まれてから、お伺いします😊""",
-        with_person=False, source="参考: 特定商取引法(再勧誘の禁止)・国民生活センター", note_bg=YELLOW, note_fg=INK)
+        source="参考: 特定商取引法(再勧誘の禁止)・国民生活センター", note_bg=YELLOW, note_fg=INK)
 
 def post48():
     list_post(48, "chuui_oya_mamoru", "離れて暮らすご家族へ", "高齢のご両親を\n訪問販売から守る4つの約束",
@@ -1306,7 +1313,7 @@ def post48():
 
 もし契約してしまっても、訪問販売なら8日以内はクーリング・オフできます。困ったら消費者ホットライン「188」へ。
 北野工作所は、ご家族からの「実家の屋根を見てほしい」というご依頼も多くいただいています。写真をお送りしてご報告しますので、遠くにお住まいでもご安心ください📷""",
-        with_person=False, source="参考: 国民生活センター・消費者庁の注意喚起", note_bg=YELLOW, note_fg=INK)
+        source="参考: 国民生活センター・消費者庁の注意喚起", note_bg=YELLOW, note_fg=INK)
 
 def post49():
     list_post(49, "chuui_mitsumori_mikata", "見積書の見方", "訪問業者の見積書、\nここをチェック5つ",
@@ -1336,7 +1343,7 @@ def post49():
 同じ内容で、地元の業者にも見積りを頼んでください。金額だけでなく「本当に必要な工事か」が分かります。
 
 北野工作所では、他社の見積書を見せていただくご相談(セカンドオピニオン)もお受けしています。「高い気がする」「本当に必要?」そんなときは、お気軽にどうぞ😊""",
-        with_person=False, note_bg=YELLOW, note_fg=INK)
+        note_bg=YELLOW, note_fg=INK)
 
 def post50():
     list_post(50, "mame_amamori_genin", "屋根の豆知識", "雨漏りの原因は、\n屋根だけではありません",
