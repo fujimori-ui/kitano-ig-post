@@ -111,7 +111,8 @@ def plan(state, n=30):
     posted = {k: dict(v) for k, v in state["posted"].items()}
     day = datetime.date.today()
     slots = ["morning", "noon", "evening"]
-    i = len([1 for v in posted.values() if v.get("date", "").startswith(day.isoformat())])
+    # 今日すでに出た時間帯の数(手動 --slug の分は時間帯に数えない)
+    i = len({v.get("slot") for v in posted.values() if v.get("slot") and v.get("date", "").startswith(day.isoformat())})
     for _ in range(n):
         s = next_item(state, posted=posted)
         if not s:
