@@ -180,7 +180,7 @@ def post02():
 def ba_post(n, slug, title, before, after, note, cap, labels=("Before", "After")):
     im, d = base()
     title_block(d, title, size=40, maxw=760)
-    person(im, d, 830, 115, 230)  # 社長写真(必ず入れる)
+    person(im, d, 860, 152, 180)  # 社長写真(必ず入れる。青い線の下に収める)
     photo_pair(im, d, HD / before, HD / after, y0=350, ph=380, labels=labels)
     band_note(d, note, y=1150)
     save(im, n, slug, cap)
@@ -269,9 +269,9 @@ def post08():
 def post09():
     im, d = base()
     title_block(d, "天井に染みができたら、もう遅い？", size=44, maxw=780)
-    person(im, d, 850, 105, 200)
-    ph = cover(Image.open(HD / "news_post-81-3-2-2-2-2-2-2-2-2_0.png").convert("RGB"), 984, 400)
-    im.paste(ph, (48, 312))
+    person(im, d, 860, 152, 180)
+    ph = cover(Image.open(HD / "news_post-81-3-2-2-2-2-2-2-2-2_0.png").convert("RGB"), 984, 380)
+    im.paste(ph, (48, 340))
     f = font(36); y = 730
     d.text((48, y), "こんな症状が出たら、すぐご相談ください", font=f, fill=BLUE); y += 70
     items = ["天井の染みや変色", "壁紙のふくらみ・剥がれ", "雨の日だけ「ポタポタ」音がする", "押し入れや収納がじめじめする"]
@@ -299,7 +299,7 @@ def post09():
 def post10():
     im, d = base()
     title_block(d, "「これくらいで頼んでいいの？」\n小さな工事の料金目安", size=44, maxw=780)
-    person(im, d, 850, 105, 200)
+    person(im, d, 860, 152, 180)
     rows = [("雨どい掃除・つまり直し", "3,000円〜"), ("雨どい金具のゆるみ直し", "3,000円〜"),
             ("屋根のコーキング補修(隙間埋め)", "3,000円〜"), ("トタン屋根の釘・ビス打ち直し", "5,000円〜"),
             ("棟板金の釘浮き補修", "5,000円〜"), ("波板1枚の交換(ベランダ・物置)", "6,000円〜"),
@@ -334,7 +334,7 @@ def post10():
 def post11():
     im, d = base()
     title_block(d, "ご相談から工事までの流れ", size=54, maxw=780)
-    person(im, d, 850, 105, 200)
+    person(im, d, 860, 152, 180)
     steps = [("お問い合わせ", "電話・LINE・フォームから。\n「雨どいが壊れた」など簡単な内容でOK"),
              ("無料点検・診断", "現地で屋根・雨どいの状態を丁寧に点検。\n屋根の上の写真をお見せします"),
              ("お見積り・ご説明", "最適な直し方と費用を分かりやすく説明。\n後から追加費用が出ないようにします"),
@@ -370,11 +370,11 @@ def post11():
 def post12():
     im, d = base()
     title_block(d, "お客様からいただいた言葉", size=54, maxw=780)
-    person(im, d, 850, 105, 200)
+    person(im, d, 860, 152, 180)
     quotes = ["職人さんはテキパキと動かれ、見ていて気持ち良かったです。仕事も丁寧で、仕上がりは納得できるものでした。また頼むなら北野工作所にお願いすると思います。",
               "北野社長はとにかく話しやすく、雨漏りや板金工事など、お家の悩みなら何でもフラットに相談に乗ってくれます。",
               "良心的な工事費で、丁寧な仕事。短期間で工事が終了しました。すごく良かったです。"]
-    y = 312; fq = font(34, False); fm = font(70)
+    y = 340; fq = font(34, False); fm = font(70)
     for q in quotes:
         lines = wrap(q, fq, 900); bh = len(lines) * 50 + 64
         rounded(d, [48, y, W - 48, y + bh], 20, LIGHT)
@@ -401,9 +401,9 @@ def post12():
 def post13():
     im, d = base()
     title_block(d, "雨の日はチャンス。雨どいを見てみて", size=44, maxw=780)
-    person(im, d, 850, 105, 200)
-    ph = cover(Image.open(HD / "news_post-81-3-2-2-2-2-2-2-2-2_4.png").convert("RGB"), 984, 400)
-    im.paste(ph, (48, 312))
+    person(im, d, 860, 152, 180)
+    ph = cover(Image.open(HD / "news_post-81-3-2-2-2-2-2-2-2-2_4.png").convert("RGB"), 984, 380)
+    im.paste(ph, (48, 340))
     y = 730; f = font(36)
     d.text((48, y), "こんな様子は、詰まりや破損のサインです", font=f, fill=BLUE); y += 70
     fi = font(38)
@@ -430,7 +430,7 @@ def post13():
 def post14():
     im, d = base()
     title_block(d, "香芝市と、そのまわり。\nなるべく早くお伺いします", size=54, maxw=780)
-    person(im, d, 850, 105, 200)
+    person(im, d, 860, 152, 180)
     truck =Image.open("/mnt/c/Users/藤森　保弘/Desktop/北野工作所/インスタ/track.png").convert("RGBA")
     tw = 660; truck = truck.resize((tw, int(truck.height * tw / truck.width)), Image.LANCZOS)
     im.paste(truck, (int((W - tw) / 2), 330), truck)
