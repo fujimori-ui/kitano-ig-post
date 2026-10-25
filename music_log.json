@@ -274,6 +274,111 @@
   "start": 110.5,
   "len": 9.0
  },
+ "56_mame_amadoi_buhin": {
+  "track": "audiostock_1085297.mp3",
+  "start": 51.0,
+  "len": 9.0
+ },
+ "57_mame_yane_miwake": {
+  "track": "audiostock_41606.mp3",
+  "start": 31.0,
+  "len": 9.5
+ },
+ "58_mame_kasagi": {
+  "track": "audiostock_1085297.mp3",
+  "start": 25.0,
+  "len": 10.5
+ },
+ "59_mame_tani_bankin": {
+  "track": "audiostock_41606.mp3",
+  "start": 195.5,
+  "len": 9.5
+ },
+ "60_mame_namiita_sozai": {
+  "track": "audiostock_1085297.mp3",
+  "start": 35.5,
+  "len": 11.0
+ },
+ "61_mame_amamori_oukyu": {
+  "track": "audiostock_41606.mp3",
+  "start": 221.0,
+  "len": 8.0
+ },
+ "62_mame_galva": {
+  "track": "audiostock_1085297.mp3",
+  "start": 54.5,
+  "len": 9.0
+ },
+ "63_chuui_saitama_shobun": {
+  "track": "audiostock_41606.mp3",
+  "start": 80.0,
+  "len": 10.0
+ },
+ "64_chuui_65sai_saita": {
+  "track": "audiostock_1085297.mp3",
+  "start": 57.5,
+  "len": 10.0
+ },
+ "65_chuui_kyutoki_tenken": {
+  "track": "audiostock_41606.mp3",
+  "start": 124.0,
+  "len": 8.5
+ },
+ "66_chuui_soudan_saki": {
+  "track": "audiostock_1085297.mp3",
+  "start": 2.0,
+  "len": 11.5
+ },
+ "67_chuui_kaetta_ato": {
+  "track": "audiostock_41606.mp3",
+  "start": 166.5,
+  "len": 11.0
+ },
+ "68_faq_tanomikata": {
+  "track": "audiostock_1085297.mp3",
+  "start": 61.5,
+  "len": 8.0
+ },
+ "69_faq_mitsumori_kotowari": {
+  "track": "audiostock_41606.mp3",
+  "start": 208.5,
+  "len": 8.5
+ },
+ "70_company_shashin_soudan": {
+  "track": "audiostock_1085297.mp3",
+  "start": 4.5,
+  "len": 9.5
+ },
+ "71_company_hajimete": {
+  "track": "audiostock_41606.mp3",
+  "start": 8.5,
+  "len": 10.4
+ },
+ "72_season_aki_tenken": {
+  "track": "audiostock_1085297.mp3",
+  "start": 7.0,
+  "len": 8.5
+ },
+ "73_season_veranda_haisui": {
+  "track": "audiostock_41606.mp3",
+  "start": 19.0,
+  "len": 9.5
+ },
+ "74_season_osouji_mado": {
+  "track": "audiostock_1085297.mp3",
+  "start": 9.5,
+  "len": 8.5
+ },
+ "75_komari_hafu": {
+  "track": "audiostock_41606.mp3",
+  "start": 42.5,
+  "len": 8.5
+ },
+ "76_komari_hisashi": {
+  "track": "audiostock_1085297.mp3",
+  "start": 12.0,
+  "len": 10.4
+ },
  "flyer_202610": {
   "track": "audiostock_41613.mp3",
   "start": 34.0,
