@@ -109,6 +109,56 @@
   "start": 1.0,
   "len": 10.5
  },
+ "23_sign_10to15": {
+  "track": "audiostock_41606.mp3",
+  "start": 130.5,
+  "len": 10.4
+ },
+ "24_news_tenken_3bai": {
+  "track": "audiostock_1085297.mp3",
+  "start": 11.0,
+  "len": 9.0
+ },
+ "25_news_kimari_monku": {
+  "track": "audiostock_41606.mp3",
+  "start": 150.5,
+  "len": 10.0
+ },
+ "26_news_kasai_hoken": {
+  "track": "audiostock_1085297.mp3",
+  "start": 21.0,
+  "len": 8.6
+ },
+ "27_season_fuyumae": {
+  "track": "audiostock_41606.mp3",
+  "start": 228.0,
+  "len": 8.0
+ },
+ "28_mame_mune_bankin": {
+  "track": "audiostock_1085297.mp3",
+  "start": 31.5,
+  "len": 10.0
+ },
+ "29_mame_yanezai_jiki": {
+  "track": "audiostock_41606.mp3",
+  "start": 3.5,
+  "len": 10.5
+ },
+ "30_news_bundenban": {
+  "track": "audiostock_1085297.mp3",
+  "start": 41.0,
+  "len": 9.0
+ },
+ "31_season_jikka": {
+  "track": "audiostock_41606.mp3",
+  "start": 160.5,
+  "len": 8.0
+ },
+ "32_mame_cooling_off": {
+  "track": "audiostock_1085297.mp3",
+  "start": 49.0,
+  "len": 9.0
+ },
  "flyer_202610": {
   "track": "audiostock_41613.mp3",
   "start": 34.0,
