@@ -1,0 +1,89 @@
+name: kitano-ig-build
+
+# content/*.json(自動生成した投稿の中身)から画像(make_posts.py)と動画(make_videos.py、BGM付き)を作って posts/ に commit する。
+# BGMと高画質写真は非公開リポ kitano-ig-private から PHOTOS_TOKEN で取り込む(公開リポには置かない)。
+# 起動: 毎週のルーティンが content/ を push したあと `gh workflow run build.yml`、または content/ への push で自動。
+on:
+  push:
+    paths:
+      - "content/**.json"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "content のJSONファイル名を指定すると、その分の画像・動画を作り直す(例 auto_20261102.json)"
+        required: false
+        default: ""
+
+concurrency:
+  group: kitano-ig-post
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      TZ: Asia/Tokyo
+    steps:
+      - uses: actions/checkout@v4
+      - name: 非公開素材(BGM・写真)を取り込む
+        uses: actions/checkout@v4
+        with:
+          repository: fujimori-ui/kitano-ig-private
+          token: ${{ secrets.PHOTOS_TOKEN }}
+          path: private
+      - run: |
+          mkdir -p music/private photos_hd
+          cp private/music/* music/private/
+          cp -n private/photos_hd/* photos_hd/ || true
+          ls music/private | wc -l; ls photos_hd | wc -l
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg > /dev/null
+          pip install -q pillow numpy requests
+      - name: 画像を作る
+        id: img
+        run: |
+          set -e
+          if [ -n "${{ github.event.inputs.force }}" ]; then
+            OUT=$(python build_auto.py --force "content/${{ github.event.inputs.force }}")
+          else
+            OUT=$(python build_auto.py)
+          fi
+          echo "$OUT"
+          echo "made=$(echo "$OUT" | grep '^MADE' | sed 's/^MADE //')" >> "$GITHUB_OUTPUT"
+      - name: 動画を作る(BGM付き)
+        if: ${{ steps.img.outputs.made != '' }}
+        run: python make_videos.py ${{ steps.img.outputs.made }}
+      - name: 一覧画像(確認用)を作る
+        if: ${{ steps.img.outputs.made != '' }}
+        run: |
+          python - <<'EOF'
+          import os, time
+          from PIL import Image
+          made = "${{ steps.img.outputs.made }}".split()
+          cols = 4; w, h = 360, 450
+          rows = (len(made) + cols - 1) // cols
+          sheet = Image.new("RGB", (w * cols, h * rows), "white")
+          for i, s in enumerate(made):
+              sheet.paste(Image.open(f"posts/{s}.jpg").resize((w, h)), ((i % cols) * w, (i // cols) * h))
+          os.makedirs("content/preview", exist_ok=True)
+          name = f"content/preview/{time.strftime('%Y%m%d_%H%M')}.jpg"
+          sheet.save(name, quality=80)
+          print("PREVIEW", name)
+          EOF
+      - name: posts/ と content/ を commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add posts content music_log.json
+          git diff --cached --quiet && echo "変更なし" && exit 0
+          git commit -m "自動生成: ${{ steps.img.outputs.made }} [skip ci]"
+          git pull --rebase origin main
+          git push
+          echo "RESULT: BUILT ${{ steps.img.outputs.made }}"

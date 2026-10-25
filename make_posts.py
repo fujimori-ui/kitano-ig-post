@@ -18,12 +18,19 @@ YELLOW = (255, 224, 51)    # #ffe033
 INK = (35, 24, 21)         # ロゴの黒 #231815
 GRAY = (107, 114, 128)
 WHITE = (255, 255, 255)
+import os
 FONTS = Path("/mnt/c/Windows/Fonts") if Path("/mnt/c/Windows/Fonts").exists() else Path("C:/Windows/Fonts")  # WSL / Windows
 FB = str(FONTS / "YuGothB.ttc")   # サイトと同じ游ゴシック(太字)
 FR = str(FONTS / "YuGothM.ttc")   # 游ゴシック(中字)
+NOTO = HERE / "fonts" / "NotoSansJP.ttf"   # 游ゴシックが無い環境(GitHub Actions など)用。幅はほぼ同じ
+USE_NOTO = os.environ.get("KITANO_FONT") == "noto" or not Path(FB).exists()
 LOGO = Image.open(HERE / "logo_color.png").convert("RGBA")
 
 def font(size, bold=True):
+    if USE_NOTO:
+        f = ImageFont.truetype(str(NOTO), size)
+        f.set_variation_by_name("Bold" if bold else "Medium")
+        return f
     return ImageFont.truetype(FB if bold else FR, size)
 
 def wrap(text, f, maxw):
@@ -1459,6 +1466,78 @@ def post53():
 古い漆喰を取り、新しく詰め直します。崩れが大きければ、棟の積み直しになることもあります。
 
 漆喰の傷みは、早いうちなら詰め直しだけで済みます。崩れてからだと工事が大きくなるので、白いかけらを見つけたら早めの点検がお得です。北野工作所は大正9年から瓦屋根を扱ってきました。瓦のことなら、どうぞお任せください😊""")
+
+# ---------- 汎用レイアウト(自動生成 build_auto.py からも使う。2026-10-26) ----------
+# どれも 右上に社長写真(小)＋黄色帯のタイトル。写真(小)は青い線の下 person(860,152,180)。
+SMALL_PERSON = (860, 152, 180)
+
+def steps_post(n, slug, title, steps, note, cap, title_size=52):
+    """番号付きステップ(post11 の形)。steps=[(見出し, 説明(改行可)), …] 3〜4個"""
+    im, d = base()
+    title_block(d, title, size=title_size, maxw=800)
+    person(im, d, *SMALL_PERSON)
+    k = len(steps)
+    y = 330 if k >= 4 else 360; gap = 200 if k >= 4 else 250
+    fn = font(64); ft = font(40); fd = font(29, False)
+    for i, (t, desc) in enumerate(steps):
+        d.ellipse([48, y, 48 + 110, y + 110], fill=BLUE)
+        s = str(i + 1); d.text((48 + 55 - fn.getlength(s) / 2, y + 16), s, font=fn, fill=WHITE)
+        d.text((190, y - 2), t, font=ft, fill=BLUE)
+        draw_text(d, (190, y + 52), desc, fd, INK, maxw=840, spacing=1.4)
+        y += gap
+    band_note(d, note, y=1150)
+    save(im, n, slug, cap.rstrip() + CTA)
+
+def table_post(n, slug, title, rows, note, cap, footnote="", title_size=48):
+    """2列の表(post10 の形)。rows=[(項目, 値), …] 5〜8行"""
+    im, d = base()
+    title_block(d, title, size=title_size, maxw=800)
+    person(im, d, *SMALL_PERSON)
+    k = len(rows); rh = min(92, int(760 / k))
+    y = 340; fl = font(34 if k <= 7 else 30, False); fp = font(38 if k <= 7 else 32)
+    for i, (a, b) in enumerate(rows):
+        d.rectangle([48, y, W - 48, y + rh], fill=LIGHT if i % 2 == 0 else WHITE)
+        d.text((72, y + (rh - fl.size) / 2 - 2), a, font=fl, fill=INK)
+        d.text((W - 72 - fp.getlength(b), y + (rh - fp.size) / 2 - 4), b, font=fp, fill=BLUE)
+        y += rh
+    if footnote:
+        d.text((48, y + 20), footnote, font=font(26, False), fill=GRAY)
+    band_note(d, note, y=1150)
+    save(im, n, slug, cap.rstrip() + CTA)
+
+def photo_post(n, slug, title, photo, heading, checks, note, cap, title_size=48, focus=0.5):
+    """写真1枚＋見出し＋黄色丸の箇条書き(post09/13 の形)。photo=photos_hd 内のファイル名、checks 3〜5個"""
+    im, d = base()
+    title_block(d, title, size=title_size, maxw=800)
+    person(im, d, *SMALL_PERSON)
+    ph = cover(Image.open(HD / photo).convert("RGB"), 984, 380, focus=focus)
+    im.paste(ph, (48, 340))
+    y = 740
+    d.text((48, y), heading, font=font(36), fill=BLUE); y += 68
+    k = len(checks); step = 70 if k <= 4 else 58; fi = font(38 if k <= 4 else 34)
+    for it in checks:
+        d.ellipse([56, y + 10, 56 + 30, y + 40], fill=YELLOW)
+        d.text((110, y), it, font=fi, fill=INK); y += step
+    band_note(d, note, y=1150)
+    save(im, n, slug, cap.rstrip() + CTA)
+
+def quotes_post(n, slug, title, quotes, note, cap, credit="Googleの口コミより(一部抜粋)", title_size=52):
+    """引用カード(post12 の形)。quotes=文字列3つ(各60〜90字)"""
+    im, d = base()
+    title_block(d, title, size=title_size, maxw=800)
+    person(im, d, *SMALL_PERSON)
+    y = 340; fq = font(34, False); fm = font(70)
+    for q in quotes:
+        lines = wrap(q, fq, 900); bh = len(lines) * 50 + 64
+        rounded(d, [48, y, W - 48, y + bh], 20, LIGHT)
+        d.text((70, y - 6), "“", font=fm, fill=BLUE)
+        draw_text(d, (90, y + 30), q, fq, INK, maxw=900, spacing=1.47)
+        y += bh + 26
+    if credit:
+        f = font(26, False)
+        d.text((W - 48 - f.getlength(credit), min(y + 4, 1100)), credit, font=f, fill=GRAY)
+    band_note(d, note, y=1150)
+    save(im, n, slug, cap.rstrip() + CTA)
 
 if __name__ == "__main__":
     # python make_posts.py 15 16 … で番号指定(指定なしは全部)
