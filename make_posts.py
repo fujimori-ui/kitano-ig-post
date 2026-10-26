@@ -692,7 +692,7 @@ DEFAULT_PHOTOS = {
     "company_106": "pres_outside_01.jpg", "company_riyuu5": "work_06_roof2.jpg", "company_shikaku": "work_02_bankin.jpg",
     "faq_1": "pres_office_05.jpg", "faq_2": "pres_office_06.jpg", "case_mitsumori_fuan": "pres_outside_04.jpg",
     "case_akiya": "1776381380801.png", "company_dekiru": "works_post-85-4_1.png", "news_toiawase57": "truck_01.jpg",
-    "company_access": "truck_02.jpg", "chuui_muryou_tenken": "work_04_check2.jpg", "chuui_kotowari_kata": "pres_office_07.jpg",
+    "company_access": "truck_02.jpg", "chuui_muryou_tenken": "work_04_check2.jpg", "chuui_kotowari_kata": "pres_outside_03.jpg",
     "chuui_oya_mamoru": "pres_outside_05.jpg", "chuui_mitsumori_mikata": "pres_white_01.jpg",
     "mame_amamori_genin": "news_post-81-3-2-2-2-2-2-2-2-2_0.png", "mame_cover_fukikae": "works_post-85-4-2-2_1.png",
     "mame_koke": "works_post-85-2_0.png", "mame_shikkui": "works_post-85-3_0.png",
