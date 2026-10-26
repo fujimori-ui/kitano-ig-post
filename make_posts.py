@@ -162,27 +162,29 @@ def post01():
 # ---------- 2 数字で見る ----------
 def post02():
     im, d = base()
-    title_block(d, "数字で見る、北野工作所")
+    title_block(d, "数字で見る、北野工作所", size=50, maxw=800)
+    person(im, d, *SMALL_PERSON)
+    photo_band(im, d, "truck_04.jpg", 340, 200, focus=0.55)  # 文字だけにしない(ユーザー指示 2026-10-26)
     boxes = [("1920", "年創業", "大正9年・香芝で106年"),
              ("3,000", "件以上", "解決した雨漏り"),
              ("57", "件", "先月のお問い合わせ"),
              ("0", "円", "点検・診断・お見積り")]
-    bw, bh = 470, 360
+    bw, bh = 470, 255
     for i, (num, unit, label) in enumerate(boxes):
-        x = 48 + (i % 2) * (bw + 44); y = 300 + (i // 2) * (bh + 40)
+        x = 48 + (i % 2) * (bw + 44); y = 568 + (i // 2) * (bh + 28)
         rounded(d, [x, y, x + bw, y + bh], 24, LIGHT)
         d.rectangle([x, y, x + bw, y + 10], fill=BLUE)
-        size = 110
+        size = 92
         while True:  # 枠(左右30px余白)に収まるまで数字を小さくする
-            f = font(size); fu = font(34); fl = font(32, False)
+            f = font(size); fu = font(32); fl = font(30, False)
             nw = f.getlength(num); uw = fu.getlength(unit)
-            if nw + uw + 8 <= bw - 60 or size <= 70: break
+            if nw + uw + 8 <= bw - 60 or size <= 60: break
             size -= 4
         sx = x + (bw - nw - uw - 8) / 2
-        d.text((sx, y + 70 + (110 - size) // 2), num, font=f, fill=BLUE)
-        d.text((sx + nw + 8, y + 140), unit, font=fu, fill=INK)
-        d.text((x + (bw - fl.getlength(label)) / 2, y + 250), label, font=fl, fill=INK)
-    band_note(d, "地元・香芝市で、顔の見える屋根屋です", y=1130)
+        d.text((sx, y + 46 + (92 - size) // 2), num, font=f, fill=BLUE)
+        d.text((sx + nw + 8, y + 104), unit, font=fu, fill=INK)
+        d.text((x + (bw - fl.getlength(label)) / 2, y + 188), label, font=fl, fill=INK)
+    band_note(d, "地元・香芝市で、顔の見える屋根屋です", y=1150)
     cap = """北野工作所を数字でご紹介します🔢
 
 ✅ 1920年(大正9年)創業。香芝市・五位堂で106年、同じ場所で屋根を直してきました。
@@ -314,23 +316,10 @@ def post09():
 
 # ---------- 10 料金の目安 ----------
 def post10():
-    im, d = base()
-    title_block(d, "「これくらいで頼んでいいの？」\n小さな工事の料金目安", size=48, maxw=800)
-    person(im, d, 860, 152, 180)
     rows = [("雨どい掃除・つまり直し", "3,000円〜"), ("雨どい金具のゆるみ直し", "3,000円〜"),
             ("屋根のコーキング補修(隙間埋め)", "3,000円〜"), ("トタン屋根の釘・ビス打ち直し", "5,000円〜"),
             ("棟板金の釘浮き補修", "5,000円〜"), ("波板1枚の交換(ベランダ・物置)", "6,000円〜"),
             ("雨漏り点検・診断", "0円(無料)")]
-    y = 340; fl = font(34, False); fp = font(38)
-    for i, (k, v) in enumerate(rows):
-        bg = LIGHT if i % 2 == 0 else WHITE
-        d.rectangle([48, y, W - 48, y + 92], fill=bg)
-        d.text((72, y + 26), k, font=fl, fill=INK)
-        d.text((W - 72 - fp.getlength(v), y + 22), v, font=fp, fill=BLUE)
-        y += 92
-    f = font(26, False)
-    d.text((48, y + 20), "※税抜。現地確認後に正確なお見積りをお出しします", font=f, fill=GRAY)
-    band_note(d, "小さな工事こそ、遠慮なくご相談ください", y=1150)
     cap = """「こんな小さなことで頼んでいいのかな？」という内容でも、遠慮なくご相談ください😊
 
 小さな補修工事の目安(税抜)
@@ -345,25 +334,15 @@ def post10():
 必要なところだけ直すことで、費用を抑えられるケースも多くあります。正確な費用は、現地で確認してからお見積りします。
 
 屋根全体の工事(カバー工法・葺き替え・塗装)の目安は、ホームページの「工事目安金額」に載せています。""" + CTA
-    save(im, 10, "price", cap)
+    table_post(10, "price", "「これくらいで頼んでいいの？」\n小さな工事の料金目安", rows, "小さな工事こそ、遠慮なくご相談ください", cap,
+               footnote="※税抜。現地確認後に正確なお見積りをお出しします")
 
 # ---------- 11 流れ ----------
 def post11():
-    im, d = base()
-    title_block(d, "ご相談から工事までの流れ", size=52, maxw=800)
-    person(im, d, 860, 152, 180)
-    steps = [("お問い合わせ", "電話・LINE・フォームから。\n「雨どいが壊れた」など簡単な内容でOK"),
-             ("無料点検・診断", "現地で屋根・雨どいの状態を丁寧に点検。\n屋根の上の写真をお見せします"),
-             ("お見積り・ご説明", "最適な直し方と費用を分かりやすく説明。\n後から追加費用が出ないようにします"),
-             ("ご契約・工事", "ご納得いただいてから。日程はご都合に合わせて。\n工事後の点検・ご相談も無料です")]
-    y = 300; fn = font(64); ft = font(40); fd = font(29, False)
-    for i, (t, desc) in enumerate(steps):
-        d.ellipse([48, y, 48 + 110, y + 110], fill=BLUE)
-        n = str(i + 1); d.text((48 + 55 - fn.getlength(n) / 2, y + 16), n, font=fn, fill=WHITE)
-        d.text((190, y - 2), t, font=ft, fill=BLUE)
-        draw_text(d, (190, y + 52), desc, fd, INK, maxw=840, spacing=1.4)
-        y += 200
-    band_note(d, "「見てもらっただけで断りづらい」はありません", y=1150)
+    steps = [("お問い合わせ", "電話・LINE・フォームから。簡単な内容でOK"),
+             ("無料点検・診断", "屋根の上の写真をお見せしながら説明します"),
+             ("お見積り・ご説明", "後から追加費用が出ないよう、事前にお伝え"),
+             ("ご契約・工事", "ご納得いただいてから。工事後の相談も無料")]
     cap = """ご相談から工事までの流れをご紹介します。
 
 ① お問い合わせ
@@ -381,26 +360,13 @@ def post11():
 50万円以上の工事は、工事開始時50%・完了時50%の二分割払いにも対応しています。
 
 「見てもらっただけで断りづらい」はありません。見積りだけでも大丈夫です👌""" + CTA
-    save(im, 11, "flow", cap)
+    steps_post(11, "flow", "ご相談から工事までの流れ", steps, "「見てもらっただけで断りづらい」はありません", cap)
 
 # ---------- 12 お客様の声 ----------
 def post12():
-    im, d = base()
-    title_block(d, "お客様からいただいた言葉", size=52, maxw=800)
-    person(im, d, 860, 152, 180)
     quotes = ["職人さんはテキパキと動かれ、見ていて気持ち良かったです。仕事も丁寧で、仕上がりは納得できるものでした。また頼むなら北野工作所にお願いすると思います。",
               "北野社長はとにかく話しやすく、雨漏りや板金工事など、お家の悩みなら何でもフラットに相談に乗ってくれます。",
               "良心的な工事費で、丁寧な仕事。短期間で工事が終了しました。すごく良かったです。"]
-    y = 340; fq = font(34, False); fm = font(70)
-    for q in quotes:
-        lines = wrap(q, fq, 900); bh = len(lines) * 50 + 64
-        rounded(d, [48, y, W - 48, y + bh], 20, LIGHT)
-        d.text((70, y - 6), "“", font=fm, fill=BLUE)
-        draw_text(d, (90, y + 30), q, fq, INK, maxw=900, spacing=1.47)
-        y += bh + 26
-    f = font(26, False)
-    d.text((W - 48 - f.getlength("Googleの口コミより(一部抜粋)"), y + 4), "Googleの口コミより(一部抜粋)", font=f, fill=GRAY)
-    band_note(d, "これからも、話しやすい屋根屋でいます", y=1150)
     cap = """Googleの口コミにいただいた言葉を、一部ご紹介します。
 
 「職人さんはテキパキと動かれ、見ていて気持ち良かったです。仕事も丁寧で、仕上がりは納得できるものでした。また頼むとすれば北野工作所にお願いすると思います」
@@ -412,7 +378,7 @@ def post12():
 ありがたいです🙏 これからも、話しやすい屋根屋でいます。
 
 口コミはプロフィールのリンク「Googleの口コミを見る」から読めます。""" + CTA
-    save(im, 12, "voice", cap)
+    quotes_post(12, "voice", "お客様からいただいた言葉", quotes, "これからも、話しやすい屋根屋でいます", cap)
 
 # ---------- 13 雨の日は樋点検 ----------
 def post13():
@@ -603,7 +569,10 @@ def post18():
 波板1枚の交換(ベランダ・物置など)は6,000円〜(税抜)。「全部じゃなくて、この1枚だけ」というご相談も大歓迎です👌""" + CTA)
 
 # ---------- 屋根の豆知識 共通 ----------
-def mame_post(n, slug, no, title, points, note, cap):
+def mame_post(n, slug, no, title, points, note, cap, photo=None):
+    photo = photo or DEFAULT_PHOTOS.get(slug)
+    if photo:   # 写真ありは list_post と同じ形(2026-10-26〜)
+        return list_post(n, slug, f"屋根の豆知識  No.{no}", title, points, note, cap, pill_bg=YELLOW, pill_fg=INK, photo=photo)
     im, d = base()
     pill(d, f"屋根の豆知識  No.{no}", bg=YELLOW, fg=INK)
     title_hl(d, title, 262, 48, 680)
@@ -707,43 +676,98 @@ def post22():
 
 
 # ---------- 汎用: 箇条書き型(時事ネタ・○選・季節ネタ) ----------
+def with_cta(cap):
+    """本文の末尾に連絡先(CTA)を必ず付ける(すでに付いていれば二重にしない)"""
+    return cap if "0745-76-4335" in cap else cap.rstrip() + CTA
+
+# 投稿名→写真(文字だけの投稿にしない。ユーザー指示 2026-10-26「基本何か画像を入れたい」)。
+# list_post / mame_post / steps_post / table_post / quotes_post で photo 未指定のときに使う。
+DEFAULT_PHOTOS = {
+    "price": "work_01_sealing.jpg", "flow": "truck_03.jpg", "voice": "pres_white_02.jpg",
+    "mame_timing": "work_03_check.jpg", "mame_noboranai": "work_05_roof.jpg", "mame_houmon": "pres_outside_02.jpg",
+    "mame_taifu": "works_post-85_0.png", "sign_10to15": "news_post-81-3-2-2-2-2-2-2_3.png",
+    "news_tenken_3bai": "pres_outside_03.jpg", "news_kimari_monku": "pres_office_01.jpg", "news_kasai_hoken": "pres_office_02.jpg",
+    "season_fuyumae": "DSC_0747.png", "mame_mune_bankin": "works_post-85-4-2-2_0.png", "mame_yanezai_jiki": "works_post-85_1.png",
+    "news_bundenban": "pres_office_03.jpg", "season_jikka": "works_post-85-4-2_0.png", "mame_cooling_off": "pres_office_04.jpg",
+    "company_106": "pres_outside_01.jpg", "company_riyuu5": "work_06_roof2.jpg", "company_shikaku": "work_02_bankin.jpg",
+    "faq_1": "pres_office_05.jpg", "faq_2": "pres_office_06.jpg", "case_mitsumori_fuan": "pres_outside_04.jpg",
+    "case_akiya": "1776381380801.png", "company_dekiru": "works_post-85-4_1.png", "news_toiawase57": "truck_01.jpg",
+    "company_access": "truck_02.jpg", "chuui_muryou_tenken": "work_04_check2.jpg", "chuui_kotowari_kata": "pres_office_07.jpg",
+    "chuui_oya_mamoru": "pres_outside_05.jpg", "chuui_mitsumori_mikata": "pres_white_01.jpg",
+    "mame_amamori_genin": "news_post-81-3-2-2-2-2-2-2-2-2_0.png", "mame_cover_fukikae": "works_post-85-4-2-2_1.png",
+    "mame_koke": "works_post-85-2_0.png", "mame_shikkui": "works_post-85-3_0.png",
+}
+
+def photo_band(im, d, photo, y, h, focus=0.5, labels=None, tag=None):
+    """写真の帯(幅984)。labels=[(文字, x, y)] で写真の上に名前札(x,y は帯内の px、1以下なら割合)。tag=(大きな数字, 説明) を左下に"""
+    ph = cover(Image.open(HD / photo).convert("RGB"), 984, h, focus=focus)
+    im.paste(ph, (48, y))
+    for text, lx, ly in (labels or []):
+        px = 48 + (lx * 984 if lx <= 1 else lx); py = y + (ly * h if ly <= 1 else ly)
+        f = font(28); tw = f.getlength(text) + 36
+        bx = min(max(px + 18, 56), W - 56 - tw); by = max(y + 8, py - 70)
+        d.line([(px, py), (bx + 16, by + 50)], fill=YELLOW, width=5)
+        d.ellipse([px - 9, py - 9, px + 9, py + 9], fill=YELLOW, outline=INK, width=2)
+        rounded(d, [bx, by, bx + tw, by + 50], 12, YELLOW)
+        d.text((bx + 18, by + 8), text, font=f, fill=INK)
+    if tag:
+        big, small = tag
+        fbig = font(40); fsm = font(22, False)
+        pw = int(fbig.getlength(big) + fsm.getlength(small) + 66)
+        rounded(d, [60, y + h - 76, 60 + pw, y + h - 12], 14, YELLOW)
+        d.text((82, y + h - 72), big, font=fbig, fill=INK)
+        d.text((82 + fbig.getlength(big) + 20, y + h - 52), small, font=fsm, fill=INK)
+
 def list_post(n, slug, pill_text, title, points, note, cap, pill_bg=BLUE, pill_fg=WHITE,
-              with_person=True, stat=None, source=None, note_bg=LIGHT, note_fg=BLUE):
-    """pill(ラベル)+タイトル+番号付きの箇条書き(3〜5個)。右上に社長写真 or 大きな数字(stat=("約3.4倍","相談件数"))。
-    source は画像の下に小さく出典を書く(時事ネタ用)。"""
+              with_person=True, stat=None, source=None, note_bg=LIGHT, note_fg=BLUE, photo=None, focus=0.5):
+    """pill(ラベル)+タイトル+写真の帯+番号付きの箇条書き(写真あり=3〜4個、なし=3〜5個)。右上に社長写真。
+    stat=("約3.4倍","相談件数") は写真の左下(写真なしならタイトル下)の黄色札。source は下に小さく出典。"""
     im, d = base()
     pill(d, pill_text, bg=pill_bg, fg=pill_fg)
-    # 社長写真は必ず入れる(ユーザー指示 2026-10-26)。with_person=False は無視。
-    # stat(大きな数字)はタイトルの下に黄色の横長札で出す(写真と両立)
-    title_hl(d, title, 262, 48 if len(title) < 26 else 44, 680)
-    person(im, d, 735, 150, 320)
-    if stat:
-        big, small = stat
-        fbig = font(44); fsm = font(24, False)
-        pw = int(fbig.getlength(big) + fsm.getlength(small) + 70)
-        rounded(d, [48, 404, 48 + pw, 474], 16, YELLOW)
-        d.text((72, 410), big, font=fbig, fill=INK)
-        d.text((72 + fbig.getlength(big) + 22, 430), small, font=fsm, fill=INK)
-    y = 492
+    photo = photo or DEFAULT_PHOTOS.get(slug)
+    rows = len(points)
+    if photo:
+        # 写真あり: 社長写真は小さく右上、タイトルの下に写真の帯(984×260)、その下に箇条書き
+        title_hl(d, title, 262, 48 if len(title) < 26 else 44, 780)
+        person(im, d, *SMALL_PERSON)
+        photo_band(im, d, photo, 404, 260, focus=focus, tag=stat)
+        y = 684
+    else:
+        title_hl(d, title, 262, 48 if len(title) < 26 else 44, 680)
+        person(im, d, 735, 150, 320)
+        if stat:
+            big, small = stat
+            fbig = font(44); fsm = font(24, False)
+            pw = int(fbig.getlength(big) + fsm.getlength(small) + 70)
+            rounded(d, [48, 404, 48 + pw, 474], 16, YELLOW)
+            d.text((72, 410), big, font=fbig, fill=INK)
+            d.text((72 + fbig.getlength(big) + 22, 430), small, font=fsm, fill=INK)
+        y = 492
     end = 1108 if source else 1140
-    rows = len(points); gap = 14
+    gap = 14
     bh = int((end - y - gap * (rows - 1)) / rows)
-    fh = font({3: 38, 4: 34}.get(rows, 31)); fs = font({3: 29, 4: 26}.get(rows, 24), False)
-    fn = font({3: 46, 4: 40}.get(rows, 34)); cs = {3: 76, 4: 64}.get(rows, 54)
+    if photo:
+        fh = font({3: 34, 4: 30}.get(rows, 27)); fs = font({3: 26, 4: 22}.get(rows, 20), False)
+        fn = font({3: 40, 4: 34}.get(rows, 30)); cs = {3: 64, 4: 54}.get(rows, 46); sp = 1.3
+    else:
+        fh = font({3: 38, 4: 34}.get(rows, 31)); fs = font({3: 29, 4: 26}.get(rows, 24), False)
+        fn = font({3: 46, 4: 40}.get(rows, 34)); cs = {3: 76, 4: 64}.get(rows, 54); sp = 1.4
     for i, (head, desc) in enumerate(points):
         rounded(d, [48, y, W - 48, y + bh], 22, LIGHT)
-        cy0 = y + (bh - cs) // 2 if rows >= 5 else y + 24
+        top = 24 if (rows < 5 and not photo) else 14
+        cy0 = y + (bh - cs) // 2 if (rows >= 5 or (photo and rows >= 4)) else y + top
         d.ellipse([76, cy0, 76 + cs, cy0 + cs], fill=BLUE)
         t = str(i + 1); d.text((76 + cs / 2 - fn.getlength(t) / 2, cy0 + cs * 0.08), t, font=fn, fill=WHITE)
         tx = 76 + cs + 28
-        d.text((tx, y + 18 if rows < 5 else y + 14), head, font=fh, fill=BLUE)
-        draw_text(d, (tx, y + 18 + fh.size + 12), desc, fs, INK, maxw=W - 48 - tx - 24, spacing=1.4)
+        ty = y + (18 if (rows < 5 and not photo) else 12)
+        d.text((tx, ty), head, font=fh, fill=BLUE)
+        draw_text(d, (tx, ty + fh.size + 10), desc, fs, INK, maxw=W - 48 - tx - 24, spacing=sp)
         y += bh + gap
     if source:
         f = font(21, False)
         d.text((W - 48 - f.getlength(source), 1118), source, font=f, fill=GRAY)
     band_note(d, note, y=1150, bg=note_bg, fg=note_fg)
-    save(im, n, slug, cap.rstrip() + CTA)  # 本文の末尾に連絡先(CTA)を必ず付ける
+    save(im, n, slug, with_cta(cap))
 
 # ---------- 23〜32 時事・季節ネタ(2026-10-25 作成) ----------
 def post23():
@@ -1471,47 +1495,62 @@ def post53():
 # どれも 右上に社長写真(小)＋黄色帯のタイトル。写真(小)は青い線の下 person(860,152,180)。
 SMALL_PERSON = (860, 152, 180)
 
-def steps_post(n, slug, title, steps, note, cap, title_size=52):
-    """番号付きステップ(post11 の形)。steps=[(見出し, 説明(改行可)), …] 3〜4個"""
+def steps_post(n, slug, title, steps, note, cap, title_size=52, photo=None, focus=0.5):
+    """番号付きステップ(post11 の形)。steps=[(見出し, 説明), …] 3〜4個。写真ありのときは説明1行(30文字まで)"""
     im, d = base()
     title_block(d, title, size=title_size, maxw=800)
     person(im, d, *SMALL_PERSON)
+    photo = photo or DEFAULT_PHOTOS.get(slug)
     k = len(steps)
-    y = 330 if k >= 4 else 360; gap = 200 if k >= 4 else 250
-    fn = font(64); ft = font(40); fd = font(29, False)
+    if photo:
+        bh = 220 if k >= 4 else 280
+        photo_band(im, d, photo, 340, bh, focus=focus)
+        y = 340 + bh + 44; gap = 130 if k >= 4 else 150; cs = 80 if k >= 4 else 90
+        fn = font(48 if k >= 4 else 54); ft = font(34 if k >= 4 else 36); fd = font(26, False)
+    else:
+        y = 330 if k >= 4 else 360; gap = 200 if k >= 4 else 250; cs = 110
+        fn = font(64); ft = font(40); fd = font(29, False)
     for i, (t, desc) in enumerate(steps):
-        d.ellipse([48, y, 48 + 110, y + 110], fill=BLUE)
-        s = str(i + 1); d.text((48 + 55 - fn.getlength(s) / 2, y + 16), s, font=fn, fill=WHITE)
-        d.text((190, y - 2), t, font=ft, fill=BLUE)
-        draw_text(d, (190, y + 52), desc, fd, INK, maxw=840, spacing=1.4)
+        d.ellipse([48, y, 48 + cs, y + cs], fill=BLUE)
+        s = str(i + 1); d.text((48 + cs / 2 - fn.getlength(s) / 2, y + cs * 0.13), s, font=fn, fill=WHITE)
+        tx = 48 + cs + 32
+        d.text((tx, y - 2), t, font=ft, fill=BLUE)
+        draw_text(d, (tx, y + ft.size + 10), desc.replace("\n", " ") if photo else desc, fd, INK, maxw=W - 48 - tx, spacing=1.4)
         y += gap
     band_note(d, note, y=1150)
-    save(im, n, slug, cap.rstrip() + CTA)
+    save(im, n, slug, with_cta(cap))
 
-def table_post(n, slug, title, rows, note, cap, footnote="", title_size=48):
-    """2列の表(post10 の形)。rows=[(項目, 値), …] 5〜8行"""
+def table_post(n, slug, title, rows, note, cap, footnote="", title_size=48, photo=None, focus=0.5):
+    """2列の表(post10 の形)。rows=[(項目, 値), …] 4〜8行(写真ありは7行まで)"""
     im, d = base()
     title_block(d, title, size=title_size, maxw=800)
     person(im, d, *SMALL_PERSON)
-    k = len(rows); rh = min(92, int(760 / k))
-    y = 340; fl = font(34 if k <= 7 else 30, False); fp = font(38 if k <= 7 else 32)
+    photo = photo or DEFAULT_PHOTOS.get(slug)
+    k = len(rows)
+    if photo:
+        photo_band(im, d, photo, 340, 200, focus=focus)
+        y = 560; rh = min(76, int(540 / k))
+        fl = font(30 if k <= 7 else 27, False); fp = font(34 if k <= 7 else 30)
+    else:
+        y = 340; rh = min(92, int(760 / k))
+        fl = font(34 if k <= 7 else 30, False); fp = font(38 if k <= 7 else 32)
     for i, (a, b) in enumerate(rows):
         d.rectangle([48, y, W - 48, y + rh], fill=LIGHT if i % 2 == 0 else WHITE)
         d.text((72, y + (rh - fl.size) / 2 - 2), a, font=fl, fill=INK)
         d.text((W - 72 - fp.getlength(b), y + (rh - fp.size) / 2 - 4), b, font=fp, fill=BLUE)
         y += rh
     if footnote:
-        d.text((48, y + 20), footnote, font=font(26, False), fill=GRAY)
+        d.text((48, y + 14), footnote, font=font(24, False), fill=GRAY)
     band_note(d, note, y=1150)
-    save(im, n, slug, cap.rstrip() + CTA)
+    save(im, n, slug, with_cta(cap))
 
-def photo_post(n, slug, title, photo, heading, checks, note, cap, title_size=48, focus=0.5):
-    """写真1枚＋見出し＋黄色丸の箇条書き(post09/13 の形)。photo=photos_hd 内のファイル名、checks 3〜5個"""
+def photo_post(n, slug, title, photo, heading, checks, note, cap, title_size=48, focus=0.5, labels=None):
+    """写真1枚＋見出し＋黄色丸の箇条書き(post09/13 の形)。photo=photos_hd 内のファイル名、checks 3〜5個。
+    labels=[(名前, x, y)] で写真の上に部品の名前札を付けられる"""
     im, d = base()
     title_block(d, title, size=title_size, maxw=800)
     person(im, d, *SMALL_PERSON)
-    ph = cover(Image.open(HD / photo).convert("RGB"), 984, 380, focus=focus)
-    im.paste(ph, (48, 340))
+    photo_band(im, d, photo, 340, 380, focus=focus, labels=labels)
     y = 740
     d.text((48, y), heading, font=font(36), fill=BLUE); y += 68
     k = len(checks); step = 70 if k <= 4 else 58; fi = font(38 if k <= 4 else 34)
@@ -1519,14 +1558,19 @@ def photo_post(n, slug, title, photo, heading, checks, note, cap, title_size=48,
         d.ellipse([56, y + 10, 56 + 30, y + 40], fill=YELLOW)
         d.text((110, y), it, font=fi, fill=INK); y += step
     band_note(d, note, y=1150)
-    save(im, n, slug, cap.rstrip() + CTA)
+    save(im, n, slug, with_cta(cap))
 
-def quotes_post(n, slug, title, quotes, note, cap, credit="Googleの口コミより(一部抜粋)", title_size=52):
-    """引用カード(post12 の形)。quotes=文字列3つ(各60〜90字)"""
+def quotes_post(n, slug, title, quotes, note, cap, credit="Googleの口コミより(一部抜粋)", title_size=52, photo=None, focus=0.5):
+    """引用カード(post12 の形)。quotes=文字列2〜3つ(各95字まで。写真ありは2つまで)"""
     im, d = base()
     title_block(d, title, size=title_size, maxw=800)
     person(im, d, *SMALL_PERSON)
-    y = 340; fq = font(34, False); fm = font(70)
+    photo = photo or DEFAULT_PHOTOS.get(slug)
+    y = 340
+    if photo:
+        photo_band(im, d, photo, 340, 200, focus=focus)
+        y = 570; quotes = quotes[:2]
+    fq = font(34, False); fm = font(70)
     for q in quotes:
         lines = wrap(q, fq, 900); bh = len(lines) * 50 + 64
         rounded(d, [48, y, W - 48, y + bh], 20, LIGHT)
@@ -1537,7 +1581,7 @@ def quotes_post(n, slug, title, quotes, note, cap, credit="Googleの口コミよ
         f = font(26, False)
         d.text((W - 48 - f.getlength(credit), min(y + 4, 1100)), credit, font=f, fill=GRAY)
     band_note(d, note, y=1150)
-    save(im, n, slug, cap.rstrip() + CTA)
+    save(im, n, slug, with_cta(cap))
 
 if __name__ == "__main__":
     # python make_posts.py 15 16 … で番号指定(指定なしは全部)

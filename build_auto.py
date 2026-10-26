@@ -59,13 +59,22 @@ def check_item(it, errors, photos=None):
     note = it.get("note", "")
     if not note or len(note) > 28:
         errors.append(f"{slug}: note(下の帯の一言)は1〜28文字")
+    ph = it.get("photo", "")
+    if lay != "quotes" and not ph:
+        errors.append(f"{slug}: photo(写真)は必ず入れる(AUTO_GENERATE.md の一覧から選ぶ)")
+    if ph and photos is not None and ph not in photos:
+        errors.append(f"{slug}: photo「{ph}」は photos_hd に無い(AUTO_GENERATE.md の一覧から選ぶ)")
+    for lb in it.get("labels", []) or []:
+        if len(lb) != 3 or len(lb[0]) > 14 or not all(isinstance(v, (int, float)) and 0 <= v <= 1 for v in lb[1:]):
+            errors.append(f"{slug}: labels の各要素は [名前(14文字まで), x(0〜1), y(0〜1)]: {lb}")
     if lay == "list":
         pts = it.get("points", [])
-        if not 3 <= len(pts) <= 5:
-            errors.append(f"{slug}: points は3〜5個")
+        if not 3 <= len(pts) <= 4:
+            errors.append(f"{slug}: points は3〜4個(写真を入れるので4個まで)")
+        lim = 70 if len(pts) <= 3 else 38
         for p in pts:
-            if len(p) != 2 or len(p[0]) > 22 or len(p[1]) > 70:
-                errors.append(f"{slug}: points の各要素は [見出し(22文字まで), 説明(70文字まで)]: {p}")
+            if len(p) != 2 or len(p[0]) > 22 or len(p[1]) > lim:
+                errors.append(f"{slug}: points の各要素は [見出し(22文字まで), 説明({lim}文字まで。3個なら70、4個なら38)]: {p}")
         if not it.get("pill") or len(it["pill"]) > 14:
             errors.append(f"{slug}: pill(左上の小さなラベル)は1〜14文字")
         if it.get("stat") and (len(it["stat"]) != 2 or len(it["stat"][0]) > 6 or len(it["stat"][1]) > 12):
@@ -76,27 +85,24 @@ def check_item(it, errors, photos=None):
             errors.append(f"{slug}: steps は3〜4個")
         for p in st:
             if len(p) != 2 or len(p[0]) > 14 or len(p[1]) > 60:
-                errors.append(f"{slug}: steps の各要素は [見出し(14文字まで), 説明(60文字まで、\\nで2行)]: {p}")
+                errors.append(f"{slug}: steps の各要素は [見出し(14文字まで), 説明(60文字まで)]: {p}")
     elif lay == "table":
         rows = it.get("rows", [])
-        if not 4 <= len(rows) <= 8:
-            errors.append(f"{slug}: rows は4〜8行")
+        if not 4 <= len(rows) <= 7:
+            errors.append(f"{slug}: rows は4〜7行")
         for p in rows:
-            if len(p) != 2 or len(p[0]) > 20 or len(p[1]) > 12:
-                errors.append(f"{slug}: rows の各要素は [項目(20文字まで), 値(12文字まで)]: {p}")
+            if len(p) != 2 or len(p[0]) > 20 or len(p[1]) > 16:
+                errors.append(f"{slug}: rows の各要素は [項目(20文字まで), 値(16文字まで)]: {p}")
     elif lay == "photo":
         ck = it.get("checks", [])
         if not 3 <= len(ck) <= 5 or any(len(c) > 20 for c in ck):
             errors.append(f"{slug}: checks は3〜5個、各20文字まで")
         if not it.get("heading") or len(it["heading"]) > 24:
             errors.append(f"{slug}: heading は1〜24文字")
-        ph = it.get("photo", "")
-        if photos is not None and ph not in photos:
-            errors.append(f"{slug}: photo「{ph}」は photos_hd に無い(AUTO_GENERATE.md の一覧から選ぶ)")
     elif lay == "quotes":
         qs = it.get("quotes", [])
-        if not 2 <= len(qs) <= 3 or any(len(q) > 95 for q in qs):
-            errors.append(f"{slug}: quotes は2〜3個、各95文字まで")
+        if not 2 <= len(qs) <= (2 if ph else 3) or any(len(q) > 95 for q in qs):
+            errors.append(f"{slug}: quotes は2個(写真なしなら3個まで)、各95文字まで")
 
 
 def load_items(files=None):
@@ -120,20 +126,23 @@ def load_items(files=None):
 def build(it, mp):
     n, slug, lay = it["n"], it["slug"], it.get("layout", "list")
     note_yellow = it.get("note_style", "yellow" if slug.startswith("chuui_") else "blue") == "yellow"
+    ph = it.get("photo"); fc = it.get("focus", 0.5)
     if lay == "list":
         mp.list_post(n, slug, it["pill"], it["title"], [tuple(p) for p in it["points"]], it["note"], it["cap"],
                      pill_bg=mp.YELLOW if slug.startswith(("mame_", "season_")) else mp.BLUE,
                      pill_fg=mp.INK if slug.startswith(("mame_", "season_")) else mp.WHITE,
                      stat=tuple(it["stat"]) if it.get("stat") else None, source=it.get("source"),
-                     note_bg=mp.YELLOW if note_yellow else mp.LIGHT, note_fg=mp.INK if note_yellow else mp.BLUE)
+                     note_bg=mp.YELLOW if note_yellow else mp.LIGHT, note_fg=mp.INK if note_yellow else mp.BLUE,
+                     photo=ph, focus=fc)
     elif lay == "steps":
-        mp.steps_post(n, slug, it["title"], [tuple(p) for p in it["steps"]], it["note"], it["cap"])
+        mp.steps_post(n, slug, it["title"], [tuple(p) for p in it["steps"]], it["note"], it["cap"], photo=ph, focus=fc)
     elif lay == "table":
-        mp.table_post(n, slug, it["title"], [tuple(p) for p in it["rows"]], it["note"], it["cap"], footnote=it.get("footnote", ""))
+        mp.table_post(n, slug, it["title"], [tuple(p) for p in it["rows"]], it["note"], it["cap"], footnote=it.get("footnote", ""), photo=ph, focus=fc)
     elif lay == "photo":
-        mp.photo_post(n, slug, it["title"], it["photo"], it["heading"], it["checks"], it["note"], it["cap"], focus=it.get("focus", 0.5))
+        mp.photo_post(n, slug, it["title"], ph, it["heading"], it["checks"], it["note"], it["cap"], focus=fc,
+                      labels=[tuple(l) for l in it.get("labels", [])] or None)
     elif lay == "quotes":
-        mp.quotes_post(n, slug, it["title"], it["quotes"], it["note"], it["cap"], credit=it.get("credit", ""))
+        mp.quotes_post(n, slug, it["title"], it["quotes"], it["note"], it["cap"], credit=it.get("credit", ""), photo=ph, focus=fc)
 
 
 def main():
@@ -159,7 +168,8 @@ def main():
         for s in slugs:
             if slugs.count(s) > 1:
                 errors.append(f"{s}: slug が重複")
-            if any(p.stem.split("_", 1)[-1] == s for p in POSTS.glob("*.jpg")):
+            mine = {f"{it['n']:02d}_{it['slug']}" for it in items if it.get("n")}
+            if any(p.stem.split("_", 1)[-1] == s and p.stem not in mine for p in POSTS.glob("*.jpg")):
                 errors.append(f"{s}: 同じ slug の投稿がすでに posts/ にあります(別の名前に)")
         for it in items:
             check_item(it, errors, photos)

@@ -20,6 +20,7 @@
 - BGM(購入曲)と高画質写真は非公開リポ `fujimori-ui/kitano-ig-private` に置き、Actions が `PHOTOS_TOKEN` で取り込む
 - 直したい投稿があれば、その JSON を直して push し直す(画像を作り直すときは Actions → kitano-ig-build → Run workflow → force にファイル名)。外したい投稿は `posts/NN_slug.*` と JSON の項目を消す
 - 自分のPCで試す: `python3 build_auto.py --check content/xxx.json` → `KITANO_FONT=noto python3 build_auto.py`
+- 全部の投稿に写真を入れる(文字だけにしない)。写真は photos_hd/(非公開リポ)の現場写真・社長・作業中・トラック。`make_posts.py` の DEFAULT_PHOTOS に投稿名→写真の対応があり、自動生成はJSONの `photo` で指定
 - 施工事例(Before/After)は写真が必要なので自動では作らない。写真をもらったら `make_posts.py` の `ba_post` で手作業
 
 ## ネタの追加(手作業)
@@ -31,12 +32,12 @@
 mp4 があるネタはリール(フィードにも表示)で投稿、無いネタは今まで通り画像で投稿されます。
 画像を作り直したら `python make_videos.py 03_kawara` のように動画も作り直してください。
 
-**BGM**: 購入曲(Audiostock)は OneDrive\Desktop\北野工作所様\BGM\ に保管 → このリポの `music\private\` にコピーしてから動画を作る(`music/` は公開しない)。無ければ代わりに `make_music.py` で自前合成したさわやかなBGM(`music/bgm_a〜c.wav`、著作権フリー)が自動で入ります。購入曲が複数あれば、隣の投稿と違う曲を選び、使う部分も他の投稿と20秒以上離す(いつも同じに聞こえないように。記録は `music_log.json`)。動画の長さ(8〜11秒)とアニメーションの動かし方(ヘッダー/フッター/写真/文字の出し方・順番・速さ)も投稿ごとに自動で変わる。
 **リールの表紙(カバー)**: `posts/cover/NN_slug.jpg`(1080×1920、動画の最後のコマと同じ)。`make_videos.py` が動画と一緒に自動で作り、
 無い/動画より古い表紙は実行のたびに動画の最後のコマから作り直します(表紙だけ全部作り直す: `python make_videos.py --covers`)。
 4:5 の投稿画像をそのまま表紙にすると Instagram が 9:16 に広げて左右が切れる(2026-10-26 に判明)ので、必ず cover を一緒に push すること。
 cover が無いと投稿画像で代用され(左右が切れる)、結果メールに ⚠ が付きます。
 
+**BGM**: 購入曲(Audiostock)は OneDrive\Desktop\北野工作所様\BGM\ に保管 → このリポの `music\private\` にコピーしてから動画を作る(`music/` は公開しない)。無ければ代わりに `make_music.py` で自前合成したさわやかなBGM(`music/bgm_a〜c.wav`、著作権フリー)が自動で入ります。購入曲が複数あれば、隣の投稿と違う曲を選び、使う部分も他の投稿と20秒以上離す(いつも同じに聞こえないように。記録は `music_log.json`)。動画の長さ(8〜11秒)とアニメーションの動かし方(ヘッダー/フッター/写真/文字の出し方・順番・速さ)も投稿ごとに自動で変わる。
 既存の mp4 の音だけ入れ直すときは `python make_music.py add 05_hisashi`(全部なら `add-all`)。
 
 - 特定のネタを今すぐ投稿: Actions → kitano-ig-post → Run workflow → slug に `03_kawara` など
