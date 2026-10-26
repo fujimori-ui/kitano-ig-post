@@ -55,7 +55,8 @@ python3 gbp_post.py --setup 北野        # state.json に投稿先を記録 →
 python3 gbp_post.py --test 17_komari_bankin   # 送る内容を見るだけ
 python3 gbp_post.py --one  17_komari_bankin   # 1本だけ今すぐ投稿(投稿後 state.json を push)
 ```
-これ以降は post.yml の毎回の投稿で自動的にマイビジネスにも出る。
+**テストはこの1本だけ(ユーザー指示 2026-10-27)。** 毎回の自動投稿は state.json の `"gbp_auto": true` を入れて push するまで動かない
+(ユーザーがテスト投稿を見て OK を出してから `python3 gbp_post.py --auto on`)。止めるときは `--auto off`。
 
 ## 困ったとき
 - RESULT に「⚠ マイビジネス投稿に失敗: HTTP 403/429 … quota」→ API がまだ未承認(または有効化されていない)。Instagram は正常

@@ -267,13 +267,13 @@ def main():
     # Googleビジネスプロフィール(マイビジネス)へ同じ内容を API で自動投稿(接続キーと投稿先がある時だけ。失敗しても止めない)
     try:
         import gbp_post
-        if gbp_post.configured() and state.get("gbp_location"):
+        if gbp_post.configured() and state.get("gbp_location") and state.get("gbp_auto"):
             purl = gbp_post.post_for(item, state)
             STATE.write_text(json.dumps(state, ensure_ascii=False, indent=1), encoding="utf-8")
             gbp += f" | マイビジネスに投稿: {purl}"
             log(f"マイビジネスに投稿: {purl}")
         else:
-            log("マイビジネスAPI 未設定(キー or 投稿先なし)→ドライブ保存のみ")
+            log("マイビジネスAPI 自動投稿はオフ(state.json の gbp_auto が true で、キーと投稿先がある時だけ動く)→ドライブ保存のみ")
     except Exception as e:
         gbp += f" | ⚠ マイビジネス投稿に失敗: {str(e)[:160]}"
         log(f"⚠ マイビジネス投稿に失敗(Instagram は完了): {e}")

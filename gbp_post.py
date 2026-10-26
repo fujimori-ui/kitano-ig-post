@@ -23,6 +23,7 @@ post_ig.py が投稿に成功したあと(ドライブ保存のあと)に post_f
   python gbp_post.py --test 13_amadoi     # 送る内容を表示するだけ
   python gbp_post.py --one 13_amadoi      # その1本を今すぐ投稿
   python gbp_post.py --list               # 最近の投稿(API 経由で見えるもの)
+  python gbp_post.py --auto on|off        # 毎回の自動投稿のオン/オフ(state.json の gbp_auto。初期はオフ=テスト1本のみ)
 """
 import json, os, sys, time
 from pathlib import Path
@@ -195,6 +196,12 @@ def main():
         loc = state["gbp_location"]
         for p in GBP().list_posts(loc["account"], loc["location"]):
             print(p.get("createTime", "")[:16], p.get("state"), (p.get("summary") or "")[:40].replace("\n", " "), p.get("searchUrl", ""))
+        return
+    if "--auto" in sys.argv:
+        on = sys.argv[sys.argv.index("--auto") + 1].lower() == "on"
+        state["gbp_auto"] = on
+        STATE.write_text(json.dumps(state, ensure_ascii=False, indent=1), encoding="utf-8")
+        print("毎回の自動投稿:", "オン(次の Instagram 投稿からマイビジネスにも出ます。git push を忘れずに)" if on else "オフ")
         return
     if "--one" in sys.argv:
         slug = sys.argv[sys.argv.index("--one") + 1]
