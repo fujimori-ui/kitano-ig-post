@@ -95,6 +95,66 @@
 - `illust_interphone.png` インターホンで応対する女性(いらすとや。訪問販売・断り方の話題に)
 - `illust_voice.png` ひらめいた主婦(エプロン・人差し指。PIXTA購入、お客様の声・豆知識に)
 - `truck_01.jpg` 〜 `truck_04.jpg` 北野工作所の白い軽トラック(事務所前。01/02 斜め前、03 横、04 正面寄り)
+購入素材(PIXTA。ジブラボ購入済、投稿に使ってよい。`stock_番号_内容.jpg`。足りない場面はここから):
+- `stock_door_sales.jpg` 玄関先で営業マンを笑顔で断る女性(47 断り方で使用)
+- `stock_voice_sign.jpg` 「お客様の声」の吹き出し看板と人形(12 お客様の声で使用。帯300で)
+- `stock_003_tile_roof_worker_eaves.jpg` 瓦屋根の軒先で作業する職人(施工中)
+- `stock_005_attic_inspection.jpg` 小屋裏(屋根裏)をライトで点検する職人
+- `stock_009_house_blue_tarp.jpg` 足場とメッシュシートで覆われた工事中の家
+- `stock_011_roof_worker_plywood.jpg` 屋根の上で下地の合板を張る職人
+- `stock_013_metal_roof_sky.jpg` 金属屋根(立平)と青空
+- `stock_014_roof_painting_roller.jpg` スレート屋根をローラーで塗装する手元
+- `stock_018_roof_workers_two.jpg` 屋根の上で2人の職人が作業(住宅街)
+- `stock_024_town_view.jpg` 高台から見た住宅街の遠景(青空)
+- `stock_027_ceiling_leak_stain.jpg` 天井にできた雨漏りの染み(古い和室)
+- `stock_046_woman_door_greets_worker.jpg` 玄関で作業員を笑顔で迎える女性(相談・訪問の場面)
+- `stock_051_roof_worker_tile2.jpg` 瓦屋根の軒先で作業する職人(別角度)
+- `stock_080_tile_roof_sunny.jpg` 瓦屋根と青空(日本瓦)
+- `stock_110_elderly_couple_smile.jpg` 笑顔のシニア夫婦(白い背景)
+- `stock_115_metal_roof_blue.jpg` 金属屋根と木の影(立平)
+- `stock_119_house_exterior.jpg` 新しめの戸建て住宅の外観
+- `stock_129_worker_gutter_edge.jpg` 雨どいを手で点検しているアップ
+- `stock_142_carport_house.jpg` カーポートのある家の外観
+- `stock_162_woman_phone_outdoor.jpg` 屋外で電話する女性(ボーダー服)
+- `stock_171_staff_explain_elderly.jpg` スタッフがシニア女性に説明している
+- `stock_186_calculator_hand.jpg` 電卓を打つ手元(費用・見積り)
+- `stock_189_worker_helmet_docs.jpg` ヘルメットの職人が書類を持つ(ビル前)
+- `stock_190_house_five_stars.jpg` 青い木の板に家と五つ星(口コミ・評価)
+- `stock_202_slate_roof_damaged.jpg` スレート屋根の割れ・ひび(劣化)
+- `stock_215_light_truck_street.jpg` 住宅街を走る白い軽トラック
+- `stock_251_tablet_writing.jpg` タブレットとペンで書く手元(申込・記録)
+- `stock_263_calendar_calc.jpg` カレンダーと電卓(時期・費用)
+- `stock_265_worker_point_ceiling.jpg` 天井を指さして点検する職人
+- `stock_274_couple_pc_consult.jpg` 男女がノートPCを見ながら打ち合わせ
+- `stock_281_wall_paint_roller.jpg` 外壁をローラーで塗装する職人
+- `stock_282_old_tile_roof_broken.jpg` 崩れた古い瓦屋根(劣化・放置)
+- `stock_283_elderly_man_arms_crossed.jpg` 腕組みして笑うシニア男性(屋外)
+- `stock_294_plan_meeting_hands.jpg` 図面を囲んで打ち合わせする手元
+- `stock_305_worker_consult_elderly.jpg` 作業服の職人がシニア夫婦に説明(相談の場面)
+- `stock_312_elderly_woman_smile.jpg` 笑顔のシニア女性(室内)
+- `stock_330_worker_consult_desk.jpg` 作業服の職人が笑顔で相談に応じる
+- `stock_337_woman_surprised.jpg` 驚いて両手を上げる女性(ボーダー服。注意・びっくり)
+- `stock_406_old_house_overgrown.jpg` 庭が荒れた古い家(空き家)
+- `stock_412_ceiling_insulation_damage.jpg` 天井裏の断熱材の劣化・汚れ
+- `stock_416_worker_check_shutter.jpg` 雨戸・シャッターを点検する職人
+- `stock_444_gutter_rain.jpg` 雨の日の軒先と雨どい(雨が流れる)
+- `stock_445_tile_roof_rain.jpg` 雨の日の瓦屋根
+- `stock_447_slate_roof_dark.jpg` スレート屋根と青空(全面)
+- `stock_455_fire_insurance_doc.jpg` 「火災保険」の案内書類と赤い矢印
+- `stock_457_worker_check_floor.jpg` 室内で床をしゃがんで点検する作業員(青い服)
+- `stock_499_drone_over_roof.jpg` 屋根の上を飛ぶドローン(点検)
+- `stock_551_old_house_garden.jpg` 古い木造の家と庭
+- `stock_576_elderly_woman_phone.jpg` 電話で相談するシニア女性
+- `stock_583_laptop_videocall.jpg` ノートPCでビデオ通話(オンライン相談)
+- `stock_585_worker_write_indoor.jpg` 室内で書き物をする作業員
+- `stock_587_blue_house_exterior.jpg` 青い外壁の家と庭(きれいな外観)
+- `stock_592_roof_worker_green_sheet.jpg` 屋根で防水シートを張る職人
+- `stock_593_house_scaffold_sheet.jpg` 足場・メッシュシートの家(別角度)
+- `stock_596_gutter_cleaning_hands.jpg` 雨どいに詰まった落ち葉を手で取り除く
+- `stock_611_worker_ladder_wall.jpg` はしごで外壁を作業する職人
+- `stock_614_elderly_couple_consult.jpg` シニア夫婦がスタッフに相談(カウンター)
+- `stock_615_ladder_indoor.jpg` 室内の脚立(工事中の部屋)
+- `stock_627_ceiling_mold_leak.jpg` 天井の木材が腐食・カビ(雨漏りの末路)
 現場の写真(屋根・雨どい・染みなど):
 - `1776381380801.png` 白い破風板(屋根の端の板)の軒先、瓦屋根。施工前
 - `1776695001497.png` / `1776695017435.png` 破風板をガルバリウム鋼板でカバーした後(光る鋼板と青空)
