@@ -10,6 +10,7 @@ NN_slug.mp4(make_videos.py で作るアニメーション)があればリール(
 (4:5 の jpg を表紙にすると Instagram が 9:16 に広げて左右が切れる。cover が無いときだけ jpg で代用)
 mp4 が無ければ画像で投稿。
 投稿済みは state.json に記録(GitHub Actions がコミットで書き戻す)。
+投稿に成功したら gbp_export.py で Googleマイビジネス用(横長画像+ハッシュタグ無し本文)を Google ドライブにも保存する。
 画像は公開リポジトリの raw URL を Instagram API(graph.instagram.com)に渡す。
 
 1日3本(朝・昼・夜)を確実に出すため、自動投稿は「今の時間帯(朝=11時まで/昼=11〜17時/夜=17時から)に今日まだ出ていないとき」だけ投稿する。
@@ -250,10 +251,21 @@ def main():
         # 今日出した分を --slug で出し直したときは、その時間帯の1本として数えたままにする(予備が重ねて出さないように)
         state["posted"][item]["slot"] = old["slot"]
     STATE.write_text(json.dumps(state, ensure_ascii=False, indent=1), encoding="utf-8")
+    # Googleマイビジネス用(画像 4:3 + ハッシュタグ無しの本文)を Google ドライブへ保存(失敗しても投稿結果には影響させない)
+    gbp = ""
+    try:
+        import gbp_export
+        gurl = gbp_export.save_for_gbp(item, state, state["posted"][item]["date"])
+        STATE.write_text(json.dumps(state, ensure_ascii=False, indent=1), encoding="utf-8")
+        gbp = f" | マイビジネス用をドライブに保存: {gurl}"
+        log(f"マイビジネス用をドライブに保存: {gurl}")
+    except Exception as e:
+        gbp = f" | ⚠ マイビジネス用のドライブ保存に失敗: {str(e)[:120]}"
+        log(f"⚠ マイビジネス用のドライブ保存に失敗(投稿は完了): {e}")
     todo = [s for s in all_items() if s not in state["posted"]]
     stock = " ".join(f"{CATEGORY_NAMES[c]}{n}" for c, n in
                      sorted(((c, len([s for s in todo if category(s) == c])) for c in set(map(category, todo))), key=lambda x: -x[1]))
-    log(f"RESULT: POSTED {item} [{cat}] | {title} | {url} | 残り{len(todo)}本(1日3本なので約{len(todo) // 3}日分、内訳: {stock}){warn}")
+    log(f"RESULT: POSTED {item} [{cat}] | {title} | {url} | 残り{len(todo)}本(1日3本なので約{len(todo) // 3}日分、内訳: {stock}){warn}{gbp}")
 
 
 if __name__ == "__main__":
