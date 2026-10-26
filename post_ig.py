@@ -6,7 +6,9 @@ posts/ にある NN_slug.jpg + NN_slug.txt を1本ずつ投稿する。
 いちばん久しく出ていない種類の中で番号が小さいものを選ぶ(同じ種類ばかり続かない)。
 種類は投稿名のキーワードで判定(CATEGORY_RULES / CATEGORY_OVERRIDE)。--plan 30 でこれからの順番を確認できる。
 NN_slug.mp4(make_videos.py で作るアニメーション)があればリール(フィードにも表示)で投稿し、
-jpg は表紙に使う。mp4 が無ければ画像で投稿。
+表紙には posts/cover/NN_slug.jpg(9:16、make_videos.py が動画と一緒に作る)を使う。
+(4:5 の jpg を表紙にすると Instagram が 9:16 に広げて左右が切れる。cover が無いときだけ jpg で代用)
+mp4 が無ければ画像で投稿。
 投稿済みは state.json に記録(GitHub Actions がコミットで書き戻す)。
 画像は公開リポジトリの raw URL を Instagram API(graph.instagram.com)に渡す。
 
@@ -172,9 +174,9 @@ def api_post(path, data):
     return j
 
 
-def publish(user_id, token, image_url, caption, video_url=None):
+def publish(user_id, token, image_url, caption, video_url=None, cover_url=None):
     if video_url:
-        c = api_post(f"{user_id}/media", {"media_type": "REELS", "video_url": video_url, "cover_url": image_url,
+        c = api_post(f"{user_id}/media", {"media_type": "REELS", "video_url": video_url, "cover_url": cover_url or image_url,
                                           "share_to_feed": "true", "caption": caption, "access_token": token})
     else:
         c = api_post(f"{user_id}/media", {"image_url": image_url, "caption": caption, "access_token": token})
@@ -219,8 +221,14 @@ def main():
     log(f"次の投稿: {item} [{cat}] / {title}")
     log(f"画像: {image_url}")
     video_url = RAW_BASE + f"{item}.mp4" if (POSTS / f"{item}.mp4").exists() else None
+    cover_url = None
     if video_url:
         log(f"動画(リール): {video_url}")
+        if (POSTS / "cover" / f"{item}.jpg").exists():
+            cover_url = RAW_BASE + f"cover/{item}.jpg"
+            log(f"表紙(9:16): {cover_url}")
+        else:
+            log("⚠ 表紙 posts/cover/ が無いので投稿画像(4:5)で代用します(左右が切れます)。python make_videos.py で作ってください")
     if dry:
         log("RESULT: DRY_RUN " + item)
         print(caption)
@@ -228,12 +236,12 @@ def main():
     user_id = os.environ["KITANO_IG_USER_ID"]
     token = os.environ["KITANO_IG_ACCESS_TOKEN"]
     # 画像URLが公開されているか確認(push直後は数十秒かかることがある)
-    for u in filter(None, [image_url, video_url]):
+    for u in filter(None, [image_url, video_url, cover_url]):
         for _ in range(12):
             if requests.head(u, timeout=30).status_code == 200:
                 break
             time.sleep(10)
-    mid, url = publish(user_id, token, image_url, caption, video_url)
+    mid, url = publish(user_id, token, image_url, caption, video_url, cover_url)
     old = state["posted"].get(item, {})
     state["posted"][item] = {"date": time.strftime("%Y-%m-%d %H:%M"), "media_id": mid, "url": url, "category": category(item)}
     if slot:

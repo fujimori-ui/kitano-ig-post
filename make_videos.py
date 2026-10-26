@@ -12,8 +12,13 @@
 1080×1920(9:16)の中央に 1080×1350 の画像を置くので、
 フィードでは画像と同じ見え方、リール画面では上下に余白が付く。
 
-使い方: python make_videos.py            # 全部(mp4が無い/古いものだけ)
+リールの表紙(カバー)は posts/cover/NN_slug.jpg(1080×1920、動画の最後のコマと同じ)に別に作る。
+4:5 の投稿画像をそのまま表紙にすると Instagram が 9:16 に広げて左右が切れるため(2026-10-26 に判明)。
+動画を作ると自動で作られ、無い/動画より古い表紙は実行のたびに動画の最後のコマから作り直す。
+
+使い方: python make_videos.py            # 全部(mp4が無い/古いものだけ)＋表紙の不足分
         python make_videos.py 03_kawara  # 指定したものだけ作り直す
+        python make_videos.py --covers   # 表紙だけ作り直す(全部)
 必要: ffmpeg, Pillow, numpy
 """
 import random, subprocess, sys, zlib
@@ -24,6 +29,7 @@ from make_music import add_music
 
 HERE = Path(__file__).parent
 POSTS = HERE / "posts"
+COVERS = POSTS / "cover"     # リールの表紙(9:16)
 W, H = 1080, 1350            # 投稿画像
 VW, VH = 1080, 1920          # 動画
 OY = (VH - H) // 2           # 画像を置く縦位置
@@ -178,7 +184,31 @@ def make(slug):
     if ff.wait() != 0:
         raise RuntimeError(f"ffmpeg 失敗: {slug}")
     add_music(out)  # 無音の動画にBGMを入れる
+    save_cover(slug, fr)  # 表紙 = 最後のコマ(9:16)
     print(f"saved {out.name}  {total:.1f}秒  ブロック{len(blocks)}個  動き={pat['head']}/{pat['foot']}/{pat['big']}/{pat['small']}/{pat['order']} x{sp}")
+
+
+def save_cover(slug, frame=None):
+    """リールの表紙 posts/cover/<slug>.jpg(1080×1920)を保存する。frame が無ければ mp4 の最後のコマを切り出す。"""
+    COVERS.mkdir(exist_ok=True)
+    out = COVERS / f"{slug}.jpg"
+    if frame is None:
+        subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-sseof", "-0.2", "-i", str(POSTS / f"{slug}.mp4"),
+                        "-frames:v", "1", "-update", "1", "-q:v", "2", str(out)], check=True)
+    else:
+        frame.save(out, quality=92)
+    return out
+
+
+def refresh_covers(force=False):
+    """表紙が無い/動画より古いもの(force なら全部)を動画の最後のコマから作り直す。"""
+    n = 0
+    for mp4 in sorted(POSTS.glob("*.mp4")):
+        cov = COVERS / f"{mp4.stem}.jpg"
+        if force or not cov.exists() or cov.stat().st_mtime < mp4.stat().st_mtime:
+            save_cover(mp4.stem)
+            n += 1
+    print(f"表紙を{n}枚作成(posts/cover/)")
 
 
 def blend(im, p):
@@ -189,9 +219,13 @@ def blend(im, p):
 
 
 if __name__ == "__main__":
+    if "--covers" in sys.argv:
+        refresh_covers(force=True)
+        sys.exit()
     targets = sys.argv[1:] or [p.stem for p in sorted(POSTS.glob("*.jpg"))]
     for slug in targets:
         mp4, jpg = POSTS / f"{slug}.mp4", POSTS / f"{slug}.jpg"
         if not sys.argv[1:] and mp4.exists() and mp4.stat().st_mtime >= jpg.stat().st_mtime:
             continue
         make(slug)
+    refresh_covers()  # 表紙が無い/古いものを補う

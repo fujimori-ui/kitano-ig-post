@@ -28,10 +28,15 @@
 画像は `make_posts.py` で作っています(サイト kashiba-yanereform.com の文章・写真が元)。
 
 **アニメーション(リール)**: `python make_videos.py` で各 jpg から `NN_slug.mp4`(約8秒・9:16)を作って一緒に push。
-mp4 があるネタはリール(フィードにも表示・表紙は jpg)で投稿、無いネタは今まで通り画像で投稿されます。
+mp4 があるネタはリール(フィードにも表示)で投稿、無いネタは今まで通り画像で投稿されます。
 画像を作り直したら `python make_videos.py 03_kawara` のように動画も作り直してください。
 
 **BGM**: 購入曲(Audiostock)は OneDrive\Desktop\北野工作所様\BGM\ に保管 → このリポの `music\private\` にコピーしてから動画を作る(`music/` は公開しない)。無ければ代わりに `make_music.py` で自前合成したさわやかなBGM(`music/bgm_a〜c.wav`、著作権フリー)が自動で入ります。購入曲が複数あれば、隣の投稿と違う曲を選び、使う部分も他の投稿と20秒以上離す(いつも同じに聞こえないように。記録は `music_log.json`)。動画の長さ(8〜11秒)とアニメーションの動かし方(ヘッダー/フッター/写真/文字の出し方・順番・速さ)も投稿ごとに自動で変わる。
+**リールの表紙(カバー)**: `posts/cover/NN_slug.jpg`(1080×1920、動画の最後のコマと同じ)。`make_videos.py` が動画と一緒に自動で作り、
+無い/動画より古い表紙は実行のたびに動画の最後のコマから作り直します(表紙だけ全部作り直す: `python make_videos.py --covers`)。
+4:5 の投稿画像をそのまま表紙にすると Instagram が 9:16 に広げて左右が切れる(2026-10-26 に判明)ので、必ず cover を一緒に push すること。
+cover が無いと投稿画像で代用され(左右が切れる)、結果メールに ⚠ が付きます。
+
 既存の mp4 の音だけ入れ直すときは `python make_music.py add 05_hisashi`(全部なら `add-all`)。
 
 - 特定のネタを今すぐ投稿: Actions → kitano-ig-post → Run workflow → slug に `03_kawara` など
