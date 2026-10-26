@@ -13,6 +13,18 @@
    同じ時間帯に2本出ることはない。予備は朝7〜11時/昼12〜17時/夜20〜23時半の間だけ動く(深夜投稿なし)。
 6. 今月のチラシ(posts/flyer_YYYYMM.jpg)がまだ無いと、朝の結果メールの件名に「・今月のチラシ未作成」が付く → 表裏PDFをもらって `make_flyer.py` で作る。
 
+## Googleマイビジネス(ビジネスプロフィール)用の保存(2026-10-26〜)
+
+Instagram に1本投稿するたびに、`gbp_export.py` が同じ内容の「マイビジネス用」を Google ドライブに保存します(投稿が失敗しない限り毎回)。
+- 保存先: マイドライブの `北野工作所_マイビジネス投稿用/日付_時刻_ネタ名/`(フォルダ ID は `state.json` の `gbp_folder_id`。ドライブ内で移動してもOK)
+- `画像.jpg` = 1200×900 の横長(投稿画像を中央に、まわりは同じ画像をぼかして敷く。マイビジネス推奨サイズで左右が切れない)
+- `本文.txt` = ハッシュタグを外し、「プロフィールのリンクから」をホームページURLに替えた本文(1500字以内)
+- フォルダの `使い方.txt` にスマホからの投稿手順。結果メールの RESULT 行にもそのフォルダのURLが付く
+- マイビジネスへの投稿自体は手作業(API は使わない)。1日1本でもOK
+- 接続は Google 広告と同じ OAuth クライアント + `drive.file` 権限。Secrets `GDRIVE_CLIENT_ID` / `GDRIVE_CLIENT_SECRET` / `GDRIVE_REFRESH_TOKEN`。
+  キーの取り直しは `~/google_ads/get_token_gdrive.py`(URLを auth_url_gdrive.txt に書き、ブラウザで許可すると Secrets 登録と投稿済みぶんの保存まで自動)
+- 手元で試す: `python3 gbp_export.py --test 13_amadoi`(gbp_preview/ に書き出すだけ) / `--one 13_amadoi` / `--backfill`(投稿済みで未保存のものを全部)
+
 ## ネタの自動作成(2026-10-26〜)
 
 毎週月曜5:00に claude.ai のルーティン「北野工作所IG: 毎週月曜 来週分21本を自動作成→メール報告」(trig_01SV6ZwBzUZry2VyU4opVGSW)が動き、
@@ -49,5 +61,6 @@ cover が無いと投稿画像で代用され(左右が切れる)、結果メー
 - `KITANO_IG_USER_ID` … Instagram ユーザーID
 - `KITANO_IG_ACCESS_TOKEN` … Instagram アクセストークン(約60日。`refresh-token.yml` が毎週自動延長)
 - `PHOTOS_TOKEN` … Secrets を書き戻すための GitHub トークン
+- `GDRIVE_CLIENT_ID` / `GDRIVE_CLIENT_SECRET` / `GDRIVE_REFRESH_TOKEN` … マイビジネス用を Google ドライブへ保存するため(無いと ⚠ 付きで投稿だけ続く)
 
 トークンの発行: Meta for Developers → 「あかり工務店」アプリ → Instagram → 「InstagramログインによるAPI設定」→ アクセストークンを生成 → kashiba_yanereform でログイン。
