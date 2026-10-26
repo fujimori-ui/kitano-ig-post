@@ -38,7 +38,8 @@ def wrap(text, f, maxw):
     for para in text.split("\n"):
         cur = ""
         for ch in para:
-            if f.getlength(cur + ch) > maxw and cur:
+            # 句読点・閉じかっこは行頭に来ないよう、前の行の末尾にぶら下げる(行頭禁則)
+            if f.getlength(cur + ch) > maxw and cur and ch not in "、。」』）)・ー":
                 lines.append(cur); cur = ch
             else:
                 cur += ch
@@ -683,7 +684,7 @@ def with_cta(cap):
 # 投稿名→写真(文字だけの投稿にしない。ユーザー指示 2026-10-26「基本何か画像を入れたい」)。
 # list_post / mame_post / steps_post / table_post / quotes_post で photo 未指定のときに使う。
 DEFAULT_PHOTOS = {
-    "price": "work_01_sealing.jpg", "flow": "truck_03.jpg", "voice": "work_07_caulk.jpg",
+    "price": "work_01_sealing.jpg", "flow": "truck_03.jpg", "voice": "illust_voice.png",
     "mame_timing": "work_03_check.jpg", "mame_noboranai": "work_05_roof.jpg", "mame_houmon": "work_03_check.jpg",
     "mame_taifu": "works_post-85_0.png", "sign_10to15": "news_post-81-3-2-2-2-2-2-2_3.png",
     "news_tenken_3bai": "work_07_caulk.jpg", "news_kimari_monku": "pres_office_01.jpg", "news_kasai_hoken": "pres_office_02.jpg",
@@ -1580,12 +1581,16 @@ def quotes_post(n, slug, title, quotes, note, cap, credit="Googleの口コミよ
     person(im, d, *SMALL_PERSON)
     photo = photo or DEFAULT_PHOTOS.get(slug)
     y = 340
-    if photo:
+    fq = font(34, False); fm = font(70); lh = 50
+    if photo and photo.startswith("illust_"):
+        # イラストは大きめの帯(300)に、引用文はスマホで読める 36px(ユーザー指示 2026-10-26)
+        photo_band(im, d, photo, 340, 300, focus=focus)
+        y = 668; quotes = quotes[:2]; fq = font(36, False); lh = 52
+    elif photo:
         photo_band(im, d, photo, 340, 200, focus=focus)
         y = 570; quotes = quotes[:2]
-    fq = font(34, False); fm = font(70)
     for q in quotes:
-        lines = wrap(q, fq, 900); bh = len(lines) * 50 + 64
+        lines = wrap(q, fq, 900); bh = len(lines) * lh + 64
         rounded(d, [48, y, W - 48, y + bh], 20, LIGHT)
         d.text((70, y - 6), "“", font=fm, fill=BLUE)
         draw_text(d, (90, y + 30), q, fq, INK, maxw=900, spacing=1.47)
