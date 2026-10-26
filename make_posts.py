@@ -379,7 +379,7 @@ def post12():
 ありがたいです🙏 これからも、話しやすい屋根屋でいます。
 
 口コミはプロフィールのリンク「Googleの口コミを見る」から読めます。""" + CTA
-    quotes_post(12, "voice", "お客様からいただいた言葉", quotes, "これからも、話しやすい屋根屋でいます", cap)
+    quotes_post(12, "voice", "お客様からいただいた言葉", quotes, "これからも、話しやすい屋根屋でいます", cap, focus=0.3)
 
 # ---------- 13 雨の日は樋点検 ----------
 def post13():
@@ -684,7 +684,7 @@ def with_cta(cap):
 # 投稿名→写真(文字だけの投稿にしない。ユーザー指示 2026-10-26「基本何か画像を入れたい」)。
 # list_post / mame_post / steps_post / table_post / quotes_post で photo 未指定のときに使う。
 DEFAULT_PHOTOS = {
-    "price": "work_01_sealing.jpg", "flow": "truck_03.jpg", "voice": "illust_voice.png",
+    "price": "work_01_sealing.jpg", "flow": "truck_03.jpg", "voice": "stock_voice_sign.jpg",
     "mame_timing": "work_03_check.jpg", "mame_noboranai": "work_05_roof.jpg", "mame_houmon": "work_03_check.jpg",
     "mame_taifu": "works_post-85_0.png", "sign_10to15": "news_post-81-3-2-2-2-2-2-2_3.png",
     "news_tenken_3bai": "work_07_caulk.jpg", "news_kimari_monku": "pres_office_01.jpg", "news_kasai_hoken": "pres_office_02.jpg",
@@ -693,7 +693,7 @@ DEFAULT_PHOTOS = {
     "company_106": "truck_01.jpg", "company_riyuu5": "work_06_roof2.jpg", "company_shikaku": "work_02_bankin.jpg",
     "faq_1": "pres_office_05.jpg", "faq_2": "pres_office_06.jpg", "case_mitsumori_fuan": "work_02_bankin.jpg",
     "case_akiya": "1776381380801.png", "company_dekiru": "works_post-85-4_1.png", "news_toiawase57": "truck_01.jpg",
-    "company_access": "truck_02.jpg", "chuui_muryou_tenken": "work_04_check2.jpg", "chuui_kotowari_kata": "illust_interphone.png",
+    "company_access": "truck_02.jpg", "chuui_muryou_tenken": "work_04_check2.jpg", "chuui_kotowari_kata": "stock_door_sales.jpg",
     "chuui_oya_mamoru": "work_03_check.jpg", "chuui_mitsumori_mikata": "work_04_check2.jpg",
     "mame_amamori_genin": "news_post-81-3-2-2-2-2-2-2-2-2_0.png", "mame_cover_fukikae": "works_post-85-4-2-2_1.png",
     "mame_koke": "works_post-85-2_0.png", "mame_shikkui": "works_post-85-3_0.png",
@@ -1342,7 +1342,7 @@ def post47():
 
 ドアを開ける必要はありません。インターホン越しに断って大丈夫です。
 「本当に屋根が傷んでいるのか気になる」ときは、地元の北野工作所にご連絡ください。頼まれてから、お伺いします😊""",
-        source="参考: 特定商取引法(再勧誘の禁止)・国民生活センター", note_bg=YELLOW, note_fg=INK)
+        source="参考: 特定商取引法(再勧誘の禁止)・国民生活センター", note_bg=YELLOW, note_fg=INK, focus=0.3)
 
 def post48():
     list_post(48, "chuui_oya_mamoru", "離れて暮らすご家族へ", "高齢のご両親を\n訪問販売から守る4つの約束",
@@ -1582,13 +1582,10 @@ def quotes_post(n, slug, title, quotes, note, cap, credit="Googleの口コミよ
     photo = photo or DEFAULT_PHOTOS.get(slug)
     y = 340
     fq = font(34, False); fm = font(70); lh = 50
-    if photo and photo.startswith("illust_"):
-        # イラストは大きめの帯(300)に、引用文はスマホで読める 36px(ユーザー指示 2026-10-26)
+    if photo:
+        # 写真・イラストは大きめの帯(300)に、引用文はスマホで読める 36px(ユーザー指示 2026-10-26)
         photo_band(im, d, photo, 340, 300, focus=focus)
         y = 668; quotes = quotes[:2]; fq = font(36, False); lh = 52
-    elif photo:
-        photo_band(im, d, photo, 340, 200, focus=focus)
-        y = 570; quotes = quotes[:2]
     for q in quotes:
         lines = wrap(q, fq, 900); bh = len(lines) * lh + 64
         rounded(d, [48, y, W - 48, y + bh], 20, LIGHT)
