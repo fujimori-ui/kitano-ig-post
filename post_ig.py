@@ -11,6 +11,8 @@ NN_slug.mp4(make_videos.py で作るアニメーション)があればリール(
 mp4 が無ければ画像で投稿。
 投稿済みは state.json に記録(GitHub Actions がコミットで書き戻す)。
 投稿に成功したら gbp_export.py で Googleマイビジネス用(横長画像+ハッシュタグ無し本文)を Google ドライブにも保存する。
+さらに gbp_post.py で Googleビジネスプロフィール(マイビジネス)にも同じ内容を API で自動投稿する
+(GBP_* の接続キーと state.json の gbp_location がある時だけ。API 未承認などで失敗しても Instagram 投稿は完了扱い)。
 画像は公開リポジトリの raw URL を Instagram API(graph.instagram.com)に渡す。
 
 1日3本(朝・昼・夜)を確実に出すため、自動投稿は「今の時間帯(朝=11時まで/昼=11〜17時/夜=17時から)に今日まだ出ていないとき」だけ投稿する。
@@ -262,7 +264,20 @@ def main():
     except Exception as e:
         gbp = f" | ⚠ マイビジネス用のドライブ保存に失敗: {str(e)[:120]}"
         log(f"⚠ マイビジネス用のドライブ保存に失敗(投稿は完了): {e}")
-    todo = [s for s in all_items() if s not in state["posted"]]
+    # Googleビジネスプロフィール(マイビジネス)へ同じ内容を API で自動投稿(接続キーと投稿先がある時だけ。失敗しても止めない)
+    try:
+        import gbp_post
+        if gbp_post.configured() and state.get("gbp_location"):
+            purl = gbp_post.post_for(item, state)
+            STATE.write_text(json.dumps(state, ensure_ascii=False, indent=1), encoding="utf-8")
+            gbp += f" | マイビジネスに投稿: {purl}"
+            log(f"マイビジネスに投稿: {purl}")
+        else:
+            log("マイビジネスAPI 未設定(キー or 投稿先なし)→ドライブ保存のみ")
+    except Exception as e:
+        gbp += f" | ⚠ マイビジネス投稿に失敗: {str(e)[:160]}"
+        log(f"⚠ マイビジネス投稿に失敗(Instagram は完了): {e}")
+    todo =[s for s in all_items() if s not in state["posted"]]
     stock = " ".join(f"{CATEGORY_NAMES[c]}{n}" for c, n in
                      sorted(((c, len([s for s in todo if category(s) == c])) for c in set(map(category, todo))), key=lambda x: -x[1]))
     log(f"RESULT: POSTED {item} [{cat}] | {title} | {url} | 残り{len(todo)}本(1日3本なので約{len(todo) // 3}日分、内訳: {stock}){warn}{gbp}")

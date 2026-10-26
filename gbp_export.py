@@ -20,6 +20,7 @@ post_ig.py が投稿に成功するたびに save_for_gbp() を呼び、ドラ�
   python gbp_export.py --test 13_amadoi        # 画像と本文を gbp_preview/ に書き出すだけ(ドライブに送らない)
   python gbp_export.py --one 13_amadoi         # その1本をドライブへ保存
   python gbp_export.py --backfill              # 投稿済みでまだドライブに無いものを全部保存
+  python gbp_export.py --images [--force]      # API 自動投稿用の横長画像を gbp_img/ に書く(無いものだけ。--force で全部作り直し)
 """
 import datetime, io, json, os, sys, time
 from pathlib import Path
@@ -201,8 +202,26 @@ def save_for_gbp(slug, state, when=None):
     return url
 
 
+def write_images(force=False):
+    """posts/ の全ネタぶんの横長画像を gbp_img/NN_slug.jpg に書く(API 投稿用。リポジトリに commit して公開URLで渡す)。
+    すでにあるものは飛ばす。作った slug の一覧を返す"""
+    out = HERE / "gbp_img"
+    out.mkdir(exist_ok=True)
+    made = []
+    for jpg in sorted(POSTS.glob("*.jpg")):
+        dst = out / jpg.name
+        if force or not dst.exists() or dst.stat().st_mtime < jpg.stat().st_mtime:
+            dst.write_bytes(gbp_image(jpg.stem))
+            made.append(jpg.stem)
+    return made
+
+
 def main():
     state = json.loads(STATE.read_text(encoding="utf-8"))
+    if "--images" in sys.argv:
+        made = write_images("--force" in sys.argv)
+        print(f"gbp_img/ に {len(made)}本を書き出し" + (": " + " ".join(made) if made else "(新しいものは無し)"))
+        return
     if "--test" in sys.argv:
         slug = sys.argv[sys.argv.index("--test") + 1]
         out = HERE / "gbp_preview"; out.mkdir(exist_ok=True)

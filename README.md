@@ -20,7 +20,7 @@ Instagram に1本投稿するたびに、`gbp_export.py` が同じ内容の「�
 - `画像.jpg` = 1200×900 の横長(投稿画像を中央に、まわりは同じ画像をぼかして敷く。マイビジネス推奨サイズで左右が切れない)
 - `本文.txt` = ハッシュタグを外し、「プロフィールのリンクから」をホームページURLに替えた本文(1500字以内)
 - フォルダの `使い方.txt` にスマホからの投稿手順。結果メールの RESULT 行にもそのフォルダのURLが付く
-- マイビジネスへの投稿自体は手作業(API は使わない)。1日1本でもOK
+- 2026-10-27〜 API での自動投稿も追加(`gbp_post.py`、Google の承認待ち)。手順と仕組みは **README_GBP.md**。承認までは手作業(1日1本でもOK)
 - 接続は Google 広告と同じ OAuth クライアント + `drive.file` 権限。Secrets `GDRIVE_CLIENT_ID` / `GDRIVE_CLIENT_SECRET` / `GDRIVE_REFRESH_TOKEN`。
   キーの取り直しは `~/google_ads/get_token_gdrive.py`(URLを auth_url_gdrive.txt に書き、ブラウザで許可すると Secrets 登録と投稿済みぶんの保存まで自動)
 - 手元で試す: `python3 gbp_export.py --test 13_amadoi`(gbp_preview/ に書き出すだけ) / `--one 13_amadoi` / `--backfill`(投稿済みで未保存のものを全部)
