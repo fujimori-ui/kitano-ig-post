@@ -692,14 +692,21 @@ DEFAULT_PHOTOS = {
     "company_106": "truck_01.jpg", "company_riyuu5": "work_06_roof2.jpg", "company_shikaku": "work_02_bankin.jpg",
     "faq_1": "pres_office_05.jpg", "faq_2": "pres_office_06.jpg", "case_mitsumori_fuan": "work_02_bankin.jpg",
     "case_akiya": "1776381380801.png", "company_dekiru": "works_post-85-4_1.png", "news_toiawase57": "truck_01.jpg",
-    "company_access": "truck_02.jpg", "chuui_muryou_tenken": "work_04_check2.jpg", "chuui_kotowari_kata": "work_07_caulk.jpg",
+    "company_access": "truck_02.jpg", "chuui_muryou_tenken": "work_04_check2.jpg", "chuui_kotowari_kata": "illust_interphone.png",
     "chuui_oya_mamoru": "work_03_check.jpg", "chuui_mitsumori_mikata": "work_04_check2.jpg",
     "mame_amamori_genin": "news_post-81-3-2-2-2-2-2-2-2-2_0.png", "mame_cover_fukikae": "works_post-85-4-2-2_1.png",
     "mame_koke": "works_post-85-2_0.png", "mame_shikkui": "works_post-85-3_0.png",
 }
 
 def photo_band(im, d, photo, y, h, focus=0.5, labels=None, tag=None):
-    """写真の帯(幅984)。labels=[(文字, x, y)] で写真の上に名前札(x,y は帯内の px、1以下なら割合)。tag=(大きな数字, 説明) を左下に"""
+    """写真の帯(幅984)。labels=[(文字, x, y)] で写真の上に名前札(x,y は帯内の px、1以下なら割合)。tag=(大きな数字, 説明) を左下に。
+    illust_*.png(透明背景のイラスト)は切り抜かず、薄い青の帯の中に収める"""
+    if photo.startswith("illust_"):
+        rounded(d, [48, y, 48 + 984, y + h], 20, LIGHT)
+        il = Image.open(HD / photo).convert("RGBA")
+        il.thumbnail((984 - 60, h - 24), Image.LANCZOS)
+        im.paste(il, (48 + (984 - il.width) // 2, y + (h - il.height) // 2), il)
+        return
     ph = cover(Image.open(HD / photo).convert("RGB"), 984, h, focus=focus)
     im.paste(ph, (48, y))
     for text, lx, ly in (labels or []):
@@ -727,11 +734,12 @@ def list_post(n, slug, pill_text, title, points, note, cap, pill_bg=BLUE, pill_f
     photo = photo or DEFAULT_PHOTOS.get(slug)
     rows = len(points)
     if photo:
-        # 写真あり: 社長写真は小さく右上、タイトルの下に写真の帯(984×260)、その下に箇条書き
+        # 写真あり: 社長写真は小さく右上、タイトルの下に写真の帯(984×200)、その下に箇条書き
+        # (帯は 260→200 に。スマホで本文が読めるよう文字を大きくするため。ユーザー指示 2026-10-26)
         title_hl(d, title, 262, 48 if len(title) < 26 else 44, 780)
         person(im, d, *SMALL_PERSON)
-        photo_band(im, d, photo, 404, 260, focus=focus, tag=stat)
-        y = 684
+        photo_band(im, d, photo, 404, 200, focus=focus, tag=stat)
+        y = 626
     else:
         title_hl(d, title, 262, 48 if len(title) < 26 else 44, 680)
         person(im, d, 735, 150, 320)
@@ -747,8 +755,8 @@ def list_post(n, slug, pill_text, title, points, note, cap, pill_bg=BLUE, pill_f
     gap = 14
     bh = int((end - y - gap * (rows - 1)) / rows)
     if photo:
-        fh = font({3: 34, 4: 30}.get(rows, 27)); fs = font({3: 26, 4: 22}.get(rows, 20), False)
-        fn = font({3: 40, 4: 34}.get(rows, 30)); cs = {3: 64, 4: 54}.get(rows, 46); sp = 1.3
+        fh = font({3: 38, 4: 32}.get(rows, 30)); fs = font({3: 32, 4: 26}.get(rows, 24), False)
+        fn = font({3: 44, 4: 36}.get(rows, 30)); cs = {3: 68, 4: 56}.get(rows, 46); sp = 1.3
     else:
         fh = font({3: 38, 4: 34}.get(rows, 31)); fs = font({3: 29, 4: 26}.get(rows, 24), False)
         fn = font({3: 46, 4: 40}.get(rows, 34)); cs = {3: 76, 4: 64}.get(rows, 54); sp = 1.4
@@ -761,7 +769,12 @@ def list_post(n, slug, pill_text, title, points, note, cap, pill_bg=BLUE, pill_f
         tx = 76 + cs + 28
         ty = y + (18 if (rows < 5 and not photo) else 12)
         d.text((tx, ty), head, font=fh, fill=BLUE)
-        draw_text(d, (tx, ty + fh.size + 10), desc, fs, INK, maxw=W - 48 - tx - 24, spacing=sp)
+        maxw = W - 48 - tx - 24
+        fd = fs
+        if photo:  # 枠に収まるまで説明の文字を小さくする(大きめから始める)
+            while fd.size > 20 and len(wrap(desc, fd, maxw)) * fd.size * sp + fh.size + 10 + 12 + 10 > bh:
+                fd = font(fd.size - 2, False)
+        draw_text(d, (tx, ty + fh.size + 10), desc, fd, INK, maxw=maxw, spacing=sp)
         y += bh + gap
     if source:
         f = font(21, False)
