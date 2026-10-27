@@ -1,0 +1,91 @@
+name: kitano-ig-weather
+
+# 香芝市周辺の週間天気(気象庁)をリールで投稿する。通常の1日3本とは別の追加投稿で、3日に1回・朝6時。
+# 起動は claude.ai の定期ルーティン(毎朝6:00)から workflow_dispatch。3日たったかは post_weather.py が判定する。
+# schedule は予備: ルーティンが失敗した日だけ動く(6:00〜9:00の間だけ。遅れて昼や夜に出すことはない)。
+on:
+  schedule:
+    - cron: "30 21 * * *"   # 6:30 JST 予備
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "投稿せず画像・動画を作るだけなら true"
+        required: false
+        default: "false"
+      force:
+        description: "3日たっていなくても今日投稿するなら true"
+        required: false
+        default: "false"
+
+concurrency:
+  group: kitano-ig-post
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  weather:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      TZ: Asia/Tokyo
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q requests pillow numpy
+      - name: 今日は投稿する日か
+        id: due
+        run: |
+          ARGS=""
+          if [ "${{ github.event_name }}" = "schedule" ]; then ARGS="--backup"; fi
+          if [ "${{ github.event.inputs.force }}" = "true" ] || [ "${{ github.event.inputs.dry_run }}" = "true" ]; then ARGS="$ARGS --force"; fi
+          OUT=$(python post_weather.py --check $ARGS)
+          echo "$OUT"; echo "$OUT" >> "$GITHUB_STEP_SUMMARY"
+          if [ "$OUT" = "DUE" ]; then echo "go=1" >> "$GITHUB_OUTPUT"; fi
+      - name: 非公開のBGMを取り込む
+        if: ${{ steps.due.outputs.go == '1' }}
+        uses: actions/checkout@v4
+        with:
+          repository: fujimori-ui/kitano-ig-private
+          token: ${{ secrets.PHOTOS_TOKEN }}
+          path: private
+      - name: 天気の画像・動画を作る
+        id: make
+        if: ${{ steps.due.outputs.go == '1' }}
+        run: |
+          set -e
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg > /dev/null
+          mkdir -p music/private && cp private/music/* music/private/
+          OUT=$(python make_weather.py)
+          echo "$OUT"
+          echo "name=$(echo "$OUT" | grep '^NAME' | sed 's/^NAME //')" >> "$GITHUB_OUTPUT"
+      - name: weather/ を公開(Instagram が公開URLで取りに来るため先に push)
+        if: ${{ steps.due.outputs.go == '1' && github.event.inputs.dry_run != 'true' }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -- music_log.json 2>/dev/null || true   # 天気の選曲記録は残さない
+          python post_weather.py --cleanup
+          git add -A weather
+          git commit -m "天気 ${{ steps.make.outputs.name }} [skip ci]"
+          git pull --rebase origin main
+          git push
+      - name: Instagram に投稿
+        if: ${{ steps.due.outputs.go == '1' }}
+        env:
+          KITANO_IG_USER_ID: ${{ secrets.KITANO_IG_USER_ID }}
+          KITANO_IG_ACCESS_TOKEN: ${{ secrets.KITANO_IG_ACCESS_TOKEN }}
+        run: |
+          ARGS=""
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then ARGS="--dry-run"; fi
+          python post_weather.py --post ${{ steps.make.outputs.name }} $ARGS
+      - name: state.json を書き戻す
+        if: ${{ steps.due.outputs.go == '1' && github.event.inputs.dry_run != 'true' }}
+        run: |
+          git add state.json
+          git diff --cached --quiet || git commit -m "Update state (weather) [skip ci]"
+          git pull --rebase origin main
+          git push
