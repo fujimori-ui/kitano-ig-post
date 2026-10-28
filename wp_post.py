@@ -186,6 +186,8 @@ def post_for(slug, state, when=None):
         rec["wp"] = existing
         return existing
     ig_url = rec.get("url", "")
+    if not when and rec.get("date"):
+        when = rec["date"].replace(" ", "T") + ":00"   # サイトの日付は必ず Instagram の投稿日時に合わせる
     title = title_for(slug)
     mid = upload_image(slug, title)
     payload = {
