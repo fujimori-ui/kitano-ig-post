@@ -277,6 +277,19 @@ def main():
     except Exception as e:
         gbp += f" | ⚠ マイビジネス投稿に失敗: {str(e)[:160]}"
         log(f"⚠ マイビジネス投稿に失敗(Instagram は完了): {e}")
+    # ホームページの「新着情報」(ブログ)にも同じ内容を投稿(2026-10-29〜。鍵がある時だけ。失敗しても止めない)
+    try:
+        import wp_post
+        if wp_post.configured() and state.get("wp_auto", True):
+            wurl = wp_post.post_for(item, state)
+            STATE.write_text(json.dumps(state, ensure_ascii=False, indent=1), encoding="utf-8")
+            gbp += f" | 新着情報に投稿: {wurl}"
+            log(f"ホームページの新着情報に投稿: {wurl}")
+        else:
+            log("新着情報への自動投稿はオフ(Secrets KITANO_WP_APP_PASS が無い、または state.json の wp_auto が false)")
+    except Exception as e:
+        gbp += f" | ⚠ 新着情報への投稿に失敗: {str(e)[:160]}"
+        log(f"⚠ 新着情報への投稿に失敗(Instagram は完了): {e}")
     todo =[s for s in all_items() if s not in state["posted"]]
     stock = " ".join(f"{CATEGORY_NAMES[c]}{n}" for c, n in
                      sorted(((c, len([s for s in todo if category(s) == c])) for c in set(map(category, todo))), key=lambda x: -x[1]))

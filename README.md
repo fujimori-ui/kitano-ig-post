@@ -25,6 +25,18 @@ Instagram に1本投稿するたびに、`gbp_export.py` が同じ内容の「�
   キーの取り直しは `~/google_ads/get_token_gdrive.py`(URLを auth_url_gdrive.txt に書き、ブラウザで許可すると Secrets 登録と投稿済みぶんの保存まで自動)
 - 手元で試す: `python3 gbp_export.py --test 13_amadoi`(gbp_preview/ に書き出すだけ) / `--one 13_amadoi` / `--backfill`(投稿済みで未保存のものを全部)
 
+## ホームページの「新着情報」にも自動投稿(2026-10-29〜)
+
+Instagram に1本投稿するたびに、`wp_post.py` が同じ内容を https://www.kashiba-yanereform.com/news/ (カテゴリ「ブログ」)にも投稿します。
+- 題名 = 自動生成ネタは JSON の title、手作りネタは本文の1行目(絵文字を外して40字まで)
+- 本文 = ハッシュタグ無しの本文(連絡先の定型ブロックより前)＋ Instagram の埋め込み(リールがその場で再生できる)＋ Instagram へのリンク
+- アイキャッチ = `gbp_img/NN_slug.jpg`(1200×900 横長。マイビジネス用と同じ)
+- URL = `/news/ig-NN-slug/`。投稿済みは `state.json` の `wp` に記録(同じネタを二度投稿しない)
+- 認証 = WordPress のアプリケーションパスワード(ユーザー admin_kitano、名前「kitano-ig-post(インスタ→新着情報 自動投稿)」)。Secrets `KITANO_WP_APP_PASS`。無効にしたら管理画面 > プロフィール で発行し直して Secrets を更新
+- 止めたいとき: `python3 wp_post.py --auto off`(state.json の `wp_auto`)。Instagram 投稿は止まらない
+- 手元で試す: `KITANO_WP_APP_PASS=... python3 wp_post.py --check` / `--test 13_amadoi`(表示だけ) / `--one 13_amadoi` / `--backfill`(投稿済みでまだ無いものを投稿日のまま全部)
+- サイト側: 新着情報の一覧(トップ・/news/・カテゴリ)は日付の新しい順に直した(2026-10-29、テーマ index.php / archive-news.php / taxonomy-category_news.php)
+
 ## ネタの自動作成(2026-10-26〜)
 
 毎週月曜5:00に claude.ai のルーティン「北野工作所IG: 毎週月曜 来週分21本を自動作成→メール報告」(trig_01SV6ZwBzUZry2VyU4opVGSW)が動き、
