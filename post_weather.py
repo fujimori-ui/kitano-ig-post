@@ -67,7 +67,17 @@ def main():
     state.setdefault("weather", {})[datetime.date.today().isoformat()] = {
         "name": name, "time": time.strftime("%H:%M"), "media_id": mid, "url": url}
     STATE.write_text(json.dumps(state, ensure_ascii=False, indent=1), encoding="utf-8")
-    log(f"RESULT: POSTED 天気 {name} | {url} | 次回は次の{'水' if datetime.date.today().weekday() == 6 else '日'}曜日の朝6時")
+    web = ""
+    try:   # ホームページの新着情報にも(通常の投稿と同じ。失敗しても Instagram は完了なので止めない)
+        import wp_post
+        if wp_post.configured() and state.get("wp_auto", True):
+            rec = state["weather"][datetime.date.today().isoformat()]
+            rec["wp"] = wp_post.post_weather(name, url, time.strftime("%Y-%m-%dT%H:%M:00"))
+            STATE.write_text(json.dumps(state, ensure_ascii=False, indent=1), encoding="utf-8")
+            web = f" | 新着情報に投稿: {rec['wp']}"
+    except Exception as e:
+        web = f" | ⚠ 新着情報への投稿に失敗: {str(e)[:160]}"
+    log(f"RESULT: POSTED 天気 {name} | {url}{web} | 次回は次の{'水' if datetime.date.today().weekday() == 6 else '日'}曜日の朝6時")
 
 
 if __name__ == "__main__":

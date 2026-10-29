@@ -17,6 +17,7 @@ post_ig.py が Instagram への投稿に成功したあとに post_for() を呼�
   python wp_post.py --test 13_amadoi     # 送る内容(題名・本文HTML)を表示するだけ
   python wp_post.py --one 13_amadoi      # その1本を今すぐ投稿(Instagram 投稿済みのもの)
   python wp_post.py --backfill           # Instagram 投稿済みで新着情報にまだ無いものを古い順に全部
+  python wp_post.py --weather weather_YYYYMMDD  # 天気の投稿を新着情報へ(Instagram 投稿済みのもの)
   python wp_post.py --auto on|off        # 毎回の自動投稿のオン/オフ(state.json の wp_auto。初期はオン)
 """
 import json, os, re, sys, time
@@ -94,9 +95,9 @@ def title_for(slug):
     return clean_title(t) or slug
 
 
-def body_text(slug):
+def body_text(slug, folder=POSTS):
     """ハッシュタグ無し・連絡先の定型ブロック(────より後ろ)無しの本文"""
-    raw = (POSTS / f"{slug}.txt").read_text(encoding="utf-8").strip()
+    raw = (folder / f"{slug}.txt").read_text(encoding="utf-8").strip()
     head = raw.split("────", 1)[0]
     lines = [ln for ln in head.split("\n") if not ln.strip().startswith("#")]
     text = "\n".join(lines).strip()
@@ -109,8 +110,8 @@ def _esc(s):
     return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
-def body_html(slug, ig_url):
-    paras = [p for p in body_text(slug).split("\n\n") if p.strip()]
+def body_html(slug, ig_url, folder=POSTS):
+    paras = [p for p in body_text(slug, folder).split("\n\n") if p.strip()]
     html = "\n".join("<p>" + "<br>\n".join(_esc(ln) for ln in p.split("\n")) + "</p>" for p in paras)
     if ig_url:
         html += (
@@ -132,17 +133,17 @@ def wp_slug(slug):
 
 
 # ---------------- 画像 ----------------
-def image_path(slug):
+def image_path(slug, folder=POSTS):
     p = IMG_DIR / f"{slug}.jpg"
     if not p.exists():
         import gbp_export
         IMG_DIR.mkdir(exist_ok=True)
-        p.write_bytes(gbp_export.gbp_image(slug))
+        p.write_bytes(gbp_export.gbp_image(slug, folder=folder))
     return p
 
 
-def upload_image(slug, title):
-    p = image_path(slug)
+def upload_image(slug, title, folder=POSTS):
+    p = image_path(slug, folder)
     data = p.read_bytes()
     import requests
     r = requests.post(WP + "/wp/v2/media", auth=_auth(), data=data, timeout=180, headers={
@@ -207,6 +208,22 @@ def post_for(slug, state, when=None):
     return link
 
 
+def post_weather(name, ig_url, when=None):
+    """天気の投稿(weather/weather_YYYYMMDD)も新着情報へ(ユーザー指示 2026-10-30「Webへの投稿反映もいっしょに」)。
+    post_weather.py が Instagram 投稿のあとに呼ぶ。題名は本文の1行目(例: 香芝市周辺の週間天気（11/1発表）)"""
+    existing = find_existing(name)
+    if existing:
+        return existing
+    folder = HERE / "weather"
+    title = clean_title((folder / f"{name}.txt").read_text(encoding="utf-8").strip().split("\n", 1)[0]) or name
+    mid = upload_image(name, title, folder)
+    payload = {"title": title, "content": body_html(name, ig_url, folder), "status": "publish",
+               "slug": wp_slug(name), "featured_media": mid, "category_news": [category_id()]}
+    if when:
+        payload["date"] = when
+    return _req("POST", "/wp/v2/news", json=payload)["link"]
+
+
 # ---------------- CLI ----------------
 def main():
     state = json.loads(STATE.read_text(encoding="utf-8"))
@@ -233,6 +250,15 @@ def main():
         slug = args[args.index("--one") + 1]
         link = post_for(slug, state)
         STATE.write_text(json.dumps(state, ensure_ascii=False, indent=1), encoding="utf-8")
+        log(f"投稿しました: {link}")
+        return
+    if "--weather" in args:
+        name = args[args.index("--weather") + 1]
+        rec = next((r for d, r in sorted(state.get("weather", {}).items()) if r.get("name") == name), {})
+        link = post_weather(name, rec.get("url", ""))
+        if rec:
+            rec["wp"] = link
+            STATE.write_text(json.dumps(state, ensure_ascii=False, indent=1), encoding="utf-8")
         log(f"投稿しました: {link}")
         return
     if "--backfill" in args:

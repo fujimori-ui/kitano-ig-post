@@ -82,10 +82,10 @@ def gbp_text(slug):
 
 
 # ---------------- 画像 ----------------
-def gbp_image(slug, size=(1200, 900)):
+def gbp_image(slug, size=(1200, 900), folder=None):
     """投稿画像(4:5)を 4:3 の横長に。中央に元画像、まわりは同じ画像をぼかして敷く(左右が切れない)"""
     from PIL import Image, ImageFilter, ImageEnhance
-    src = Image.open(POSTS / f"{slug}.jpg").convert("RGB")
+    src = Image.open((folder or POSTS) / f"{slug}.jpg").convert("RGB")
     W, H = size
     # 背景: 元画像を画面いっぱいに拡大 → ぼかし → 少し明るく
     scale = max(W / src.width, H / src.height)

@@ -73,11 +73,12 @@ jobs:
           git commit -m "天気 ${{ steps.make.outputs.name }} [skip ci]"
           git pull --rebase origin main
           git push
-      - name: Instagram に投稿
+      - name: Instagram に投稿(＋ホームページの新着情報へ)
         if: ${{ steps.due.outputs.go == '1' }}
         env:
           KITANO_IG_USER_ID: ${{ secrets.KITANO_IG_USER_ID }}
           KITANO_IG_ACCESS_TOKEN: ${{ secrets.KITANO_IG_ACCESS_TOKEN }}
+          KITANO_WP_APP_PASS: ${{ secrets.KITANO_WP_APP_PASS }}   # ホームページの新着情報にも投稿(2026-10-30〜)
         run: |
           ARGS=""
           if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then ARGS="--dry-run"; fi
