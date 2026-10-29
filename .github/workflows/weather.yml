@@ -1,7 +1,7 @@
 name: kitano-ig-weather
 
-# 香芝市周辺の週間天気(気象庁)をリールで投稿する。通常の1日3本とは別の追加投稿で、3日に1回・朝6時。
-# 起動は claude.ai の定期ルーティン(毎朝6:00)から workflow_dispatch。3日たったかは post_weather.py が判定する。
+# 香芝市周辺の週間天気(気象庁)をリールで投稿する。通常の1日3本とは別の追加投稿で、日曜日と水曜日の朝6時。
+# 起動は claude.ai の定期ルーティン(毎朝6:00)から workflow_dispatch。日曜か水曜かは post_weather.py が判定する。
 # schedule は予備: ルーティンが失敗した日だけ動く(6:00〜9:00の間だけ。遅れて昼や夜に出すことはない)。
 on:
   schedule:
@@ -13,7 +13,7 @@ on:
         required: false
         default: "false"
       force:
-        description: "3日たっていなくても今日投稿するなら true"
+        description: "日曜・水曜以外でも今日投稿するなら true"
         required: false
         default: "false"
 

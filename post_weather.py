@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """香芝市周辺の週間天気を Instagram にリールで投稿する(通常の1日3本とは別の追加投稿)。
 
-3日に1回、朝6時(ユーザー指示 2026-10-28)。ルーティンは毎朝6時に weather.yml を起動し、
-ここで「前回の天気投稿から3日たったか」を判定する(たっていなければ何もしない)。
+毎週 日曜日と水曜日の朝6時(ユーザー指示 2026-10-30。それまでは3日に1回)。ルーティンは毎朝6時に
+weather.yml を起動し、ここで「今日が日曜か水曜か」を判定する(ちがう日は何もしない)。
 画像・動画は make_weather.py が weather/ に作る(posts/ に置くと通常の順番待ちに混ざるため別フォルダ)。
 投稿の記録は state.json の "weather"(日付→URL)。
 
@@ -17,7 +17,7 @@ from post_ig import load_state, log, publish, STATE
 HERE = Path(__file__).parent
 WDIR = HERE / "weather"
 RAW = "https://raw.githubusercontent.com/fujimori-ui/kitano-ig-post/main/weather/"
-EVERY = 3                    # 何日に1回か
+DAYS = {6: "日", 2: "水"}     # 投稿する曜日(datetime の weekday: 月=0 … 日=6)
 WINDOW = (6 * 60, 9 * 60)    # GitHub の予備起動はこの時間内(6:00〜9:00)だけ動く(遅れて昼や夜に出さない)
 
 
@@ -30,12 +30,9 @@ def due(state, force=False, backup=False):
         m = time.localtime().tm_hour * 60 + time.localtime().tm_min
         if not WINDOW[0] <= m < WINDOW[1]:
             return False, f"予備起動が時間外です({time.strftime('%H:%M')})"
-    if force or not done:
+    if force or today.weekday() in DAYS:
         return True, ""
-    gap = (today - datetime.date.fromisoformat(done[-1])).days
-    if gap < EVERY:
-        return False, f"前回({done[-1]})から{gap}日。{EVERY}日に1回なので今日はお休みです"
-    return True, ""
+    return False, "天気は日曜日と水曜日だけなので今日はお休みです"
 
 
 def main():
@@ -70,7 +67,7 @@ def main():
     state.setdefault("weather", {})[datetime.date.today().isoformat()] = {
         "name": name, "time": time.strftime("%H:%M"), "media_id": mid, "url": url}
     STATE.write_text(json.dumps(state, ensure_ascii=False, indent=1), encoding="utf-8")
-    log(f"RESULT: POSTED 天気 {name} | {url} | 次回は{EVERY}日後の朝6時")
+    log(f"RESULT: POSTED 天気 {name} | {url} | 次回は次の{'水' if datetime.date.today().weekday() == 6 else '日'}曜日の朝6時")
 
 
 if __name__ == "__main__":
