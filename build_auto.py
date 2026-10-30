@@ -62,8 +62,12 @@ def check_item(it, errors, photos=None):
     ph = it.get("photo", "")
     if lay != "quotes" and not ph:
         errors.append(f"{slug}: photo(写真)は必ず入れる(AUTO_GENERATE.md の一覧から選ぶ)")
-    if ph and photos is not None and ph not in photos:
-        errors.append(f"{slug}: photo「{ph}」は photos_hd に無い(AUTO_GENERATE.md の一覧から選ぶ)")
+    for one in (ph.split("+") if ph else []):   # "a.jpg+b.jpg@0.3" で複数の写真を横に並べられる
+        one = one.partition("@")[0]
+        if photos is not None and one not in photos:
+            errors.append(f"{slug}: photo「{one}」は photos_hd に無い(AUTO_GENERATE.md の一覧から選ぶ)")
+        if one.startswith("pres_office_"):
+            errors.append(f"{slug}: pres_office_* は帯に入れると顔のアップになるので使わない(ユーザー指示 2026-10-30)")
     for lb in it.get("labels", []) or []:
         if len(lb) != 3 or len(lb[0]) > 14 or not all(isinstance(v, (int, float)) and 0 <= v <= 1 for v in lb[1:]):
             errors.append(f"{slug}: labels の各要素は [名前(14文字まで), x(0〜1), y(0〜1)]: {lb}")

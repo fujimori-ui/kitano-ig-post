@@ -1,0 +1,62 @@
+{
+ "20_mame_noboranai": {
+  "head": "fade",
+  "foot": "fade_in",
+  "big": "wipe_r",
+  "small": "slide_l",
+  "order": "top",
+  "speed": 1.25,
+  "extra": 0,
+  "family": "blocks"
+ },
+ "24_news_tenken_3bai": {
+  "head": "down",
+  "foot": "slide_r",
+  "big": "wipe_r",
+  "small": "rise",
+  "order": "small_first",
+  "speed": 1.0,
+  "extra": 0,
+  "family": "blocks"
+ },
+ "25_news_kimari_monku": {
+  "head": "slide_l",
+  "foot": "slide_r",
+  "big": "curtain",
+  "small": "pop",
+  "order": "bottom",
+  "speed": 1.25,
+  "extra": 1.5,
+  "family": "blocks"
+ },
+ "33_company_106": {
+  "head": "down",
+  "foot": "fade_in",
+  "big": "curtain",
+  "small": "slide_l",
+  "order": "small_first",
+  "speed": 0.8,
+  "extra": 0,
+  "family": "blocks"
+ },
+ "41_amadoi_naka": {
+  "head": "slide_l",
+  "foot": "fade_in",
+  "big": "slide_l",
+  "small": "wipe_flat",
+  "order": "big_first",
+  "speed": 1.0,
+  "extra": 0,
+  "family": "blocks"
+ },
+ "54_komari_mune_bankin_sabi": {
+  "head": "slide_l",
+  "foot": "up_in",
+  "big": "zoom",
+  "small": "pop",
+  "order": "small_first",
+  "speed": 1.25,
+  "extra": 0,
+  "family": "blocks"
+ }
+}

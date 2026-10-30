@@ -5,7 +5,7 @@
 """
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 from pathlib import Path
-import textwrap
+import re, textwrap
 
 HERE = Path(__file__).parent
 OUT = HERE / "posts"; OUT.mkdir(exist_ok=True)
@@ -578,8 +578,9 @@ def mame_post(n, slug, no, title, points, note, cap, photo=None):
     pill(d, f"屋根の豆知識  No.{no}", bg=YELLOW, fg=INK)
     title_hl(d, title, 262, 48, 680)
     person(im, d, 735, 150, 320)
-    y = 492; fn = font(46); fh = font(38); fs = font(29, False)
+    y = 492; fn = font(48); fh = font(42); fs = font(33, False)
     for i, (head, desc) in enumerate(points):
+        desc = short(desc)
         lines = wrap(desc, fs, 830); bh = max(170, 80 + len(lines) * 42 + 24)
         rounded(d, [48, y, W - 48, y + bh], 22, LIGHT)
         d.ellipse([76, y + 26, 76 + 76, y + 26 + 76], fill=BLUE)
@@ -687,17 +688,25 @@ DEFAULT_PHOTOS = {
     "price": "work_01_sealing.jpg", "flow": "truck_03.jpg", "voice": "stock_voice_sign.jpg",
     "mame_timing": "work_03_check.jpg", "mame_noboranai": "work_05_roof.jpg", "mame_houmon": "work_03_check.jpg",
     "mame_taifu": "works_post-85_0.png", "sign_10to15": "news_post-81-3-2-2-2-2-2-2_3.png",
-    "news_tenken_3bai": "work_07_caulk.jpg", "news_kimari_monku": "stock_door_sales.jpg@0.3+stock_046_woman_door_greets_worker.jpg@0.15+stock_337_woman_surprised.jpg@0.25", "news_kasai_hoken": "pres_office_02.jpg",
+    "news_tenken_3bai": "work_07_caulk.jpg", "news_kimari_monku": "stock_door_sales.jpg@0.3+stock_046_woman_door_greets_worker.jpg@0.15+stock_337_woman_surprised.jpg@0.25", "news_kasai_hoken": "stock_455_fire_insurance_doc.jpg",
     "season_fuyumae": "DSC_0747.png", "mame_mune_bankin": "works_post-85-4-2-2_0.png", "mame_yanezai_jiki": "works_post-85_1.png",
-    "news_bundenban": "pres_office_03.jpg", "season_jikka": "works_post-85-4-2_0.png", "mame_cooling_off": "pres_office_04.jpg",
+    "news_bundenban": "stock_046_woman_door_greets_worker.jpg@0.15+stock_337_woman_surprised.jpg@0.25", "season_jikka": "works_post-85-4-2_0.png", "mame_cooling_off": "stock_251_tablet_writing.jpg",
     "company_106": "truck_01.jpg", "company_riyuu5": "work_06_roof2.jpg", "company_shikaku": "work_02_bankin.jpg",
-    "faq_1": "pres_office_05.jpg", "faq_2": "pres_office_06.jpg", "case_mitsumori_fuan": "work_02_bankin.jpg",
+    "faq_1": "stock_330_worker_consult_desk.jpg@0.15", "faq_2": "stock_305_worker_consult_elderly.jpg", "case_mitsumori_fuan": "work_02_bankin.jpg",
     "case_akiya": "1776381380801.png", "company_dekiru": "works_post-85-4_1.png", "news_toiawase57": "truck_01.jpg",
     "company_access": "truck_02.jpg", "chuui_muryou_tenken": "work_04_check2.jpg", "chuui_kotowari_kata": "stock_door_sales.jpg",
     "chuui_oya_mamoru": "work_03_check.jpg", "chuui_mitsumori_mikata": "work_04_check2.jpg",
     "mame_amamori_genin": "news_post-81-3-2-2-2-2-2-2-2-2_0.png", "mame_cover_fukikae": "works_post-85-4-2-2_1.png",
     "mame_koke": "works_post-85-2_0.png", "mame_shikkui": "works_post-85-3_0.png",
 }
+
+def short(desc):
+    """画像に載せる説明は最初の1文だけ(くわしい説明は Instagram の本文に書いてある)。ユーザー指示 2026-10-30「文字数すくなめ」"""
+    t = desc.replace("\n", "")
+    m = re.match(r"^(.+?[。！？!?])", t)
+    if m and len(m.group(1)) < 8:   # 「はい。」だけだと意味が伝わらないので次の文までつなぐ
+        m = re.match(r"^(.+?[。！？!?].+?[。！？!?])", t) or m
+    return m.group(1) if m else t
 
 def photo_band(im, d, photo, y, h, focus=0.5, labels=None, tag=None):
     """写真の帯(幅984)。labels=[(文字, x, y)] で写真の上に名前札(x,y は帯内の px、1以下なら割合)。tag=(大きな数字, 説明) を左下に。
@@ -708,7 +717,7 @@ def photo_band(im, d, photo, y, h, focus=0.5, labels=None, tag=None):
         il.thumbnail((984 - 60, h - 24), Image.LANCZOS)
         im.paste(il, (48 + (984 - il.width) // 2, y + (h - il.height) // 2), il)
         return
-    if "+" in photo:
+    if "+" in photo or "@" in photo:
         # "a.jpg+b.jpg@0.2" … 複数の写真を横に並べる(@ のあとは縦位置。ユーザー指示 2026-10-30「訪問販売系の写真で構成」)
         names = photo.split("+"); gap = 8
         pw = (984 - gap * (len(names) - 1)) // len(names)
@@ -764,26 +773,49 @@ def list_post(n, slug, pill_text, title, points, note, cap, pill_bg=BLUE, pill_f
     end = 1108 if source else 1140
     gap = 14
     bh = int((end - y - gap * (rows - 1)) / rows)
+    # 文字は少なめ・大きめ(2026-10-30〜): 説明は最初の1文だけ、5個以上は見出しだけを大きく
     if photo:
-        fh = font({3: 38, 4: 32}.get(rows, 30)); fs = font({3: 32, 4: 26}.get(rows, 24), False)
-        fn = font({3: 44, 4: 36}.get(rows, 30)); cs = {3: 68, 4: 56}.get(rows, 46); sp = 1.3
+        fh = font({3: 44, 4: 38}.get(rows, 40)); fs = font({3: 34, 4: 30}.get(rows, 26), False)
+        fn = font({3: 48, 4: 40}.get(rows, 38)); cs = {3: 72, 4: 60}.get(rows, 56); sp = 1.3
     else:
-        fh = font({3: 38, 4: 34}.get(rows, 31)); fs = font({3: 29, 4: 26}.get(rows, 24), False)
-        fn = font({3: 46, 4: 40}.get(rows, 34)); cs = {3: 76, 4: 64}.get(rows, 54); sp = 1.4
+        fh = font({3: 44, 4: 40}.get(rows, 40)); fs = font({3: 34, 4: 31}.get(rows, 26), False)
+        fn = font({3: 50, 4: 44}.get(rows, 40)); cs = {3: 80, 4: 68}.get(rows, 60); sp = 1.4
+    points = [(h, "" if rows >= 5 else short(dsc)) for h, dsc in points]
     for i, (head, desc) in enumerate(points):
         rounded(d, [48, y, W - 48, y + bh], 22, LIGHT)
         top = 24 if (rows < 5 and not photo) else 14
         cy0 = y + (bh - cs) // 2 if (rows >= 5 or (photo and rows >= 4)) else y + top
+        if not desc:   # 見出しだけ: 丸も文字も枠の縦まん中に
+            cy0 = y + (bh - cs) // 2
         d.ellipse([76, cy0, 76 + cs, cy0 + cs], fill=BLUE)
         t = str(i + 1); d.text((76 + cs / 2 - fn.getlength(t) / 2, cy0 + cs * 0.08), t, font=fn, fill=WHITE)
         tx = 76 + cs + 28
         ty = y + (18 if (rows < 5 and not photo) else 12)
-        d.text((tx, ty), head, font=fh, fill=BLUE)
         maxw = W - 48 - tx - 24
+        if not desc:
+            fh1 = fh
+            while fh1.getlength(head) > maxw and fh1.size > 28:
+                fh1 = font(fh1.size - 2)
+            d.text((tx, y + (bh - fh1.size) // 2 - 4), head, font=fh1, fill=BLUE)
+            y += bh + gap
+            continue
+        d.text((tx, ty), head, font=fh, fill=BLUE)
         fd = fs
-        if photo:  # 枠に収まるまで説明の文字を小さくする(大きめから始める)
-            while fd.size > 20 and len(wrap(desc, fd, maxw)) * fd.size * sp + fh.size + 10 + 12 + 10 > bh:
+        if photo:  # 枠に収まるまで説明の文字を小さくする(小さくなりすぎるなら説明は出さず見出しだけ)
+            while fd.size > 26 and len(wrap(desc, fd, maxw)) * fd.size * sp + fh.size + 10 + 12 + 10 > bh:
                 fd = font(fd.size - 2, False)
+            if len(wrap(desc, fd, maxw)) * fd.size * sp + fh.size + 10 + 12 + 10 > bh:
+                print(f"LONG {n:02d}_{slug} | {desc} | {len(desc)}")
+                rounded(d, [48, y, W - 48, y + bh], 22, LIGHT)
+                cy1 = y + (bh - cs) // 2
+                d.ellipse([76, cy1, 76 + cs, cy1 + cs], fill=BLUE)
+                d.text((76 + cs / 2 - fn.getlength(t) / 2, cy1 + cs * 0.08), t, font=fn, fill=WHITE)
+                fh1 = fh
+                while fh1.getlength(head) > maxw and fh1.size > 28:
+                    fh1 = font(fh1.size - 2)
+                d.text((tx, y + (bh - fh1.size) // 2 - 4), head, font=fh1, fill=BLUE)
+                y += bh + gap
+                continue
         draw_text(d, (tx, ty + fh.size + 10), desc, fd, INK, maxw=maxw, spacing=sp)
         y += bh + gap
     if source:
@@ -871,9 +903,9 @@ def post25():
 
 def post26():
     list_post(26, "news_kasai_hoken", "注意喚起", "「火災保険で無料で直せます」\nと言われたら",
-        [("保険金が出なくても請求される", "「自己負担なし」のはずが、修理代や手数料を請求された相談があります。"),
+        [("保険金が出なくても請求される", "「自己負担なし」のはずが請求される例も。"),
          ("解約すると高額な違約金", "保険金の一定割合を違約金として求められた例も。"),
-         ("古くなっただけの傷みは対象外", "経年劣化を「台風のせい」と申請すると、保険金の返還やトラブルの元に。"),
+         ("古くなっただけの傷みは対象外", "「台風のせい」と偽る申請はトラブルの元。"),
          ("まずは自分の保険会社へ", "請求は本来ご自身でできます。代理店や保険会社に先に相談を。")],
         "風災の申請は、ご自身で。写真や見積りはお手伝いします",
         """「火災保険を使えば、屋根を無料で直せますよ」と言われたら☂️
@@ -1079,7 +1111,7 @@ def post35():
     list_post(35, "company_shikaku", "会社のこと", "資格と許可を持った\n職人が施工します",
         [("1級・2級 建築板金技能士", "国家資格。屋根・雨どい・外壁の板金工事の技能を国が認めたものです。"),
          ("建設業許可 奈良県知事(般-4)第18237号", "屋根工事業・板金工事業。許可には経営・技術・財産の要件があります。"),
-         ("宅地建物取引士・FP", "家の資産価値やお金の面からも、「今すぐ直すべきか」を一緒に考えます。"),
+         ("宅地建物取引士・FP", "お金の面からも「今直すべきか」を一緒に考えます。"),
          ("福祉住環境コーディネーター2級", "ご高齢の方が安心して暮らせる住まいの視点も大切にしています。")],
         "「資格を見せてほしい」と言っていただいて大丈夫です",
         """北野工作所は、資格と許可を持った職人が施工します📜
@@ -1100,9 +1132,9 @@ def post35():
 
 def post36():
     list_post(36, "faq_1", "よくある質問 ①", "「こんなこと聞いていいの?」\nよくいただく4つのご質問",
-        [("Q. 小さな工事でも頼めますか?", "はい。雨どいの掃除やトタンの部分補修など、小さな工事も喜んで対応します。"),
+        [("Q. 小さな工事でも頼めますか?", "はい。雨どい掃除や部分補修も喜んで。"),
          ("Q. 雨漏りの診断は本当に無料?", "はい。現地点検・診断・お見積りは、すべて無料です。"),
-         ("Q. 支払い方法は?", "現金一括のほか、50万円以上の工事は着工時50%・完了時50%の二分割もOK。"),
+         ("Q. 支払い方法は?", "現金一括のほか、50万円以上は二分割もOK。"),
          ("Q. 工事期間はどのくらい?", "小さな補修は1日程度〜、屋根全体の工事は1〜4週間が目安です。")],
         "「これくらいで頼んでいいのかな」こそ、お気軽に",
         """よくいただくご質問にお答えします①❓
@@ -1443,7 +1475,7 @@ def post51():
     list_post(51, "mame_cover_fukikae", "屋根の豆知識", "「カバー工法」と「葺き替え」\nどう違う?",
         [("カバー工法", "今の屋根の上に、新しい屋根材をかぶせます。はがす手間とゴミが少なく、工期も短め。スレートや金属屋根向き。"),
          ("葺き替え", "古い屋根を全部はがして、下地から新しくします。費用は高めですが、傷んだ下地も直せます。"),
-         ("瓦屋根はどうする?", "瓦は重ねられないので、ズレた所の積み直しや、下地だけ直す部分修理が基本です。"),
+         ("瓦屋根はどうする?", "瓦は重ねられないので、部分修理が基本です。"),
          ("選ぶ目安", "下地まで傷んでいるかどうか。屋根に上がって確認してから、両方の見積りをお出しします。")],
         "どちらが向いているかは、屋根を見て判断します",
         """【屋根の豆知識】「カバー工法」と「葺き替え」、どう違う?🏠
@@ -1492,8 +1524,8 @@ def post52():
 def post53():
     list_post(53, "mame_shikkui", "屋根の豆知識", "瓦屋根の「漆喰(しっくい)」\nって何?",
         [("棟の土を守る、白い部分", "瓦屋根のてっぺん(棟)の下には土が詰まっています。その土を雨から守るのが、白い漆喰です。"),
-         ("はがれると、土が流れる", "漆喰が割れたりはがれたりすると、中の土が雨で流れ出し、棟が崩れたり雨漏りの原因になります。"),
-         ("家のまわりに白いかけら", "庭や雨どいに白いかけらが落ちていたら、漆喰がはがれているサインです。"),
+         ("はがれると、土が流れる", "はがれると中の土が流れ、雨漏りの原因に。"),
+         ("家のまわりに白いかけら", "白いかけらが落ちていたら、はがれのサイン。"),
          ("直し方は「詰め直し」", "古い漆喰を取り、新しく詰め直します。崩れが大きければ、棟の積み直しになることも。")],
         "白いかけらを見つけたら、早めの点検がお得です",
         """【屋根の豆知識】瓦屋根の「漆喰(しっくい)」って何?🏯
@@ -1529,11 +1561,12 @@ def steps_post(n, slug, title, steps, note, cap, title_size=52, photo=None, focu
         bh = 220 if k >= 4 else 280
         photo_band(im, d, photo, 340, bh, focus=focus)
         y = 340 + bh + 44; gap = 130 if k >= 4 else 150; cs = 80 if k >= 4 else 90
-        fn = font(48 if k >= 4 else 54); ft = font(34 if k >= 4 else 36); fd = font(26, False)
+        fn = font(48 if k >= 4 else 54); ft = font(38 if k >= 4 else 42); fd = font(28 if k >= 4 else 31, False)
     else:
         y = 330 if k >= 4 else 360; gap = 200 if k >= 4 else 250; cs = 110
-        fn = font(64); ft = font(40); fd = font(29, False)
+        fn = font(64); ft = font(44); fd = font(33, False)
     for i, (t, desc) in enumerate(steps):
+        desc = short(desc)
         d.ellipse([48, y, 48 + cs, y + cs], fill=BLUE)
         s = str(i + 1); d.text((48 + cs / 2 - fn.getlength(s) / 2, y + cs * 0.13), s, font=fn, fill=WHITE)
         tx = 48 + cs + 32
@@ -1553,7 +1586,7 @@ def table_post(n, slug, title, rows, note, cap, footnote="", title_size=48, phot
     if photo:
         photo_band(im, d, photo, 340, 200, focus=focus)
         y = 560; rh = min(76, int(540 / k))
-        fl = font(30 if k <= 7 else 27, False); fp = font(34 if k <= 7 else 30)
+        fl = font(33 if k <= 6 else 29, False); fp = font(37 if k <= 6 else 32)
     else:
         y = 340; rh = min(92, int(760 / k))
         fl = font(34 if k <= 7 else 30, False); fp = font(38 if k <= 7 else 32)

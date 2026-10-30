@@ -13,6 +13,10 @@ on:
         description: "content のJSONファイル名を指定すると、その分の画像・動画を作り直す(例 auto_20261102.json)"
         required: false
         default: ""
+      videos:
+        description: "動画だけ作り直す(投稿名をスペース区切り、または --unposted で未投稿ぜんぶ。--renew を付けると動きを決め直す)"
+        required: false
+        default: ""
 
 concurrency:
   group: kitano-ig-post
@@ -46,8 +50,12 @@ jobs:
       - run: |
           sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg > /dev/null
           pip install -q pillow numpy requests
+      - name: 動画だけ作り直す(inputs.videos)
+        if: ${{ github.event.inputs.videos != '' }}
+        run: python make_videos.py ${{ github.event.inputs.videos }}
       - name: 画像を作る
         id: img
+        if: ${{ github.event.inputs.videos == '' }}
         run: |
           set -e
           if [ -n "${{ github.event.inputs.force }}" ]; then
@@ -81,9 +89,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add posts content music_log.json
+          git add posts content music_log.json anim_log.json
           git diff --cached --quiet && echo "変更なし" && exit 0
-          git commit -m "自動生成: ${{ steps.img.outputs.made }} [skip ci]"
+          git commit -m "自動生成: ${{ steps.img.outputs.made }}${{ github.event.inputs.videos }} [skip ci]"
           git pull --rebase origin main
           git push
           echo "RESULT: BUILT ${{ steps.img.outputs.made }}"
