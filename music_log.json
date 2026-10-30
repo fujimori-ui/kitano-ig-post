@@ -111,8 +111,8 @@
  },
  "23_sign_10to15": {
   "track": "audiostock_41606.mp3",
-  "start": 130.5,
-  "len": 10.4
+  "start": 132.0,
+  "len": 11.4
  },
  "24_news_tenken_3bai": {
   "track": "audiostock_1085297.mp3",
@@ -127,12 +127,12 @@
  "26_news_kasai_hoken": {
   "track": "audiostock_1085297.mp3",
   "start": 21.0,
-  "len": 8.6
+  "len": 9.5
  },
  "27_season_fuyumae": {
   "track": "audiostock_41606.mp3",
-  "start": 228.0,
-  "len": 8.0
+  "start": 53.0,
+  "len": 11.0
  },
  "28_mame_mune_bankin": {
   "track": "audiostock_1085297.mp3",
@@ -141,13 +141,13 @@
  },
  "29_mame_yanezai_jiki": {
   "track": "audiostock_41606.mp3",
-  "start": 3.5,
-  "len": 10.5
+  "start": 1.0,
+  "len": 11.0
  },
  "30_news_bundenban": {
   "track": "audiostock_1085297.mp3",
   "start": 41.0,
-  "len": 9.0
+  "len": 9.9
  },
  "31_season_jikka": {
   "track": "audiostock_41606.mp3",
@@ -157,7 +157,7 @@
  "32_mame_cooling_off": {
   "track": "audiostock_1085297.mp3",
   "start": 49.0,
-  "len": 9.0
+  "len": 8.0
  },
  "33_company_106": {
   "track": "audiostock_41606.mp3",
@@ -167,22 +167,22 @@
  "34_company_riyuu5": {
   "track": "audiostock_1085297.mp3",
   "start": 56.0,
-  "len": 9.5
+  "len": 10.5
  },
  "35_company_shikaku": {
   "track": "audiostock_41606.mp3",
-  "start": 118.0,
-  "len": 10.0
+  "start": 117.5,
+  "len": 10.5
  },
  "36_faq_1": {
   "track": "audiostock_1085297.mp3",
   "start": 3.0,
-  "len": 8.5
+  "len": 10.0
  },
  "37_faq_2": {
   "track": "audiostock_41606.mp3",
-  "start": 86.5,
-  "len": 9.0
+  "start": 87.0,
+  "len": 10.5
  },
  "38_case_mitsumori_fuan": {
   "track": "audiostock_1085297.mp3",
@@ -211,13 +211,13 @@
  },
  "43_blog_shimi": {
   "track": "audiostock_41606.mp3",
-  "start": 37.5,
-  "len": 9.0
+  "start": 228.0,
+  "len": 8.0
  },
  "44_news_toiawase57": {
   "track": "audiostock_1085297.mp3",
-  "start": 23.5,
-  "len": 11.0
+  "start": 23.0,
+  "len": 11.5
  },
  "45_company_access": {
   "track": "audiostock_41606.mp3",
@@ -227,7 +227,7 @@
  "46_chuui_muryou_tenken": {
   "track": "audiostock_1085297.mp3",
   "start": 29.0,
-  "len": 11.0
+  "len": 9.0
  },
  "47_chuui_kotowari_kata": {
   "track": "audiostock_41606.mp3",
@@ -236,8 +236,8 @@
  },
  "48_chuui_oya_mamoru": {
   "track": "audiostock_1085297.mp3",
-  "start": 34.0,
-  "len": 11.1
+  "start": 33.5,
+  "len": 10.0
  },
  "49_chuui_mitsumori_mikata": {
   "track": "audiostock_41606.mp3",
@@ -252,17 +252,17 @@
  "51_mame_cover_fukikae": {
   "track": "audiostock_41606.mp3",
   "start": 94.5,
-  "len": 10.0
+  "len": 11.0
  },
  "52_mame_koke": {
   "track": "audiostock_1085297.mp3",
   "start": 43.0,
-  "len": 11.0
+  "len": 9.7
  },
  "53_mame_shikkui": {
   "track": "audiostock_41606.mp3",
   "start": 180.5,
-  "len": 11.0
+  "len": 8.0
  },
  "54_komari_mune_bankin_sabi": {
   "track": "audiostock_1085297.mp3",
@@ -271,8 +271,8 @@
  },
  "55_company_yane_jumyou": {
   "track": "audiostock_41606.mp3",
-  "start": 110.5,
-  "len": 9.0
+  "start": 110.0,
+  "len": 9.5
  },
  "56_mame_amadoi_buhin": {
   "track": "audiostock_1085297.mp3",
@@ -281,23 +281,23 @@
  },
  "57_mame_yane_miwake": {
   "track": "audiostock_41606.mp3",
-  "start": 31.0,
-  "len": 9.5
+  "start": 33.5,
+  "len": 9.0
  },
  "58_mame_kasagi": {
   "track": "audiostock_1085297.mp3",
   "start": 25.0,
-  "len": 10.5
+  "len": 12.0
  },
  "59_mame_tani_bankin": {
   "track": "audiostock_41606.mp3",
   "start": 195.5,
-  "len": 9.5
+  "len": 8.5
  },
  "60_mame_namiita_sozai": {
   "track": "audiostock_1085297.mp3",
   "start": 35.5,
-  "len": 11.0
+  "len": 8.9
  },
  "61_mame_amamori_oukyu": {
   "track": "audiostock_41606.mp3",
@@ -307,82 +307,82 @@
  "62_mame_galva": {
   "track": "audiostock_1085297.mp3",
   "start": 54.5,
-  "len": 9.0
+  "len": 8.7
  },
  "63_chuui_saitama_shobun": {
   "track": "audiostock_41606.mp3",
   "start": 80.0,
-  "len": 10.0
+  "len": 8.5
  },
  "64_chuui_65sai_saita": {
   "track": "audiostock_1085297.mp3",
   "start": 57.5,
-  "len": 10.0
+  "len": 11.0
  },
  "65_chuui_kyutoki_tenken": {
   "track": "audiostock_41606.mp3",
-  "start": 124.0,
-  "len": 8.5
+  "start": 125.0,
+  "len": 9.0
  },
  "66_chuui_soudan_saki": {
   "track": "audiostock_1085297.mp3",
   "start": 2.0,
-  "len": 12.0
+  "len": 11.6
  },
  "67_chuui_kaetta_ato": {
   "track": "audiostock_41606.mp3",
   "start": 166.5,
-  "len": 11.0
+  "len": 9.5
  },
  "68_faq_tanomikata": {
   "track": "audiostock_1085297.mp3",
-  "start": 61.5,
-  "len": 8.0
+  "start": 14.5,
+  "len": 9.5
  },
  "69_faq_mitsumori_kotowari": {
   "track": "audiostock_41606.mp3",
   "start": 208.5,
-  "len": 8.5
+  "len": 11.0
  },
  "70_company_shashin_soudan": {
   "track": "audiostock_1085297.mp3",
   "start": 4.5,
-  "len": 9.5
+  "len": 10.0
  },
  "71_company_hajimete": {
   "track": "audiostock_41606.mp3",
-  "start": 8.5,
-  "len": 10.4
+  "start": 7.5,
+  "len": 10.0
  },
  "72_season_aki_tenken": {
   "track": "audiostock_1085297.mp3",
   "start": 7.0,
-  "len": 8.5
+  "len": 10.0
  },
  "73_season_veranda_haisui": {
   "track": "audiostock_41606.mp3",
   "start": 19.0,
-  "len": 9.5
+  "len": 8.5
  },
  "74_season_osouji_mado": {
   "track": "audiostock_1085297.mp3",
   "start": 9.5,
-  "len": 8.5
+  "len": 9.0
  },
  "75_komari_hafu": {
   "track": "audiostock_41606.mp3",
   "start": 42.5,
-  "len": 8.5
+  "len": 9.9
  },
  "76_komari_hisashi": {
   "track": "audiostock_1085297.mp3",
   "start": 12.0,
-  "len": 10.4
+  "len": 9.5
  },
  "77_jirei_amamori_bankin": {
   "track": "audiostock_41606.mp3",
-  "start": 53.0,
-  "len": 11.0
+  "start": 150.5,
+  "len": 8.5
  },
  "flyer_202610": {
   "track": "audiostock_41613.mp3",

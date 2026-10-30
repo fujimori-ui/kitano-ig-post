@@ -9,6 +9,26 @@
   "extra": 0,
   "family": "blocks"
  },
+ "22_mame_taifu": {
+  "family": "photo_first",
+  "head": "down",
+  "foot": "fade_in",
+  "big": "slide_l",
+  "small": "slide_r",
+  "order": "big_first",
+  "speed": 1.0,
+  "extra": 2.5
+ },
+ "23_sign_10to15": {
+  "family": "photo_first",
+  "head": "slide_l",
+  "foot": "fade_in",
+  "big": "slide_l",
+  "small": "pop",
+  "order": "big_first",
+  "speed": 1.0,
+  "extra": 3.0
+ },
  "24_news_tenken_3bai": {
   "head": "down",
   "foot": "slide_r",
@@ -29,6 +49,76 @@
   "extra": 1.5,
   "family": "blocks"
  },
+ "26_news_kasai_hoken": {
+  "family": "focus_items",
+  "head": "fade",
+  "foot": "slide_r",
+  "big": "wipe_r",
+  "small": "wipe_flat",
+  "order": "top",
+  "speed": 0.8,
+  "extra": 1.5
+ },
+ "27_season_fuyumae": {
+  "family": "scan_zoom",
+  "head": "down",
+  "foot": "fade_in",
+  "big": "wipe",
+  "small": "slide_r",
+  "order": "small_first",
+  "speed": 0.8,
+  "extra": 3.0
+ },
+ "28_mame_mune_bankin": {
+  "family": "blocks",
+  "head": "fade",
+  "foot": "up_in",
+  "big": "zoom",
+  "small": "slide_l",
+  "order": "bottom",
+  "speed": 1.25,
+  "extra": 2.0
+ },
+ "29_mame_yanezai_jiki": {
+  "family": "focus_items",
+  "head": "fade",
+  "foot": "slide_r",
+  "big": "curtain",
+  "small": "rise",
+  "order": "top",
+  "speed": 0.8,
+  "extra": 3.0
+ },
+ "30_news_bundenban": {
+  "family": "photo_first",
+  "head": "slide_l",
+  "foot": "up_in",
+  "big": "wipe_r",
+  "small": "slide_r",
+  "order": "big_first",
+  "speed": 1.0,
+  "extra": 1.5
+ },
+ "31_season_jikka": {
+  "family": "photo_first",
+  "head": "slide_l",
+  "foot": "slide_r",
+  "big": "wipe_r",
+  "small": "wipe_flat",
+  "order": "big_first",
+  "speed": 1.0,
+  "extra": 0
+ },
+ "32_mame_cooling_off": {
+  "family": "scan_zoom",
+  "head": "down",
+  "foot": "slide_r",
+  "big": "zoom",
+  "small": "slide_l",
+  "order": "small_first",
+  "speed": 1.0,
+  "extra": 0
+ },
  "33_company_106": {
   "head": "down",
   "foot": "fade_in",
@@ -38,6 +128,46 @@
   "speed": 0.8,
   "extra": 0,
   "family": "blocks"
+ },
+ "34_company_riyuu5": {
+  "family": "focus_items",
+  "head": "fade",
+  "foot": "slide_r",
+  "big": "wipe_r",
+  "small": "fade",
+  "order": "top",
+  "speed": 0.8,
+  "extra": 2.5
+ },
+ "35_company_shikaku": {
+  "family": "blocks",
+  "head": "slide_l",
+  "foot": "fade_in",
+  "big": "wipe",
+  "small": "wipe_flat",
+  "order": "bottom",
+  "speed": 1.25,
+  "extra": 2.5
+ },
+ "36_faq_1": {
+  "family": "focus_items",
+  "head": "down",
+  "foot": "slide_r",
+  "big": "zoom",
+  "small": "rise",
+  "order": "top",
+  "speed": 0.8,
+  "extra": 2.0
+ },
+ "37_faq_2": {
+  "family": "photo_first",
+  "head": "fade",
+  "foot": "up_in",
+  "big": "wipe_r",
+  "small": "slide_r",
+  "order": "big_first",
+  "speed": 1.0,
+  "extra": 2.5
  },
  "41_amadoi_naka": {
   "head": "slide_l",
@@ -49,6 +179,116 @@
   "extra": 0,
   "family": "blocks"
  },
+ "42_company_dekiru": {
+  "family": "scan_zoom",
+  "head": "slide_l",
+  "foot": "up_in",
+  "big": "curtain",
+  "small": "pop",
+  "order": "small_first",
+  "speed": 1.0,
+  "extra": 2.5
+ },
+ "43_blog_shimi": {
+  "family": "scan_zoom",
+  "head": "down",
+  "foot": "fade_in",
+  "big": "blinds",
+  "small": "slide_r",
+  "order": "small_first",
+  "speed": 1.25,
+  "extra": 0
+ },
+ "44_news_toiawase57": {
+  "family": "blocks",
+  "head": "down",
+  "foot": "fade_in",
+  "big": "slide_l",
+  "small": "wipe_flat",
+  "order": "bottom",
+  "speed": 1.25,
+  "extra": 3.0
+ },
+ "45_company_access": {
+  "family": "focus_items",
+  "head": "down",
+  "foot": "slide_r",
+  "big": "wipe",
+  "small": "slide_l",
+  "order": "top",
+  "speed": 0.8,
+  "extra": 2.0
+ },
+ "46_chuui_muryou_tenken": {
+  "family": "blocks",
+  "head": "slide_l",
+  "foot": "fade_in",
+  "big": "wipe",
+  "small": "pop",
+  "order": "bottom",
+  "speed": 1.25,
+  "extra": 1.0
+ },
+ "48_chuui_oya_mamoru": {
+  "family": "focus_items",
+  "head": "fade",
+  "foot": "up_in",
+  "big": "slide_l",
+  "small": "fade",
+  "order": "top",
+  "speed": 0.8,
+  "extra": 2.0
+ },
+ "49_chuui_mitsumori_mikata": {
+  "family": "photo_first",
+  "head": "fade",
+  "foot": "up_in",
+  "big": "wipe_r",
+  "small": "rise",
+  "order": "big_first",
+  "speed": 0.8,
+  "extra": 0.5
+ },
+ "50_mame_amamori_genin": {
+  "family": "blocks",
+  "head": "slide_l",
+  "foot": "up_in",
+  "big": "slide_l",
+  "small": "slide_l",
+  "order": "bottom",
+  "speed": 1.0,
+  "extra": 1.0
+ },
+ "51_mame_cover_fukikae": {
+  "family": "focus_items",
+  "head": "fade",
+  "foot": "up_in",
+  "big": "zoom",
+  "small": "rise",
+  "order": "top",
+  "speed": 0.8,
+  "extra": 3.0
+ },
+ "52_mame_koke": {
+  "family": "photo_first",
+  "head": "fade",
+  "foot": "slide_r",
+  "big": "curtain",
+  "small": "fade",
+  "order": "big_first",
+  "speed": 1.25,
+  "extra": 1.0
+ },
+ "53_mame_shikkui": {
+  "family": "scan_zoom",
+  "head": "down",
+  "foot": "fade_in",
+  "big": "wipe",
+  "small": "pop",
+  "order": "small_first",
+  "speed": 0.8,
+  "extra": 0
+ },
  "54_komari_mune_bankin_sabi": {
   "head": "slide_l",
   "foot": "up_in",
@@ -58,5 +298,235 @@
   "speed": 1.25,
   "extra": 0,
   "family": "blocks"
+ },
+ "55_company_yane_jumyou": {
+  "family": "photo_first",
+  "head": "fade",
+  "foot": "fade_in",
+  "big": "blinds",
+  "small": "rise",
+  "order": "big_first",
+  "speed": 1.0,
+  "extra": 0
+ },
+ "56_mame_amadoi_buhin": {
+  "family": "blocks",
+  "head": "slide_l",
+  "foot": "up_in",
+  "big": "blinds",
+  "small": "slide_l",
+  "order": "bottom",
+  "speed": 1.0,
+  "extra": 1.0
+ },
+ "57_mame_yane_miwake": {
+  "family": "focus_items",
+  "head": "fade",
+  "foot": "fade_in",
+  "big": "wipe_r",
+  "small": "slide_r",
+  "order": "top",
+  "speed": 0.8,
+  "extra": 1.0
+ },
+ "58_mame_kasagi": {
+  "family": "photo_first",
+  "head": "slide_l",
+  "foot": "slide_r",
+  "big": "curtain",
+  "small": "fade",
+  "order": "big_first",
+  "speed": 1.25,
+  "extra": 2.5
+ },
+ "59_mame_tani_bankin": {
+  "family": "scan_zoom",
+  "head": "down",
+  "foot": "fade_in",
+  "big": "wipe",
+  "small": "wipe_flat",
+  "order": "small_first",
+  "speed": 1.0,
+  "extra": 0.5
+ },
+ "60_mame_namiita_sozai": {
+  "family": "blocks",
+  "head": "down",
+  "foot": "up_in",
+  "big": "slide_l",
+  "small": "slide_l",
+  "order": "bottom",
+  "speed": 1.25,
+  "extra": 0
+ },
+ "61_mame_amamori_oukyu": {
+  "family": "focus_items",
+  "head": "fade",
+  "foot": "fade_in",
+  "big": "blinds",
+  "small": "pop",
+  "order": "top",
+  "speed": 0.8,
+  "extra": 0
+ },
+ "62_mame_galva": {
+  "family": "photo_first",
+  "head": "slide_l",
+  "foot": "slide_r",
+  "big": "wipe_r",
+  "small": "slide_r",
+  "order": "big_first",
+  "speed": 1.25,
+  "extra": 0
+ },
+ "63_chuui_saitama_shobun": {
+  "family": "scan_zoom",
+  "head": "down",
+  "foot": "slide_r",
+  "big": "blinds",
+  "small": "slide_r",
+  "order": "small_first",
+  "speed": 1.0,
+  "extra": 0.5
+ },
+ "64_chuui_65sai_saita": {
+  "family": "blocks",
+  "head": "slide_l",
+  "foot": "fade_in",
+  "big": "zoom",
+  "small": "wipe_flat",
+  "order": "bottom",
+  "speed": 1.25,
+  "extra": 2.5
+ },
+ "65_chuui_kyutoki_tenken": {
+  "family": "focus_items",
+  "head": "fade",
+  "foot": "slide_r",
+  "big": "slide_l",
+  "small": "slide_l",
+  "order": "top",
+  "speed": 0.8,
+  "extra": 1.0
+ },
+ "66_chuui_soudan_saki": {
+  "family": "photo_first",
+  "head": "fade",
+  "foot": "up_in",
+  "big": "curtain",
+  "small": "pop",
+  "order": "big_first",
+  "speed": 1.0,
+  "extra": 2.5
+ },
+ "67_chuui_kaetta_ato": {
+  "family": "scan_zoom",
+  "head": "down",
+  "foot": "fade_in",
+  "big": "blinds",
+  "small": "fade",
+  "order": "small_first",
+  "speed": 1.25,
+  "extra": 1.5
+ },
+ "68_faq_tanomikata": {
+  "family": "scan_zoom",
+  "head": "slide_l",
+  "foot": "up_in",
+  "big": "zoom",
+  "small": "fade",
+  "order": "small_first",
+  "speed": 1.0,
+  "extra": 1.5
+ },
+ "69_faq_mitsumori_kotowari": {
+  "family": "blocks",
+  "head": "slide_l",
+  "foot": "slide_r",
+  "big": "slide_l",
+  "small": "slide_r",
+  "order": "bottom",
+  "speed": 1.25,
+  "extra": 3.0
+ },
+ "70_company_shashin_soudan": {
+  "family": "focus_items",
+  "head": "down",
+  "foot": "up_in",
+  "big": "wipe_r",
+  "small": "wipe_flat",
+  "order": "top",
+  "speed": 0.8,
+  "extra": 2.0
+ },
+ "71_company_hajimete": {
+  "family": "photo_first",
+  "head": "fade",
+  "foot": "fade_in",
+  "big": "curtain",
+  "small": "pop",
+  "order": "big_first",
+  "speed": 1.0,
+  "extra": 0.5
+ },
+ "72_season_aki_tenken": {
+  "family": "scan_zoom",
+  "head": "down",
+  "foot": "slide_r",
+  "big": "zoom",
+  "small": "rise",
+  "order": "small_first",
+  "speed": 1.0,
+  "extra": 2.0
+ },
+ "73_season_veranda_haisui": {
+  "family": "blocks",
+  "head": "slide_l",
+  "foot": "up_in",
+  "big": "curtain",
+  "small": "wipe_flat",
+  "order": "bottom",
+  "speed": 1.25,
+  "extra": 0.5
+ },
+ "74_season_osouji_mado": {
+  "family": "focus_items",
+  "head": "fade",
+  "foot": "fade_in",
+  "big": "blinds",
+  "small": "fade",
+  "order": "top",
+  "speed": 0.8,
+  "extra": 1.0
+ },
+ "75_komari_hafu": {
+  "family": "blocks",
+  "head": "slide_l",
+  "foot": "up_in",
+  "big": "zoom",
+  "small": "rise",
+  "order": "bottom",
+  "speed": 1.25,
+  "extra": 1.0
+ },
+ "76_komari_hisashi": {
+  "family": "scan_zoom",
+  "head": "down",
+  "foot": "slide_r",
+  "big": "wipe",
+  "small": "slide_l",
+  "order": "small_first",
+  "speed": 1.0,
+  "extra": 1.5
+ },
+ "77_jirei_amamori_bankin": {
+  "family": "scan_zoom",
+  "head": "down",
+  "foot": "up_in",
+  "big": "wipe",
+  "small": "slide_l",
+  "order": "small_first",
+  "speed": 0.8,
+  "extra": 0.5
  }
 }
