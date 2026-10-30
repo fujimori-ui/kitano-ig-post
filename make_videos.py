@@ -71,8 +71,17 @@ SMALL_STYLES = ["rise", "fade", "slide_l", "slide_r", "pop", "wipe_flat"]
 ORDERS = ["top", "bottom", "big_first", "small_first"]
 
 
+# 出し直しで「違うアニメーションで」と言われた投稿は、ここで動きを指定する(ユーザー指示 2026-10-30)
+PATTERN_OVERRIDE = {
+    "25_news_kimari_monku": dict(head="slide_l", foot="slide_r", big="curtain", small="pop", order="bottom",
+                                 speed=1.25, extra=1.5),
+}
+
+
 def choose_pattern(slug):
     """投稿ごとに動かし方の組み合わせを決める(投稿名から決まるので作り直しても同じ)。"""
+    if slug in PATTERN_OVERRIDE:
+        return dict(PATTERN_OVERRIDE[slug])
     r = random.Random(zlib.crc32(slug.encode()) ^ 0x5eed)
     return dict(head=r.choice(HEAD_STYLES), foot=r.choice(FOOT_STYLES), big=r.choice(BIG_STYLES),
                 small=r.choice(SMALL_STYLES), order=r.choice(ORDERS), speed=r.choice([0.8, 1.0, 1.0, 1.25]),

@@ -687,7 +687,7 @@ DEFAULT_PHOTOS = {
     "price": "work_01_sealing.jpg", "flow": "truck_03.jpg", "voice": "stock_voice_sign.jpg",
     "mame_timing": "work_03_check.jpg", "mame_noboranai": "work_05_roof.jpg", "mame_houmon": "work_03_check.jpg",
     "mame_taifu": "works_post-85_0.png", "sign_10to15": "news_post-81-3-2-2-2-2-2-2_3.png",
-    "news_tenken_3bai": "work_07_caulk.jpg", "news_kimari_monku": "pres_office_01.jpg", "news_kasai_hoken": "pres_office_02.jpg",
+    "news_tenken_3bai": "work_07_caulk.jpg", "news_kimari_monku": "stock_door_sales.jpg@0.3+stock_046_woman_door_greets_worker.jpg@0.15+stock_337_woman_surprised.jpg@0.25", "news_kasai_hoken": "pres_office_02.jpg",
     "season_fuyumae": "DSC_0747.png", "mame_mune_bankin": "works_post-85-4-2-2_0.png", "mame_yanezai_jiki": "works_post-85_1.png",
     "news_bundenban": "pres_office_03.jpg", "season_jikka": "works_post-85-4-2_0.png", "mame_cooling_off": "pres_office_04.jpg",
     "company_106": "truck_01.jpg", "company_riyuu5": "work_06_roof2.jpg", "company_shikaku": "work_02_bankin.jpg",
@@ -708,8 +708,17 @@ def photo_band(im, d, photo, y, h, focus=0.5, labels=None, tag=None):
         il.thumbnail((984 - 60, h - 24), Image.LANCZOS)
         im.paste(il, (48 + (984 - il.width) // 2, y + (h - il.height) // 2), il)
         return
-    ph = cover(Image.open(HD / photo).convert("RGB"), 984, h, focus=focus)
-    im.paste(ph, (48, y))
+    if "+" in photo:
+        # "a.jpg+b.jpg@0.2" … 複数の写真を横に並べる(@ のあとは縦位置。ユーザー指示 2026-10-30「訪問販売系の写真で構成」)
+        names = photo.split("+"); gap = 8
+        pw = (984 - gap * (len(names) - 1)) // len(names)
+        for i, nm in enumerate(names):
+            nm, _, fc = nm.partition("@")
+            ph = cover(Image.open(HD / nm).convert("RGB"), pw, h, focus=float(fc) if fc else focus)
+            im.paste(ph, (48 + i * (pw + gap), y))
+    else:
+        ph = cover(Image.open(HD / photo).convert("RGB"), 984, h, focus=focus)
+        im.paste(ph, (48, y))
     for text, lx, ly in (labels or []):
         px = 48 + (lx * 984 if lx <= 1 else lx); py = y + (ly * h if ly <= 1 else ly)
         f = font(28); tw = f.getlength(text) + 36

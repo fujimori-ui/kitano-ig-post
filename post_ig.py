@@ -247,6 +247,8 @@ def main():
     mid, url = publish(user_id, token, image_url, caption, video_url, cover_url)
     old = state["posted"].get(item, {})
     state["posted"][item] = {"date": time.strftime("%Y-%m-%d %H:%M"), "media_id": mid, "url": url, "category": category(item)}
+    if old.get("wp"):
+        state["posted"][item]["wp_refresh"] = True   # 出し直し → ホームページの記事も新しい内容で上書き(wp_post.py)
     if slot:
         state["posted"][item]["slot"] = slot
     elif old.get("slot") and old.get("date", "").startswith(time.strftime("%Y-%m-%d")):

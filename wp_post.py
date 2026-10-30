@@ -168,11 +168,11 @@ def category_id():
     return CATEGORY_FALLBACK
 
 
-def find_existing(slug):
-    """同じ投稿名の記事が既にあれば、そのURLを返す(二重投稿しない)"""
+def find_existing(slug, with_id=False):
+    """同じ投稿名の記事が既にあれば、そのURL(with_id なら (id, URL))を返す(二重投稿しない)"""
     try:
         for p in _req("GET", f"/wp/v2/news&slug={wp_slug(slug)}&status=publish,draft"):
-            return p["link"]
+            return (p["id"], p["link"]) if with_id else p["link"]
     except Exception:
         pass
     return None
@@ -182,10 +182,10 @@ def post_for(slug, state, when=None):
     rec = state["posted"].get(slug, {})
     if rec.get("wp"):
         return rec["wp"]
-    existing = find_existing(slug)
-    if existing:
-        rec["wp"] = existing
-        return existing
+    existing = find_existing(slug, with_id=True)
+    if existing and not rec.get("wp_refresh"):
+        rec["wp"] = existing[1]
+        return existing[1]
     ig_url = rec.get("url", "")
     if not when and rec.get("date"):
         when = rec["date"].replace(" ", "T") + ":00"   # サイトの日付は必ず Instagram の投稿日時に合わせる
@@ -201,7 +201,10 @@ def post_for(slug, state, when=None):
     }
     if when:
         payload["date"] = when
-    p = _req("POST", "/wp/v2/news", json=payload)
+    # Instagram を出し直したとき(post_ig.py が wp_refresh を付ける)は、同じ記事を新しい画像・埋め込みで上書きする
+    # (ユーザー指示 2026-10-30「WEBブログも修正」。記事を増やさず URL もそのまま)
+    p = _req("POST", f"/wp/v2/news/{existing[0]}" if existing else "/wp/v2/news", json=payload)
+    rec.pop("wp_refresh", None)
     link = p["link"]
     state["posted"].setdefault(slug, {})["wp"] = link
     state["posted"][slug]["wp_id"] = p["id"]
