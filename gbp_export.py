@@ -22,7 +22,7 @@ post_ig.py が投稿に成功するたびに save_for_gbp() を呼び、ドラ�
   python gbp_export.py --backfill              # 投稿済みでまだドライブに無いものを全部保存
   python gbp_export.py --images [--force]      # API 自動投稿用の横長画像を gbp_img/ に書く(無いものだけ。--force で全部作り直し)
 """
-import datetime, io, json, os, sys, time
+import datetime, io, json, os, re, sys, time
 from pathlib import Path
 
 HERE = Path(__file__).parent
@@ -42,7 +42,8 @@ Instagram に自動投稿されるたびに、同じ内容の「マイビジネ�
 
 ■ 中身
 ・画像.jpg … マイビジネス推奨の横長(1200×900)に整えた画像
-・本文.txt … ハッシュタグを外し、リンク行をホームページURLに替えた本文(そのまま貼れます)
+・本文.txt … ハッシュタグ・電話番号・URLを外した本文(そのまま貼れます)
+  ※ マイビジネスは本文に電話番号があると「ポリシー違反」で止められます。電話番号は本文に足さないでください
 
 ■ スマホからの投稿手順(約1分)
 1. このフォルダの「本文.txt」を開く → 文章を全部コピー
@@ -59,15 +60,19 @@ Instagram に自動投稿されるたびに、同じ内容の「マイビジネ�
 
 # ---------------- 本文 ----------------
 def gbp_text(slug):
-    """IG の本文(txt)をマイビジネス用に。ハッシュタグ行を外し、プロフィールリンクの行をURLに替える。1500字に収める"""
+    """IG の本文(txt)をマイビジネス用に。ハッシュタグ・電話番号・URL の行を外す。1500字に収める
+    (マイビジネスは本文に電話番号があると「ポリシー違反」で投稿が止められる(2026-10-31)。
+     電話・ホームページは投稿のボタン(今すぐ電話/詳細)で付ける)"""
     raw = (POSTS / f"{slug}.txt").read_text(encoding="utf-8").strip()
     lines = []
     for ln in raw.split("\n"):
         s = ln.strip()
         if s.startswith("#"):                       # ハッシュタグの行は丸ごと外す
             continue
-        if "プロフィールのリンク" in s:              # IG だけの言い回し → ホームページURL
-            ln = f"🔗 ホームページ {SITE_URL}"
+        if "プロフィールのリンク" in s or "http" in s:   # IG だけの言い回し・URL → ボタンで代わり
+            continue
+        if re.search(r"0\d{1,4}[-‐ー−]\d{1,4}[-‐ー−]\d{3,4}", s):   # 電話番号の行
+            continue
         lines.append(ln)
     # 末尾の空行・区切り線の整理
     text = "\n".join(lines).strip()
