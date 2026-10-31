@@ -691,7 +691,7 @@ DEFAULT_PHOTOS = {
     "news_tenken_3bai": "work_07_caulk.jpg", "news_kimari_monku": "stock_door_sales.jpg@0.3+stock_046_woman_door_greets_worker.jpg@0.15+stock_337_woman_surprised.jpg@0.25", "news_kasai_hoken": "stock_455_fire_insurance_doc.jpg",
     "season_fuyumae": "DSC_0747.png", "mame_mune_bankin": "works_post-85-4-2-2_0.png", "mame_yanezai_jiki": "works_post-85_1.png",
     "news_bundenban": "stock_046_woman_door_greets_worker.jpg@0.15+stock_337_woman_surprised.jpg@0.25", "season_jikka": "works_post-85-4-2_0.png", "mame_cooling_off": "stock_251_tablet_writing.jpg",
-    "company_106": "truck_01.jpg", "company_riyuu5": "work_06_roof2.jpg", "company_shikaku": "work_02_bankin.jpg",
+    "company_106": "truck_01.jpg", "company_riyuu5": "stock_018_roof_workers_two.jpg@0.3", "company_shikaku": "work_02_bankin.jpg",
     "faq_1": "stock_330_worker_consult_desk.jpg@0.15", "faq_2": "stock_305_worker_consult_elderly.jpg", "case_mitsumori_fuan": "work_02_bankin.jpg",
     "case_akiya": "1776381380801.png", "company_dekiru": "works_post-85-4_1.png", "news_toiawase57": "truck_01.jpg",
     "company_access": "truck_02.jpg", "chuui_muryou_tenken": "work_04_check2.jpg", "chuui_kotowari_kata": "stock_door_sales.jpg",
