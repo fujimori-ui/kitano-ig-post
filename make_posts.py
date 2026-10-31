@@ -61,13 +61,62 @@ def draw_text(d, xy, text, f, fill, maxw=None, spacing=1.35, align="left"):
         y += lh
     return y
 
+FACE_MODEL = HERE / "models" / "face_detection_yunet_2023mar.onnx"
+FACE_LOG = []   # 顔に合わせて切り抜き位置をずらした記録・顔が切れる警告(build_auto.py がメールに載せる)
+
+def find_faces(img):
+    """写真の中の顔の位置 [(x, y, w, h)]。OpenCV(YuNet)が無ければ空(切り抜きは今まで通り)"""
+    try:
+        import cv2, numpy as np
+    except ImportError:
+        if "no_cv2" not in FACE_LOG:
+            FACE_LOG.append("no_cv2"); print("⚠ OpenCV が無いので顔の切れチェックをしていません(pip install opencv-python-headless)")
+        return []
+    a = cv2.cvtColor(np.asarray(img.convert("RGB")), cv2.COLOR_RGB2BGR)
+    s = min(1.0, 960 / max(a.shape[:2]))
+    if s < 1:
+        a = cv2.resize(a, None, fx=s, fy=s)
+    det = cv2.FaceDetectorYN.create(str(FACE_MODEL), "", (a.shape[1], a.shape[0]), 0.7)
+    _, f = det.detect(a)
+    return [] if f is None else [tuple(float(v) / s for v in r[:4]) for r in f]
+
+def _fit(pos, size, win, boxes):
+    """1方向(横 or 縦)で、boxes [(始, 終)] がなるべく全部入る切り抜き開始位置。入りきらない box は返す"""
+    lo, hi, left_out = 0, size - win, []
+    for b0, b1 in sorted(boxes, key=lambda b: b[0] - b[1]):   # 大きい顔から優先
+        nlo, nhi = max(lo, b1 - win), min(hi, b0)
+        if nlo <= nhi:
+            lo, hi = nlo, nhi
+        else:
+            left_out.append((b0, b1))
+    return int(min(max(pos, lo), hi)), left_out
+
 def cover(img, w, h, focus=0.5):
-    """w×hに切り抜き(中央寄せ、focusで縦位置)"""
+    """w×hに切り抜き(中央寄せ、focusで縦位置)。
+    顔が写っている写真は、顔(頭〜あご)が帯の端で切れないよう自動で位置をずらす
+    (2026-10-31 34番で職人さんの顔が鼻から上で切れた → ユーザー「また起こらないように」)"""
     iw, ih = img.size
     s = max(w / iw, h / ih)
     img = img.resize((int(iw * s) + 1, int(ih * s) + 1), Image.LANCZOS)
     iw, ih = img.size
     left = (iw - w) // 2; top = int((ih - h) * focus)
+    faces = find_faces(img)
+    if faces:
+        name = Path(getattr(img, "filename", "") or "").name or f"{iw}x{ih}"
+        # 頭(髪・ヘルメット)は顔の枠より上に半分ほど、あごは少し下まで
+        heads = [(x - fw * 0.15, y - fh * 0.6, x + fw * 1.15, y + fh * 1.1) for x, y, fw, fh in faces]
+        nleft, _ = _fit(left, iw, w, [(a, c) for a, b, c, d in heads])
+        ntop, out = _fit(top, ih, h, [(b, d) for a, b, c, d in heads])
+        if out:   # 頭まで入りきらない顔は、せめて顔(まゆ〜あご)が入るように
+            ntop, out = _fit(ntop, ih, h, [(y - fh * 0.05, y + fh * 1.05) for x, y, fw, fh in faces])
+        if (nleft, ntop) != (left, top):
+            FACE_LOG.append(f"顔が切れないよう位置を調整: {w}x{h} 上{top}→{ntop} 左{left}→{nleft}"); print(FACE_LOG[-1])
+        left, top = nleft, ntop
+        for x, y, fw, fh in faces:   # それでも帯の端にかかる顔(半分だけ写る)があれば警告
+            cut = (y < top < y + fh * 0.8) or (y + fh * 0.2 < top + h < y + fh) or (x < left < x + fw * 0.8) or (x + fw * 0.2 < left + w < x + fw)
+            if cut:
+                msg = f"⚠ 顔が切れています: {w}x{h} の写真の帯(別の写真か、帯を高くする)"
+                FACE_LOG.append(msg); print(msg)
     return img.crop((left, top, left + w, top + h))
 
 def rounded(d, box, r, fill):
@@ -692,7 +741,7 @@ DEFAULT_PHOTOS = {
     "season_fuyumae": "DSC_0747.png", "mame_mune_bankin": "works_post-85-4-2-2_0.png", "mame_yanezai_jiki": "works_post-85_1.png",
     "news_bundenban": "stock_046_woman_door_greets_worker.jpg@0.15+stock_337_woman_surprised.jpg@0.25", "season_jikka": "works_post-85-4-2_0.png", "mame_cooling_off": "stock_251_tablet_writing.jpg",
     "company_106": "truck_01.jpg", "company_riyuu5": "stock_018_roof_workers_two.jpg@0.3", "company_shikaku": "work_02_bankin.jpg",
-    "faq_1": "stock_330_worker_consult_desk.jpg@0.15", "faq_2": "stock_305_worker_consult_elderly.jpg", "case_mitsumori_fuan": "work_02_bankin.jpg",
+    "faq_1": "stock_416_worker_check_shutter.jpg", "faq_2": "stock_614_elderly_couple_consult.jpg", "case_mitsumori_fuan": "work_02_bankin.jpg",
     "case_akiya": "1776381380801.png", "company_dekiru": "works_post-85-4_1.png", "news_toiawase57": "truck_01.jpg",
     "company_access": "truck_02.jpg", "chuui_muryou_tenken": "work_04_check2.jpg", "chuui_kotowari_kata": "stock_door_sales.jpg",
     "chuui_oya_mamoru": "work_03_check.jpg", "chuui_mitsumori_mikata": "work_04_check2.jpg",

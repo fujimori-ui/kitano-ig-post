@@ -4,10 +4,10 @@
 完成画像を上から「ブロック」(タイトル・写真・帯など)に自動で分け、順番に動かして登場させる。
 動かし方は投稿ごとに組み合わせを変える(毎回同じに見えないように。投稿名から決まるので作り直しても同じ):
   ヘッダー: 上から降りる / ふわっと出る / 左から入る
-  フッター: 下からせり上がる / ふわっと出る / 右から入る
+  フッター: ふわっと出る / 右から入る / 左から入る
   写真など大きいブロック: 左→右ワイプ / 右→左ワイプ / ズームイン / 中央から開く / 縦じまブラインド / 左からスライド
-  文字など小さいブロック: 浮き上がる / ふわっと / 左から / 右から / ポップ / 左→右に現れる
-  出る順番: 上から / 下から / 写真先 / 文字先、速さ: 0.8〜1.25倍、最後の止め時間: 0〜3秒
+  文字など小さいブロック: 上から降りる / ふわっと / 左から / 右から / ポップ / 左→右に現れる
+  出る順番: 上から / 写真先 / 文字先(下から出る動きは使わない 2026-10-31)、速さ: 0.8〜1.25倍、最後の止め時間: 0〜3秒
 さらに系統を4つ持ち(2026-10-30〜)、投稿予定の順で直前2本と同じ系統・直前3本と同じ細かい動きを使わない:
   blocks(上の組み合わせで順に出る) / photo_first(写真を大きく見せてから元の位置へ) /
   focus_items(全体を出したあと箇条書きを1行ずつ拡大) / scan_zoom(青い線が上から走って現れ、最後に少し寄る)
@@ -70,10 +70,18 @@ def find_blocks(card):
 
 
 HEAD_STYLES = ["down", "fade", "slide_l"]
-FOOT_STYLES = ["up_in", "fade_in", "slide_r"]
+# 下から出てくる動き(rise=浮き上がる / up_in=フッターがせり上がる / 下のブロックから順に出る)は使わない
+# (ユーザー指示 2026-10-31「上から動くや横から動くにしてほしい、下からはなし」)
+FOOT_STYLES = ["fade_in", "slide_r", "slide_l"]
 BIG_STYLES = ["wipe", "wipe_r", "zoom", "curtain", "blinds", "slide_l"]
-SMALL_STYLES = ["rise", "fade", "slide_l", "slide_r", "pop", "wipe_flat"]
-ORDERS = ["top", "bottom", "big_first", "small_first"]
+SMALL_STYLES = ["down", "fade", "slide_l", "slide_r", "pop", "wipe_flat"]
+ORDERS = ["top", "big_first", "small_first"]
+NO_UP = {"rise": "down", "up_in": "slide_r", "bottom": "top"}   # 前に記録した動きの置き換え先
+
+
+def no_up(pat):
+    """anim_log.json などに残っている「下から」の動きを、上から・横からに置き換える"""
+    return {k: NO_UP.get(v, v) if isinstance(v, str) else v for k, v in pat.items()}
 
 
 # 出し直しで「違うアニメーションで」と言われた投稿は、ここで動きを指定する(ユーザー指示 2026-10-30)
@@ -122,10 +130,10 @@ def choose_pattern(slug, log=None, order=None):
     ・細かい動き(入り方・順番・速さ)も直前3本で使ったものを避ける
     決めた結果は anim_log.json に記録(作り直しても同じ。決め直すときは make_videos.py --renew)"""
     if slug in PATTERN_OVERRIDE:
-        return dict(PATTERN_OVERRIDE[slug])
+        return no_up(PATTERN_OVERRIDE[slug])
     log = load_log() if log is None else log
     if slug in log:
-        return dict(log[slug])
+        return no_up(log[slug])
     order = order or post_order()
     i = order.index(slug) if slug in order else len(order)
     prev = [log[k] for k in order[:i] if k in log][-RECENT:]

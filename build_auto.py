@@ -192,6 +192,7 @@ def main():
     nxt = max(nums + [0]) + 1
     changed_files = set()
     made = []
+    face_ng = []   # 写真の帯で顔が切れてしまう投稿(2026-10-31〜。別の写真に替える)
     for it in items:
         if not it.get("n"):
             it["n"] = nxt; nxt += 1
@@ -204,11 +205,16 @@ def main():
         if errors:
             print("NG", slug, errors)
             sys.exit(1)
+        n_warn = sum(1 for m in mp.FACE_LOG if m.startswith("⚠"))
         build(it, mp)
         made.append(slug)
+        if sum(1 for m in mp.FACE_LOG if m.startswith("⚠")) > n_warn:
+            face_ng.append(slug)
     for f in changed_files:
         items_f = [{k: v for k, v in it.items() if k != "_file"} for it in items if it["_file"] == f]
         f.write_text(json.dumps(items_f, ensure_ascii=False, indent=1), encoding="utf-8")
+    if face_ng:
+        print("⚠ 顔が切れる写真の投稿(別の写真に替えてください): " + " ".join(face_ng))
     print("MADE " + " ".join(made))
 
 
