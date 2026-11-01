@@ -384,6 +384,111 @@
   "start": 150.5,
   "len": 8.5
  },
+ "78_mame_yane_sanso": {
+  "track": "audiostock_1085297.mp3",
+  "start": 17.0,
+  "len": 10.9
+ },
+ "79_mame_coking_toha": {
+  "track": "audiostock_41606.mp3",
+  "start": 145.5,
+  "len": 10.5
+ },
+ "80_mame_tatehira_toha": {
+  "track": "audiostock_1085297.mp3",
+  "start": 19.5,
+  "len": 9.9
+ },
+ "81_mame_jishin_ato": {
+  "track": "audiostock_41606.mp3",
+  "start": 155.5,
+  "len": 10.0
+ },
+ "82_mame_kawara_zure": {
+  "track": "audiostock_1085297.mp3",
+  "start": 21.5,
+  "len": 10.5
+ },
+ "83_mame_amadoi_kanagu": {
+  "track": "audiostock_41606.mp3",
+  "start": 29.0,
+  "len": 11.0
+ },
+ "84_mame_bubun_shuuri": {
+  "track": "audiostock_1085297.mp3",
+  "start": 24.0,
+  "len": 10.0
+ },
+ "85_chuui_kaiketsu_navi": {
+  "track": "audiostock_41613.mp3",
+  "start": 88.5,
+  "len": 9.5
+ },
+ "86_chuui_saigai_binjou": {
+  "track": "audiostock_1085297.mp3",
+  "start": 30.0,
+  "len": 11.0
+ },
+ "87_chuui_yakusho_nanoru": {
+  "track": "audiostock_41613.mp3",
+  "start": 25.0,
+  "len": 11.0
+ },
+ "88_chuui_yukashita_tenken": {
+  "track": "audiostock_1085297.mp3",
+  "start": 61.0,
+  "len": 8.1
+ },
+ "89_chuui_tsuika_keiyaku": {
+  "track": "audiostock_41613.mp3",
+  "start": 120.0,
+  "len": 10.0
+ },
+ "90_company_naoshikata": {
+  "track": "audiostock_1085297.mp3",
+  "start": 32.5,
+  "len": 11.0
+ },
+ "91_company_mienai_bubun": {
+  "track": "audiostock_41613.mp3",
+  "start": 40.5,
+  "len": 8.5
+ },
+ "92_faq_isogi_amamori": {
+  "track": "audiostock_1085297.mp3",
+  "start": 34.5,
+  "len": 8.5
+ },
+ "93_company_soudan_houhou": {
+  "track": "audiostock_41613.mp3",
+  "start": 105.0,
+  "len": 9.6
+ },
+ "94_season_nennai_shuuri": {
+  "track": "audiostock_41606.mp3",
+  "start": 38.0,
+  "len": 11.0
+ },
+ "95_season_fuyu_kaze_oto": {
+  "track": "audiostock_1085297.mp3",
+  "start": 27.5,
+  "len": 10.2
+ },
+ "96_season_fuyu_terasu": {
+  "track": "audiostock_41606.mp3",
+  "start": 62.0,
+  "len": 11.0
+ },
+ "97_komari_slate_ware": {
+  "track": "audiostock_1085297.mp3",
+  "start": 38.0,
+  "len": 11.0
+ },
+ "98_komari_yuka_hekomi": {
+  "track": "audiostock_41606.mp3",
+  "start": 70.0,
+  "len": 8.0
+ },
  "flyer_202610": {
   "track": "audiostock_41613.mp3",
   "start": 34.0,
