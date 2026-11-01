@@ -52,12 +52,12 @@
  "26_news_kasai_hoken": {
   "family": "focus_items",
   "head": "fade",
-  "foot": "slide_r",
+  "foot": "slide_l",
   "big": "wipe_r",
-  "small": "wipe_flat",
+  "small": "pop",
   "order": "top",
-  "speed": 0.8,
-  "extra": 1.5
+  "speed": 1.0,
+  "extra": 1.0
  },
  "27_season_fuyumae": {
   "family": "scan_zoom",
