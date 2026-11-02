@@ -10,7 +10,7 @@ NN_slug.mp4(make_videos.py で作るアニメーション)があればリール(
 (4:5 の jpg を表紙にすると Instagram が 9:16 に広げて左右が切れる。cover が無いときだけ jpg で代用)
 mp4 が無ければ画像で投稿。
 投稿済みは state.json に記録(GitHub Actions がコミットで書き戻す)。
-投稿に成功したら gbp_export.py で Googleマイビジネス用(横長画像+ハッシュタグ無し本文)を Google ドライブにも保存する。
+(2026-11-03 停止) 以前は投稿成功後に gbp_export.py でマイビジネス用を Google ドライブにも保存していた(state.json "gbp_drive": true で復活)。
 さらに gbp_post.py で Googleビジネスプロフィール(マイビジネス)にも同じ内容を API で自動投稿する
 (GBP_* の接続キーと state.json の gbp_location がある時だけ。API 未承認などで失敗しても Instagram 投稿は完了扱い)。
 画像は公開リポジトリの raw URL を Instagram API(graph.instagram.com)に渡す。
@@ -256,13 +256,18 @@ def main():
         state["posted"][item]["slot"] = old["slot"]
     STATE.write_text(json.dumps(state, ensure_ascii=False, indent=1), encoding="utf-8")
     # Googleマイビジネス用(画像 4:3 + ハッシュタグ無しの本文)を Google ドライブへ保存(失敗しても投稿結果には影響させない)
+    # 2026-11-03〜 API 自動投稿に切り替えたのでドライブ保存は止めた(ユーザー指示)。戻すなら state.json に "gbp_drive": true
     gbp = ""
     try:
+        if not state.get("gbp_drive", False):
+            raise StopIteration
         import gbp_export
         gurl = gbp_export.save_for_gbp(item, state, state["posted"][item]["date"])
         STATE.write_text(json.dumps(state, ensure_ascii=False, indent=1), encoding="utf-8")
         gbp = f" | マイビジネス用をドライブに保存: {gurl}"
         log(f"マイビジネス用をドライブに保存: {gurl}")
+    except StopIteration:
+        pass
     except Exception as e:
         gbp = f" | ⚠ マイビジネス用のドライブ保存に失敗: {str(e)[:120]}"
         log(f"⚠ マイビジネス用のドライブ保存に失敗(投稿は完了): {e}")
@@ -275,7 +280,7 @@ def main():
             gbp += f" | マイビジネスに投稿: {purl}"
             log(f"マイビジネスに投稿: {purl}")
         else:
-            log("マイビジネスAPI 自動投稿はオフ(state.json の gbp_auto が true で、キーと投稿先がある時だけ動く)→ドライブ保存のみ")
+            log("マイビジネスAPI 自動投稿はオフ(state.json の gbp_auto が true で、キーと投稿先がある時だけ動く)")
     except Exception as e:
         gbp += f" | ⚠ マイビジネス投稿に失敗: {str(e)[:160]}"
         log(f"⚠ マイビジネス投稿に失敗(Instagram は完了): {e}")
