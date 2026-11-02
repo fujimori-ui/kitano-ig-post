@@ -143,11 +143,18 @@ def title_hl(d, title, y, size, maxw, x=48, bg=YELLOW, fg=INK):
     """メインタイトルを黄色のマーカー風の帯に乗せて目立たせる(ユーザー指示 2026-10-26)。1行ごとに帯を引く"""
     f = font(size)
     lh = int(size * 1.3)
-    for ln in wrap(title, f, maxw - 28):
-        tw = f.getlength(ln)
-        rounded(d, [x, y - 6, x + tw + 28, y + size + 10], 8, bg)
-        d.text((x + 14, y), ln, font=f, fill=fg)
+    lines = wrap(title, f, maxw - 28)
+    # 帯を先に全部引いてから文字を書く(後の行の帯が前の行の文字の下を隠さないように。2026-11-02 76庇で文字の下が切れた)
+    # 文字は帯の上下まん中に置く(フォントによって文字が下寄りになるため、実際の文字の高さで合わせる)
+    t, b = f.getbbox("庇あサビ？", anchor="ls")[1::2]
+    ys = []
+    for ln in lines:
+        rounded(d, [x, y - 6, x + f.getlength(ln) + 28, y + size + 10], 8, bg)
+        ys.append(y)
         y += lh
+    for ln, yy in zip(lines, ys):
+        mid = (yy - 6 + yy + size + 10) / 2
+        d.text((x + 14, mid - (t + b) / 2), ln, font=f, fill=fg, anchor="ls")
     return y + 8
 
 def title_block(d, title, y=172, size=54, maxw=984):
