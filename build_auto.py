@@ -157,7 +157,7 @@ def main():
         todo = [s for s in post_ig.all_items() if s not in st["posted"]]
         from collections import Counter
         c = Counter(post_ig.category(s) for s in todo)
-        print(f"未投稿 {len(todo)}本(1日3本で約{len(todo) // 3}日分): " + " ".join(f"{post_ig.CATEGORY_NAMES[k]}{v}" for k, v in c.most_common()))
+        print(f"未投稿 {len(todo)}本(1日2本で約{len(todo) // 2}日分): " + " ".join(f"{post_ig.CATEGORY_NAMES[k]}{v}" for k, v in c.most_common()))
         return
     if "--titles" in args:
         for p in sorted(POSTS.glob("*.txt")):

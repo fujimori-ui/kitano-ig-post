@@ -1,6 +1,6 @@
 # 北野工作所IG 週次の自動ネタ作り(ルーティン用の手順書)
 
-毎週月曜5:00に claude.ai のルーティンがこの手順で「来週分の投稿21本(1日3本×7日)」を作ります。
+毎週月曜5:00に claude.ai のルーティンがこの手順で「来週分の投稿14本(1日2本×7日)」を作ります。
 作るのは **中身(JSON)だけ**。画像・動画は GitHub Actions(build.yml)が作ります。
 
 ## 依頼主と目的
@@ -18,13 +18,13 @@
    すでにあるタイトルと同じ話題は作らない(言い回しを変えただけもNG)。
 2. 事実の確認に使う資料: `posts/*.txt`(会社の情報・料金・流れ・資格は必ずここから取る。サイト https://www.kashiba-yanereform.com/ も可)。**資料に無い事実(受賞歴、施工件数、補助金、人数など)は書かない。**
 3. 訪問販売の注意・時事ネタは WebSearch で一次情報(国民生活センター、消費者庁、各地の消費生活センター、自治体)を探す。数字を使うときは出典を `source` に書く(例「出典: 国民生活センター(2026年9月)」)。確認できない数字は使わない。
-4. `content/auto_YYYYMMDD.json`(今日の日付)に21本を書く(形式は下)。種類の目安:
-   - `mame_`(屋根の豆知識) 7本
-   - `chuui_`(訪問販売・点検商法の注意、時事ニュース) 5本
-   - `company_` / `faq_`(会社紹介・よくある質問・料金・流れ) 4本
-   - `season_`(季節の屋根の話: 台風前・冬前・年末・春の強風・梅雨前など、作る時期に合わせる) 3本
-   - `komari_`(こんなお困りごとありませんか？ 写真レイアウト) 2本
-   レイアウトも混ぜる: list を中心に、photo 5本以上、steps 2本以上、table 1〜2本、quotes 0〜1本。
+4. `content/auto_YYYYMMDD.json`(今日の日付)に14本を書く(形式は下)。種類の目安:
+   - `mame_`(屋根の豆知識) 5本
+   - `chuui_`(訪問販売・点検商法の注意、時事ニュース) 3本
+   - `company_` / `faq_`(会社紹介・よくある質問・料金・流れ) 3本
+   - `season_`(季節の屋根の話: 台風前・冬前・年末・春の強風・梅雨前など、作る時期に合わせる) 2本
+   - `komari_`(こんなお困りごとありませんか？ 写真レイアウト) 1本
+   レイアウトも混ぜる: list を中心に、photo 3本以上、steps 1本以上、table 1本、quotes 0〜1本。
    **全部の投稿に写真(`photo`)を入れる**(文字だけの投稿にしない。ユーザー指示)。話題に合う写真を下の一覧から選び、同じ写真が続かないようにする。
 5. 形式チェック(NGが出たら直して再実行):
    ```
@@ -32,9 +32,9 @@
    ```
 6. push:
    ```
-   git add content/auto_YYYYMMDD.json && git commit -m "来週分の投稿21本(自動生成)" && git push
+   git add content/auto_YYYYMMDD.json && git commit -m "来週分の投稿14本(自動生成)" && git push
    ```
-   push できないときは `gh api -X PUT repos/fujimori-ui/kitano-ig-post/contents/content/auto_YYYYMMDD.json -f message="来週分の投稿21本" -f content="$(base64 -w0 content/auto_YYYYMMDD.json)"`
+   push できないときは `gh api -X PUT repos/fujimori-ui/kitano-ig-post/contents/content/auto_YYYYMMDD.json -f message="来週分の投稿14本" -f content="$(base64 -w0 content/auto_YYYYMMDD.json)"`
 7. 画像・動画は push をきっかけに build.yml が自動で動く(15〜20分)。**自分で `gh workflow run` はしない**(二重に動く)。
    **待ち方の注意: バックグラウンド実行(run_in_background)や Monitor は使わない。使うとセッションが先に終わり、メールが送られない。** 次のコマンドを前面で実行して待つ(timeout は 25分=1500000ms に設定):
    ```
@@ -43,8 +43,8 @@
    ```
    60秒待っても今回の push より新しい run が無ければ、そのときだけ `gh workflow run build.yml -R fujimori-ui/kitano-ig-post --ref main` で起動する。
    (この環境では WebFetch・curl で外部サイトは開けない。調べものは WebSearch だけで行う。`pip install` が必要なら `python3 -m pip install --break-system-packages requests`)
-8. Gmail で fujimori@jibulabo.jp へ1通。件名「【北野IG】来週分21本を作りました」(失敗なら「【北野IG】来週分の作成に失敗(要確認)」)。本文はやさしい日本語で短く:
-   - 作った21本のタイトル一覧(種類つき)
+8. Gmail で fujimori@jibulabo.jp へ1通。件名「【北野IG】来週分14本を作りました」(失敗なら「【北野IG】来週分の作成に失敗(要確認)」)。本文はやさしい日本語で短く:
+   - 作った14本のタイトル一覧(種類つき)
    - 確認用の一覧画像: `https://raw.githubusercontent.com/fujimori-ui/kitano-ig-post/main/<PREVIEW行のパス>`
    - 在庫(`python3 build_auto.py --stock` の結果)
    - 直したいときは「この投稿を直して/外して」と返事すればよいこと

@@ -15,8 +15,8 @@ mp4 が無ければ画像で投稿。
 (GBP_* の接続キーと state.json の gbp_location がある時だけ。API 未承認などで失敗しても Instagram 投稿は完了扱い)。
 画像は公開リポジトリの raw URL を Instagram API(graph.instagram.com)に渡す。
 
-1日3本(朝・昼・夜)を確実に出すため、自動投稿は「今の時間帯(朝=11時まで/昼=11〜17時/夜=17時から)に今日まだ出ていないとき」だけ投稿する。
---backup(GitHubの予備スケジュールから起動)は、さらに決まった時間内(朝7〜11時/昼12〜17時/夜20〜23時半)だけ動く。
+1日2本(朝・夜)を確実に出すため、自動投稿は「今の時間帯(朝=14時まで/夜=14時から)に今日まだ出ていないとき」だけ投稿する。(2026-11-02 昼の投稿を廃止)
+--backup(GitHubの予備スケジュールから起動)は、さらに決まった時間内(朝7〜11時/夜20〜23時半)だけ動く。
 --slug での手動投稿はこの判定をしない(時間帯の1本には数えない)。
 
 毎月のチラシ(flyer_YYYYMM)は必ず月1回出す: その月の7日前から他より先に投稿する。
@@ -115,10 +115,10 @@ def next_item(state, slug=None, posted=None):
 
 
 def plan(state, n=30):
-    """これから出る順番を n 本ぶん表示(投稿はしない)。1日3本で日付も添える"""
+    """これから出る順番を n 本ぶん表示(投稿はしない)。1日2本(朝・夜)で日付も添える"""
     posted = {k: dict(v) for k, v in state["posted"].items()}
     day = datetime.date.today()
-    slots = ["morning", "noon", "evening"]
+    slots = ["morning", "evening"]
     # 今日すでに出た時間帯の数(手動 --slug の分は時間帯に数えない)
     i = len({v.get("slot") for v in posted.values() if v.get("slot") and v.get("date", "").startswith(day.isoformat())})
     for _ in range(n):
@@ -126,9 +126,9 @@ def plan(state, n=30):
         if not s:
             print("(ここでネタ切れ)")
             break
-        d = day + datetime.timedelta(days=i // 3)
-        print(f"{d.month}/{d.day} {SLOTS[slots[i % 3]]}  {s:24s} [{CATEGORY_NAMES[category(s)]}]")
-        posted[s] = {"date": f"{d.isoformat()} {['07:00', '12:30', '20:00'][i % 3]}", "category": category(s)}
+        d = day + datetime.timedelta(days=i // 2)
+        print(f"{d.month}/{d.day} {SLOTS[slots[i % 2]]}  {s:24s} [{CATEGORY_NAMES[category(s)]}]")
+        posted[s] = {"date": f"{d.isoformat()} {['07:00', '20:00'][i % 2]}", "category": category(s)}
         i += 1
 
 
@@ -153,9 +153,9 @@ SLOTS = {"morning": "朝", "noon": "昼", "evening": "夜"}
 
 
 def slot_now():
-    """今の時間帯 'morning'(〜11時) / 'noon'(11〜17時) / 'evening'(17時〜)(TZ=Asia/Tokyo 前提)"""
+    """今の時間帯 'morning'(〜14時) / 'evening'(14時〜)(TZ=Asia/Tokyo 前提)。昼(noon)は2026-11-02に廃止"""
     h = time.localtime().tm_hour
-    return "morning" if h < 11 else "noon" if h < 17 else "evening"
+    return "morning" if h < 14 else "evening"
 
 
 def slot_done(state, slot):
