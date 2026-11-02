@@ -390,7 +390,13 @@
    "slot": "morning",
    "gbp": "https://drive.google.com/drive/folders/1vOgGz9uaPDkeVxX6iTqh2p_d4ijl3_K0",
    "wp": "https://www.kashiba-yanereform.com/news/ig-36-faq-1/",
-   "wp_id": 260
+   "wp_id": 260,
+   "gbp_post": {
+    "name": "accounts/117464630818381172478/locations/1380594875886825358/localPosts/5498418840058465896",
+    "state": "PROCESSING",
+    "url": "https://local.google.com/place?id=6100690049524066194&use=posts&lpsid=CAIQACoeChxtc3BfaDpVZml1cW5EamtLT3Uzd2JmS0x2b3lB",
+    "date": "2026-11-03 07:28"
+   }
   }
  },
  "replaced": {
