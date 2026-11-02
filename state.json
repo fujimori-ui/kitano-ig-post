@@ -640,5 +640,11 @@
    "url": "https://www.instagram.com/reel/DfLNElYD0YN/",
    "wp": "https://www.kashiba-yanereform.com/news/ig-weather-20261101/"
   }
- }
+ },
+ "gbp_location": {
+  "account": "accounts/117464630818381172478",
+  "location": "locations/1380594875886825358",
+  "title": "株式会社北野工作所"
+ },
+ "gbp_auto": true
 }
