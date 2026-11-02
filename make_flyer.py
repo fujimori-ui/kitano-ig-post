@@ -9,7 +9,7 @@ flyer_ で始まる投稿は post_ig.py が他より先に出す(配った月の
 使い方: python make_flyer.py 表面.pdf 裏面.pdf 202610
 必要: pymupdf, Pillow, ffmpeg
 """
-import subprocess, sys
+import os, subprocess, sys
 from make_music import add_music
 from pathlib import Path
 import pymupdf
@@ -44,15 +44,16 @@ def shadowed(img, angle):
 
 def cover(front, back, month):
     im, d = mp.base()
-    mp.pill(d, f"{month}月のチラシ", bg=mp.YELLOW, fg=mp.INK)
-    mp.draw_text(d, (48, 262), "香芝市内に、配布中です", mp.font(58), mp.INK)
+    # 文言は環境変数で差し替えできる(FLYER_PILL / FLYER_HEAD / FLYER_NOTE)
+    mp.pill(d, os.environ.get("FLYER_PILL") or f"{month}月のチラシ", bg=mp.YELLOW, fg=mp.INK)
+    mp.draw_text(d, (48, 262), os.environ.get("FLYER_HEAD") or "香芝市内に、配布中です", mp.font(58), mp.INK)
     h = 680
     f = front.resize((int(front.width * h / front.height), h), Image.LANCZOS)
     b = back.resize((int(back.width * h / back.height), h), Image.LANCZOS)
     sb, sf = shadowed(b, -5), shadowed(f, 3)
     im.paste(sb, (1080 - sb.width - 30, 352), sb)
     im.paste(sf, (20, 345), sf)
-    mp.band_note(d, "お手元に届いたら、ぜひご覧ください", y=1150)
+    mp.band_note(d, os.environ.get("FLYER_NOTE") or "お手元に届いたら、ぜひご覧ください", y=1150)
     return im
 
 
