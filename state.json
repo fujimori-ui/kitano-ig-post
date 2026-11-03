@@ -411,6 +411,21 @@
    },
    "wp": "https://www.kashiba-yanereform.com/news/ig-flyer-202611/",
    "wp_id": 262
+  },
+  "27_season_fuyumae": {
+   "date": "2026-11-03 20:05",
+   "media_id": "18376549765210001",
+   "url": "https://www.instagram.com/reel/DfRu6xpmS0H/",
+   "category": "mame",
+   "slot": "evening",
+   "gbp_post": {
+    "name": "accounts/117464630818381172478/locations/1380594875886825358/localPosts/6631737972118368329",
+    "state": "PROCESSING",
+    "url": "https://local.google.com/place?id=6100690049524066194&use=posts&lpsid=CAIQACoeChxtc3BfaDo2by1DRlFpNTFHd3V2LS03TGQ1SWZn",
+    "date": "2026-11-03 20:05"
+   },
+   "wp": "https://www.kashiba-yanereform.com/news/ig-27-season-fuyumae/",
+   "wp_id": 264
   }
  },
  "replaced": {
