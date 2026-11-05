@@ -224,6 +224,8 @@ def main():
         f.write_text(json.dumps(items_f, ensure_ascii=False, indent=1), encoding="utf-8")
     if face_ng:
         print("⚠ 顔が切れる写真の投稿(別の写真に替えてください): " + " ".join(face_ng))
+    if mp.COMP_LOG:   # 構図(2026-11-06〜 投稿ごとに自動で変わる。layout_log.json に記録)
+        print("構図: " + " / ".join(mp.COMP_LOG))
     print("MADE " + " ".join(made))
 
 
