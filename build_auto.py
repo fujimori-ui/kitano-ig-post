@@ -21,6 +21,9 @@ CONTENT = HERE / "content"
 POSTS = HERE / "posts"
 LAYOUTS = {"list", "steps", "table", "photo", "quotes"}
 SLUG_RE = re.compile(r"^(mame|chuui|company|komari|jirei|season|news|faq)_[a-z0-9_]{3,30}$")
+# 屋根・雨漏り・板金以外の工事の話題(床の張替え・玄関ドア・窓・内装・水まわり・外壁塗装)はNG(ユーザー指示 2026-11-06)
+OFF_TOPIC_WORDS = ["床の張替", "床を張り替", "床がへこ", "床の下地", "玄関ドア", "ドアの交換", "サッシの交換", "サッシ交換", "窓の交換", "窓の改修",
+                   "内装", "キッチン", "トイレ", "お風呂", "浴室", "洗面", "外壁塗装", "クロス", "畳", "フローリング", "YKK"]
 
 
 def existing_numbers():
@@ -52,6 +55,12 @@ def check_item(it, errors, photos=None):
     if title.count("\n") > 1:
         errors.append(f"{slug}: title は2行まで")
     cap = it.get("cap", "")
+    # 工事の話題は屋根・雨漏り・板金だけ(ユーザー指示 2026-11-06)。訪問販売の注意(chuui_)は床下点検などの話題名を使うので対象外
+    if not slug.startswith("chuui_"):
+        text = title + " " + it.get("heading", "") + " " + cap
+        hit = [w for w in OFF_TOPIC_WORDS if w in text]
+        if hit:
+            errors.append(f"{slug}: 屋根・雨漏り・板金以外の工事の話題は書かない(ユーザー指示 2026-11-06): {hit}")
     if len(cap) < 150 or len(cap) > 900:
         errors.append(f"{slug}: cap(本文)は150〜900文字(今 {len(cap)})。CTAとハッシュタグは自動で付くので書かない")
     if "#" in cap or "0745-76-4335" in cap:

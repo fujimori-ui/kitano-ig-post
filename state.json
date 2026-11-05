@@ -500,7 +500,13 @@
     "date": "2026-11-06 07:13"
    },
    "wp": "https://www.kashiba-yanereform.com/news/ig-98-komari-yuka-hekomi/",
-   "wp_id": 276
+   "wp_id": 276,
+   "deleted": "2026-11-06",
+   "memo": "床の話題のため削除(ユーザー指示 2026-11-06「工事系は雨漏り・屋根・板金の内容に」)。IGはユーザーがアプリで削除、マイビジネスはAPIで削除、新着情報(wp_id 276)はゴミ箱。slot=morning は今日の朝の分として数えたまま"
+  },
+  "42_company_dekiru": {
+   "skipped": "2026-11-06",
+   "memo": "床・玄関ドア・窓の工事紹介のため投稿しない(ユーザー指示 2026-11-06)。posts/ の画像・動画は残置"
   }
  },
  "replaced": {
