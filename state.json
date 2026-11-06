@@ -507,6 +507,21 @@
   "42_company_dekiru": {
    "skipped": "2026-11-06",
    "memo": "床・玄関ドア・窓の工事紹介のため投稿しない(ユーザー指示 2026-11-06)。posts/ の画像・動画は残置"
+  },
+  "46_chuui_muryou_tenken": {
+   "date": "2026-11-06 20:05",
+   "media_id": "18131776099865961",
+   "url": "https://www.instagram.com/reel/DfZdSCFFd7e/",
+   "category": "chuui",
+   "slot": "evening",
+   "gbp_post": {
+    "name": "accounts/117464630818381172478/locations/1380594875886825358/localPosts/1936899716547329145",
+    "state": "PROCESSING",
+    "url": "https://local.google.com/place?id=6100690049524066194&use=posts&lpsid=CAIQACoeChxtc3BfaDotcFcwZUNXQy1ib1BwVTcyMjlxTFJn",
+    "date": "2026-11-06 20:05"
+   },
+   "wp": "https://www.kashiba-yanereform.com/news/ig-46-chuui-muryou-tenken/",
+   "wp_id": 278
   }
  },
  "replaced": {
