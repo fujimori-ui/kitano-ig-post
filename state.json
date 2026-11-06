@@ -522,6 +522,21 @@
    },
    "wp": "https://www.kashiba-yanereform.com/news/ig-46-chuui-muryou-tenken/",
    "wp_id": 278
+  },
+  "44_news_toiawase57": {
+   "date": "2026-11-07 07:12",
+   "media_id": "18108356600210161",
+   "url": "https://www.instagram.com/reel/Dfappo6DaI6/",
+   "category": "company",
+   "slot": "morning",
+   "gbp_post": {
+    "name": "accounts/117464630818381172478/locations/1380594875886825358/localPosts/2035705118538290783",
+    "state": "PROCESSING",
+    "url": "https://local.google.com/place?id=6100690049524066194&use=posts&lpsid=CAIQACoeChxtc3BfaDp6WkV5X0JNdmE2V3g3ZHh2aEw4d3JB",
+    "date": "2026-11-07 07:12"
+   },
+   "wp": "https://www.kashiba-yanereform.com/news/ig-44-news-toiawase57/",
+   "wp_id": 280
   }
  },
  "replaced": {
