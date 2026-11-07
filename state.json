@@ -552,6 +552,21 @@
    },
    "wp": "https://www.kashiba-yanereform.com/news/ig-29-mame-yanezai-jiki/",
    "wp_id": 282
+  },
+  "48_chuui_oya_mamoru": {
+   "date": "2026-11-08 07:12",
+   "media_id": "17958271314266447",
+   "url": "https://www.instagram.com/reel/DfdOanMEUdF/",
+   "category": "chuui",
+   "slot": "morning",
+   "gbp_post": {
+    "name": "accounts/117464630818381172478/locations/1380594875886825358/localPosts/492634251733337505",
+    "state": "PROCESSING",
+    "url": "https://local.google.com/place?id=6100690049524066194&use=posts&lpsid=CAIQACoeChxtc3BfaDpQS3hmVk96UVdKeldlbTBxQ3M4MmtR",
+    "date": "2026-11-08 07:12"
+   },
+   "wp": "https://www.kashiba-yanereform.com/news/ig-48-chuui-oya-mamoru/",
+   "wp_id": 286
   }
  },
  "replaced": {
