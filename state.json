@@ -582,6 +582,21 @@
    },
    "wp": "https://www.kashiba-yanereform.com/news/ig-45-company-access/",
    "wp_id": 288
+  },
+  "108_komari_mune_kuzure": {
+   "date": "2026-11-09 07:11",
+   "media_id": "17920510062463618",
+   "url": "https://www.instagram.com/reel/DffzLRyimSH/",
+   "category": "komari",
+   "slot": "morning",
+   "gbp_post": {
+    "name": "accounts/117464630818381172478/locations/1380594875886825358/localPosts/4563172259352434168",
+    "state": "PROCESSING",
+    "url": "https://local.google.com/place?id=6100690049524066194&use=posts&lpsid=CAIQACoeChxtc3BfaDpiaGh5Ymt0VzVOWVhDa2N3RlRTRUNn",
+    "date": "2026-11-09 07:12"
+   },
+   "wp": "https://www.kashiba-yanereform.com/news/ig-108-komari-mune-kuzure/",
+   "wp_id": 290
   }
  },
  "replaced": {
