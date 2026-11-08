@@ -44,10 +44,75 @@
   "start": 26.5,
   "len": 9.5
  },
+ "100_chuui_nise_hagaki": {
+  "track": "audiostock_41606.mp3",
+  "start": 176.5,
+  "len": 8.0
+ },
+ "101_company_kinjo_hairyo": {
+  "track": "audiostock_1085297.mp3",
+  "start": 40.0,
+  "len": 10.5
+ },
+ "102_mame_onigawara": {
+  "track": "audiostock_41613.mp3",
+  "start": 9.5,
+  "len": 11.0
+ },
+ "103_season_fuyu_calendar": {
+  "track": "audiostock_1085297.mp3",
+  "start": 42.0,
+  "len": 11.4
+ },
+ "104_chuui_taiyoukou_tenken": {
+  "track": "audiostock_41606.mp3",
+  "start": 83.5,
+  "len": 11.0
+ },
+ "105_mame_yane_katachi": {
+  "track": "audiostock_41613.mp3",
+  "start": 73.0,
+  "len": 10.0
+ },
+ "106_faq_tsuika_hiyou": {
+  "track": "audiostock_41606.mp3",
+  "start": 90.5,
+  "len": 9.5
+ },
+ "107_mame_fukinaoshi": {
+  "track": "audiostock_1085297.mp3",
+  "start": 44.0,
+  "len": 11.0
+ },
+ "108_komari_mune_kuzure": {
+  "track": "audiostock_41606.mp3",
+  "start": 136.0,
+  "len": 10.9
+ },
+ "109_chuui_karyou_hanbai": {
+  "track": "audiostock_1085297.mp3",
+  "start": 48.0,
+  "len": 9.0
+ },
  "10_price": {
   "track": "audiostock_41613.mp3",
   "start": 47.0,
   "len": 12.0
+ },
+ "110_season_fuyu_kouji": {
+  "track": "audiostock_41606.mp3",
+  "start": 184.5,
+  "len": 10.0
+ },
+ "111_company_bankin_shokunin": {
+  "track": "audiostock_1085297.mp3",
+  "start": 50.0,
+  "len": 8.5
+ },
+ "112_mame_shokunin_miru": {
+  "track": "audiostock_41613.mp3",
+  "start": 52.0,
+  "len": 9.5
  },
  "11_flow": {
   "track": "audiostock_1085297.mp3",
@@ -488,6 +553,11 @@
   "track": "audiostock_41606.mp3",
   "start": 70.0,
   "len": 8.0
+ },
+ "99_mame_ketsuro_amamori": {
+  "track": "audiostock_1085297.mp3",
+  "start": 46.0,
+  "len": 8.5
  },
  "flyer_202610": {
   "track": "audiostock_41613.mp3",

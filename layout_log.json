@@ -1,4 +1,17 @@
 {
+ "100_chuui_nise_hagaki": "person_left",
+ "101_company_kinjo_hairyo": "person_left",
+ "102_mame_onigawara": "person_left",
+ "103_season_fuyu_calendar": "title_on_photo",
+ "104_chuui_taiyoukou_tenken": "person_left",
+ "105_mame_yane_katachi": "photo_bottom",
+ "106_faq_tsuika_hiyou": "standard",
+ "107_mame_fukinaoshi": "title_on_photo",
+ "108_komari_mune_kuzure": "photo_bottom",
+ "109_chuui_karyou_hanbai": "title_on_photo",
+ "110_season_fuyu_kouji": "standard",
+ "111_company_bankin_shokunin": "person_left",
+ "112_mame_shokunin_miru": "title_on_photo",
  "29_mame_yanezai_jiki": "photo_top",
  "31_season_jikka": "photo_bottom",
  "43_blog_shimi": "standard",
@@ -49,5 +62,6 @@
  "93_company_soudan_houhou": "photo_top",
  "94_season_nennai_shuuri": "standard",
  "95_season_fuyu_kaze_oto": "title_on_photo",
- "96_season_fuyu_terasu": "photo_top"
+ "96_season_fuyu_terasu": "photo_top",
+ "99_mame_ketsuro_amamori": "standard"
 }
