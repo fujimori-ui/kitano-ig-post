@@ -27,7 +27,36 @@ def photo_fit(path, w, brightness=1.12, contrast=1.06):
     return im.filter(ImageFilter.UnsharpMask(radius=1, percent=60, threshold=3))
 
 
+def cover_x(im, w, h, focus_x=0.5):
+    """w×h に切り抜き。横長写真の左右どこを残すかを focus_x(0=左端, 1=右端)で指定"""
+    iw, ih = im.size
+    s = max(w / iw, h / ih)
+    im = im.resize((int(iw * s) + 1, int(ih * s) + 1), Image.LANCZOS)
+    left = int((im.width - w) * focus_x)
+    top = (im.height - h) // 2
+    return im.crop((left, top, left + w, top + h))
+
+
+def build_big(a):
+    """写真を大きく・文字少なめ(ユーザー指示 2026-11-09)。写真は左右いっぱい(1080幅)で高さ約900、
+    左上に「今日の現場」ピル、写真の下に黄色帯のタイトル1本と水色帯だけ"""
+    im, d = M.base()
+    top, bottom = 146, 1040
+    ph = Image.open(a["photo"]).convert("RGB")
+    ph = ImageEnhance.Brightness(ph).enhance(a.get("brightness", 1.12))
+    ph = ImageEnhance.Contrast(ph).enhance(a.get("contrast", 1.06))
+    ph = cover_x(ph, M.W, bottom - top, a.get("focus_x", 0.5)).filter(ImageFilter.UnsharpMask(radius=1, percent=60, threshold=3))
+    im.paste(ph, (0, top))
+    if a.get("pill"):
+        M.pill(d, a["pill"], top + 24)
+    y = M.title_hl(d, a["title"], bottom + 26, 60, 984)
+    M.band_note(d, a["note"], y=1160)
+    M.save(im, a["n"], a["slug"], a["cap"] + M.CTA)
+
+
 def build(a):
+    if a.get("layout") == "big":
+        return build_big(a)
     im, d = M.base()
     y = 172
     if a.get("pill"):
