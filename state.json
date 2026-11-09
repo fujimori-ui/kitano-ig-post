@@ -600,6 +600,21 @@
   },
   "113_genba_toi_shuppatsu": {
    "manual_blog": "https://www.kashiba-yanereform.com/news/blog-toi-kouji-shuppatsu/"
+  },
+  "102_mame_onigawara": {
+   "date": "2026-11-09 20:09",
+   "media_id": "18118373465033809",
+   "url": "https://www.instagram.com/reel/DfhMHGXEcwq/",
+   "category": "mame",
+   "slot": "evening",
+   "gbp_post": {
+    "name": "accounts/117464630818381172478/locations/1380594875886825358/localPosts/7030904439170623115",
+    "state": "PROCESSING",
+    "url": "https://local.google.com/place?id=6100690049524066194&use=posts&lpsid=CAIQACoeChxtc3BfaDpfS1Z0OU9BNnNHcnk4X3RVcXh6eDNn",
+    "date": "2026-11-09 20:09"
+   },
+   "wp": "https://www.kashiba-yanereform.com/news/ig-102-mame-onigawara/",
+   "wp_id": 295
   }
  },
  "replaced": {
