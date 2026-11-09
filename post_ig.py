@@ -271,9 +271,19 @@ def main():
     except Exception as e:
         gbp = f" | ⚠ マイビジネス用のドライブ保存に失敗: {str(e)[:120]}"
         log(f"⚠ マイビジネス用のドライブ保存に失敗(投稿は完了): {e}")
+    # ブログ(~/kitano_blog/post_blog.py)で先にマイビジネス・新着情報へ出してあるネタは、ここでは重ねて出さない
+    # (state.json の posted[slug]["manual_blog"] に記事URLを入れておく。2026-11-09〜)
+    manual_blog = old.get("manual_blog") or state["posted"][item].get("manual_blog")
+    if manual_blog:
+        state["posted"][item]["manual_blog"] = manual_blog
+        state["posted"][item]["wp"] = manual_blog
+        STATE.write_text(json.dumps(state, ensure_ascii=False, indent=1), encoding="utf-8")
+        log(f"マイビジネス・新着情報はブログ側で投稿済みなので省略: {manual_blog}")
     # Googleビジネスプロフィール(マイビジネス)へ同じ内容を API で自動投稿(接続キーと投稿先がある時だけ。失敗しても止めない)
     try:
         import gbp_post
+        if manual_blog:
+            raise StopIteration
         if gbp_post.configured() and state.get("gbp_location") and state.get("gbp_auto"):
             purl = gbp_post.post_for(item, state)
             STATE.write_text(json.dumps(state, ensure_ascii=False, indent=1), encoding="utf-8")
@@ -281,12 +291,16 @@ def main():
             log(f"マイビジネスに投稿: {purl}")
         else:
             log("マイビジネスAPI 自動投稿はオフ(state.json の gbp_auto が true で、キーと投稿先がある時だけ動く)")
+    except StopIteration:
+        pass
     except Exception as e:
         gbp += f" | ⚠ マイビジネス投稿に失敗: {str(e)[:160]}"
         log(f"⚠ マイビジネス投稿に失敗(Instagram は完了): {e}")
     # ホームページの「新着情報」(ブログ)にも同じ内容を投稿(2026-10-29〜。鍵がある時だけ。失敗しても止めない)
     try:
         import wp_post
+        if manual_blog:
+            raise StopIteration
         if wp_post.configured() and state.get("wp_auto", True):
             wurl = wp_post.post_for(item, state)
             STATE.write_text(json.dumps(state, ensure_ascii=False, indent=1), encoding="utf-8")
@@ -294,6 +308,8 @@ def main():
             log(f"ホームページの新着情報に投稿: {wurl}")
         else:
             log("新着情報への自動投稿はオフ(Secrets KITANO_WP_APP_PASS が無い、または state.json の wp_auto が false)")
+    except StopIteration:
+        pass
     except Exception as e:
         gbp += f" | ⚠ 新着情報への投稿に失敗: {str(e)[:160]}"
         log(f"⚠ 新着情報への投稿に失敗(Instagram は完了): {e}")
