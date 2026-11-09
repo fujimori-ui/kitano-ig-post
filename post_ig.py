@@ -244,8 +244,23 @@ def main():
             if requests.head(u, timeout=30).status_code == 200:
                 break
             time.sleep(10)
-    mid, url = publish(user_id, token, image_url, caption, video_url, cover_url)
     old = state["posted"].get(item, {})
+    try:
+        mid, url = publish(user_id, token, image_url, caption, video_url, cover_url)
+    except RuntimeError as e:
+        # 2026-11-09: media_publish が「Application request limit reached / action is blocked(2207051)」を返しても
+        # 実際には投稿が出ていた(2回とも)。再試行すると二重投稿になるので、投稿済み扱いで記録して止める
+        if "2207051" in str(e) or "action is blocked" in str(e):
+            state["posted"][item] = {**old, "date": time.strftime("%Y-%m-%d %H:%M"), "media_id": "", "url": "",
+                                     "category": category(item), "unconfirmed": True,
+                                     "note": "API は action is blocked を返したが投稿は出ている可能性大。アプリで確認"}
+            if slot:
+                state["posted"][item]["slot"] = slot
+            STATE.write_text(json.dumps(state, ensure_ascii=False, indent=1), encoding="utf-8")
+            log(f"RESULT: UNCONFIRMED {item} Instagram が「action is blocked」を返しました。投稿は出ていることが多いので、"
+                f"アプリで確認してください(出ていなければ --slug {item} で出し直し)。マイビジネス・新着情報は出していません")
+            return
+        raise
     state["posted"][item] = {"date": time.strftime("%Y-%m-%d %H:%M"), "media_id": mid, "url": url, "category": category(item)}
     if old.get("wp"):
         state["posted"][item]["wp_refresh"] = True   # 出し直し → ホームページの記事も新しい内容で上書き(wp_post.py)

@@ -26,6 +26,12 @@ OFF_TOPIC_WORDS = ["床の張替", "床を張り替", "床がへこ", "床の下
                    "内装", "キッチン", "トイレ", "お風呂", "浴室", "洗面", "外壁塗装", "クロス", "畳", "フローリング", "YKK"]
 
 
+# 注意ネタ(chuui_)は、屋根・雨漏り・住まいの工事の訪問販売や点検商法に関係する話だけ(ユーザー指示 2026-11-10
+# 「最終確認通知書のハガキ」=屋根と関係ない詐欺の話が出て「意味がわからない」→削除)。題名と箇条書きにこの言葉が1つも無ければNG
+CHUUI_TOPIC_WORDS = ["屋根", "雨漏り", "瓦", "板金", "雨どい", "雨樋", "訪問", "点検", "工事", "リフォーム", "業者", "契約",
+                     "見積", "修理", "火災保険", "住まい", "住宅"]
+
+
 def existing_numbers():
     nums = []
     for p in POSTS.glob("*.jpg"):
@@ -61,6 +67,12 @@ def check_item(it, errors, photos=None):
         hit = [w for w in OFF_TOPIC_WORDS if w in text]
         if hit:
             errors.append(f"{slug}: 屋根・雨漏り・板金以外の工事の話題は書かない(ユーザー指示 2026-11-06): {hit}")
+    else:
+        pts = " ".join(" ".join(map(str, x)) for x in it.get("points", []) + it.get("steps", []) + it.get("rows", []) if isinstance(x, list))
+        text = title + " " + it.get("pill", "") + " " + it.get("heading", "") + " " + pts
+        if not any(w in text for w in CHUUI_TOPIC_WORDS):
+            errors.append(f"{slug}: 注意ネタは屋根・雨漏り・住まいの工事の訪問販売や点検商法の話だけ(ユーザー指示 2026-11-10)。"
+                          "ハガキ・メール・電話の詐欺など、屋根と関係ない話題は作らない")
     if len(cap) < 150 or len(cap) > 900:
         errors.append(f"{slug}: cap(本文)は150〜900文字(今 {len(cap)})。CTAとハッシュタグは自動で付くので書かない")
     if "#" in cap or "0745-76-4335" in cap:

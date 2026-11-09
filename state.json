@@ -599,7 +599,13 @@
    "wp_id": 290
   },
   "113_genba_toi_shuppatsu": {
-   "manual_blog": "https://www.kashiba-yanereform.com/news/blog-toi-kouji-shuppatsu/"
+   "manual_blog": "https://www.kashiba-yanereform.com/news/blog-toi-kouji-shuppatsu/",
+   "date": "2026-11-09 18:45",
+   "category": "jirei",
+   "url": "",
+   "media_id": "",
+   "note": "API は action is blocked(2207051)を返したが投稿は出ていた(ユーザー確認)。最初の小さい写真版はユーザーがアプリで削除",
+   "wp": "https://www.kashiba-yanereform.com/news/blog-toi-kouji-shuppatsu/"
   },
   "102_mame_onigawara": {
    "date": "2026-11-09 20:09",
@@ -629,7 +635,13 @@
     "date": "2026-11-10 07:13"
    },
    "wp": "https://www.kashiba-yanereform.com/news/ig-100-chuui-nise-hagaki/",
-   "wp_id": 297
+   "wp_id": 297,
+   "deleted": true,
+   "memo": "2026-11-10 ユーザー「意味がわからない」→ IG・マイビジネス削除、新着情報(wp_id 297)はゴミ箱。屋根と関係ない詐欺ハガキの話だった"
+  },
+  "85_chuui_kaiketsu_navi": {
+   "skipped": "2026-11-10",
+   "memo": "屋根と関係ない消費者窓口の紹介のため投稿しない(ユーザー指示 2026-11-10「関係のある投稿にする」)。posts/ の画像・動画は残置"
   }
  },
  "replaced": {
