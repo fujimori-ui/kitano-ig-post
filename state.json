@@ -642,6 +642,20 @@
   "85_chuui_kaiketsu_navi": {
    "skipped": "2026-11-10",
    "memo": "屋根と関係ない消費者窓口の紹介のため投稿しない(ユーザー指示 2026-11-10「関係のある投稿にする」)。posts/ の画像・動画は残置"
+  },
+  "49_chuui_mitsumori_mikata": {
+   "date": "2026-11-10 08:00",
+   "media_id": "18033327203688268",
+   "url": "https://www.instagram.com/reel/Dfidi2VANdc/",
+   "category": "chuui",
+   "gbp_post": {
+    "name": "accounts/117464630818381172478/locations/1380594875886825358/localPosts/4785800865646371580",
+    "state": "PROCESSING",
+    "url": "https://local.google.com/place?id=6100690049524066194&use=posts&lpsid=CAIQACoeChxtc3BfaDpFb2hoWkduUUVnVVh1dExtM0dOYjVR",
+    "date": "2026-11-10 08:00"
+   },
+   "wp": "https://www.kashiba-yanereform.com/news/ig-49-chuui-mitsumori-mikata/",
+   "wp_id": 299
   }
  },
  "replaced": {
