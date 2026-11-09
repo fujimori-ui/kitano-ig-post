@@ -615,6 +615,21 @@
    },
    "wp": "https://www.kashiba-yanereform.com/news/ig-102-mame-onigawara/",
    "wp_id": 295
+  },
+  "100_chuui_nise_hagaki": {
+   "date": "2026-11-10 07:13",
+   "media_id": "17930927184182676",
+   "url": "https://www.instagram.com/reel/DfiYIFEEgZM/",
+   "category": "chuui",
+   "slot": "morning",
+   "gbp_post": {
+    "name": "accounts/117464630818381172478/locations/1380594875886825358/localPosts/6949325336482335287",
+    "state": "PROCESSING",
+    "url": "https://local.google.com/place?id=6100690049524066194&use=posts&lpsid=CAIQACoeChxtc3BfaDp6UzBPZ1lfUm4xMnpvN05tWDMzNWVB",
+    "date": "2026-11-10 07:13"
+   },
+   "wp": "https://www.kashiba-yanereform.com/news/ig-100-chuui-nise-hagaki/",
+   "wp_id": 297
   }
  },
  "replaced": {
