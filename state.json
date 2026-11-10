@@ -687,6 +687,21 @@
    "category": "jirei",
    "manual_blog": "https://www.kashiba-yanereform.com/news/blog-tatedoi-hoshu-kigyou/",
    "wp": "https://www.kashiba-yanereform.com/news/blog-tatedoi-hoshu-kigyou/"
+  },
+  "103_season_fuyu_calendar": {
+   "date": "2026-11-11 07:17",
+   "media_id": "18114216475887253",
+   "url": "https://www.instagram.com/reel/Dfk9bB5D9XA/",
+   "category": "mame",
+   "slot": "morning",
+   "gbp_post": {
+    "name": "accounts/117464630818381172478/locations/1380594875886825358/localPosts/3745794941480689955",
+    "state": "PROCESSING",
+    "url": "https://local.google.com/place?id=6100690049524066194&use=posts&lpsid=CAIQACoeChxtc3BfaDpEZEg3MHVhdFJMT2R3NWcwTkx3R3hB",
+    "date": "2026-11-11 07:17"
+   },
+   "wp": "https://www.kashiba-yanereform.com/news/ig-103-season-fuyu-calendar/",
+   "wp_id": 312
   }
  },
  "replaced": {
