@@ -673,7 +673,13 @@
    "wp_id": 301
   },
   "125_genba_tatedoi_hoshu": {
-   "manual_blog": "https://www.kashiba-yanereform.com/news/blog-tatedoi-hoshu-kigyou/"
+   "manual_blog": "https://www.kashiba-yanereform.com/news/blog-tatedoi-hoshu-kigyou/",
+   "date": "2026-11-11 07:05",
+   "media_id": "",
+   "url": "",
+   "category": "jirei",
+   "unconfirmed": true,
+   "note": "API は action is blocked を返したが投稿は出ている可能性大。アプリで確認"
   }
  },
  "replaced": {
