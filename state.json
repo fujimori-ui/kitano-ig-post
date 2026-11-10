@@ -676,10 +676,9 @@
    "manual_blog": "https://www.kashiba-yanereform.com/news/blog-tatedoi-hoshu-kigyou/",
    "date": "2026-11-11 07:05",
    "media_id": "",
-   "url": "",
+   "url": "https://www.instagram.com/p/Dfk8DvTGc53/",
    "category": "jirei",
-   "unconfirmed": true,
-   "note": "API は action is blocked を返したが投稿は出ている可能性大。アプリで確認"
+   "note": "API は action is blocked を返したが投稿は出ていた(プロフィールをブラウザで開いて本文を確認)"
   }
  },
  "replaced": {
