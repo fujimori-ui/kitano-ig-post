@@ -679,6 +679,9 @@
    "url": "https://www.instagram.com/p/Dfk8DvTGc53/",
    "category": "jirei",
    "note": "API は action is blocked を返したが投稿は出ていた(プロフィールをブラウザで開いて本文を確認)"
+  },
+  "126_genba_tatedoi_story": {
+   "manual_blog": "https://www.kashiba-yanereform.com/news/blog-tatedoi-hoshu-kigyou/"
   }
  },
  "replaced": {
