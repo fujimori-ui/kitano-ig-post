@@ -656,6 +656,21 @@
    },
    "wp": "https://www.kashiba-yanereform.com/news/ig-49-chuui-mitsumori-mikata/",
    "wp_id": 299
+  },
+  "101_company_kinjo_hairyo": {
+   "date": "2026-11-10 20:05",
+   "media_id": "18141136126651409",
+   "url": "https://www.instagram.com/reel/DfjwiQhAZKe/",
+   "category": "company",
+   "slot": "evening",
+   "gbp_post": {
+    "name": "accounts/117464630818381172478/locations/1380594875886825358/localPosts/3115005497527291444",
+    "state": "PROCESSING",
+    "url": "https://local.google.com/place?id=6100690049524066194&use=posts&lpsid=CAIQACoeChxtc3BfaDpiS0owb3BBS2FQVXZLX2NCZXhOTGJn",
+    "date": "2026-11-10 20:06"
+   },
+   "wp": "https://www.kashiba-yanereform.com/news/ig-101-company-kinjo-hairyo/",
+   "wp_id": 301
   }
  },
  "replaced": {
