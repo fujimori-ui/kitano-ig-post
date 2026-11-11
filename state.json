@@ -702,6 +702,21 @@
    },
    "wp": "https://www.kashiba-yanereform.com/news/ig-103-season-fuyu-calendar/",
    "wp_id": 312
+  },
+  "104_chuui_taiyoukou_tenken": {
+   "date": "2026-11-11 20:10",
+   "media_id": "17866081866695988",
+   "url": "https://www.instagram.com/reel/DfmV1d-iEUa/",
+   "category": "chuui",
+   "slot": "evening",
+   "gbp_post": {
+    "name": "accounts/117464630818381172478/locations/1380594875886825358/localPosts/5831654567199402228",
+    "state": "PROCESSING",
+    "url": "https://local.google.com/place?id=6100690049524066194&use=posts&lpsid=CAIQACoeChxtc3BfaDpldTZaLU1qV2l2OEE3ekdBR0VxZUdB",
+    "date": "2026-11-11 20:10"
+   },
+   "wp": "https://www.kashiba-yanereform.com/news/ig-104-chuui-taiyoukou-tenken/",
+   "wp_id": 314
   }
  },
  "replaced": {
