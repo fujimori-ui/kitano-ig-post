@@ -97,7 +97,7 @@ def next_item(state, slug=None, posted=None):
     for s in items:
         if s.startswith("flyer_") and s not in posted and flyer_ready(s):
             return s
-    todo = [s for s in items if s not in posted and not s.startswith("flyer_")]
+    todo = [s for s in items if (s not in posted or posted[s].get("requeue")) and not s.startswith("flyer_")]   # requeue=出し直し待ち(2026-11-12)
     if not todo:
         return None
     # 種類ごとの「最後に出した日時」。まだ出ていない種類は "" で最優先
