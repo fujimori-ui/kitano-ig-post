@@ -749,6 +749,21 @@
   "129_genba_amadoi_souji_story": {
    "manual_blog": "https://www.kashiba-yanereform.com/news/blog-amadoi-souji-doro-ochiba/",
    "requeue": true
+  },
+  "105_mame_yane_katachi": {
+   "date": "2026-11-13 07:13",
+   "media_id": "18118472315037576",
+   "url": "https://www.instagram.com/reel/DfqGivrDya3/",
+   "category": "mame",
+   "slot": "morning",
+   "gbp_post": {
+    "name": "accounts/117464630818381172478/locations/1380594875886825358/localPosts/529181714046449751",
+    "state": "PROCESSING",
+    "url": "https://local.google.com/place?id=6100690049524066194&use=posts&lpsid=CAIQACoeChxtc3BfaDpNYWxDNGFab2x1QVdDZjJaTFZnTjJ3",
+    "date": "2026-11-13 07:13"
+   },
+   "wp": "https://www.kashiba-yanereform.com/news/ig-105-mame-yane-katachi/",
+   "wp_id": 340
   }
  },
  "replaced": {
