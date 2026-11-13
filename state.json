@@ -743,8 +743,12 @@
    "wp": "https://www.kashiba-yanereform.com/news/blog-tent-souko-amadoi-shinsetsu/"
   },
   "128_genba_nokisaki_bankin_story": {
+   "date": "2026-11-14 07:26",
+   "media_id": "17889358068689600",
+   "url": "https://www.instagram.com/reel/DfssuSLnMRK/",
+   "category": "jirei",
    "manual_blog": "https://www.kashiba-yanereform.com/news/blog-kawara-nokisaki-bankin/",
-   "requeue": true
+   "wp": "https://www.kashiba-yanereform.com/news/blog-kawara-nokisaki-bankin/"
   },
   "129_genba_amadoi_souji_story": {
    "manual_blog": "https://www.kashiba-yanereform.com/news/blog-amadoi-souji-doro-ochiba/",
