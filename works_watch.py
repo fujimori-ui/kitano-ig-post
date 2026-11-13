@@ -32,7 +32,9 @@ POSTS = HERE / "posts"
 CONTENT = HERE / "content"
 PHOTOS = CONTENT / "works_photos"
 SITE = "https://www.kashiba-yanereform.com"
-API = SITE + "/wp-json/wp/v2/works"
+# /wp-json/ はサーバーの設定で海外IP(GitHub Actions)から 403 になる(2026-11-14 に判明)ので、
+# wp_post.py と同じ ?rest_route= の形で取る(こちらは通る)。だめなら /wp-json/ も試し、鍵(KITANO_WP_APP_PASS)があれば認証付きでも試す
+API_URLS = [SITE + "/wp/?rest_route=/wp/v2/works", SITE + "/wp-json/wp/v2/works"]
 INSTALL_DATE = "2026-11-14"      # この日までの記事は初回に「見た」扱い(すでに投稿してある)
 MAX_SCENES = 4                   # 写真の場面は最大4つ(＋最後の一言)
 TITLE_MAX = 15                   # 黄色帯の見出し(make_story.py の目安)
@@ -55,9 +57,24 @@ def save_state(state):
 
 # ---------------- 記事を取る ----------------
 def fetch_works():
-    r = requests.get(API, params={"per_page": 50, "_embed": 1, "orderby": "date", "order": "asc"}, headers=UA, timeout=60)
-    r.raise_for_status()
-    return r.json()
+    import os
+    params = {"per_page": 50, "_embed": 1, "orderby": "date", "order": "asc"}
+    auth = None
+    if os.environ.get("KITANO_WP_APP_PASS"):
+        auth = (os.environ.get("KITANO_WP_USER", "admin_kitano"), os.environ["KITANO_WP_APP_PASS"])
+    last = None
+    for a in ([None, auth] if auth else [None]):
+        for url in API_URLS:
+            try:
+                r = requests.get(url, params=params, headers=UA, auth=a, timeout=60)
+                if r.status_code == 200:
+                    return r.json()
+                last = f"{url} → {r.status_code}"
+                log(f"  取れず: {last}{' (認証付き)' if a else ''}")
+            except Exception as e:
+                last = f"{url} → {str(e)[:100]}"
+                log(f"  取れず: {last}")
+    raise RuntimeError(f"施工実績の一覧が取れません: {last}")
 
 
 def blog_slugs(state):

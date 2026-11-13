@@ -43,6 +43,7 @@ jobs:
         if: ${{ github.event.inputs.dry_run != 'true' && github.event.inputs.slug == '' }}
         env:
           GH_TOKEN: ${{ github.token }}
+          KITANO_WP_APP_PASS: ${{ secrets.KITANO_WP_APP_PASS }}
         run: |
           OUT=$(python works_watch.py --check 2>&1 | tail -3) || true
           echo "$OUT"

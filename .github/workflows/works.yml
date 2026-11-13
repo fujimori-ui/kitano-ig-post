@@ -54,6 +54,8 @@ jobs:
           pip install -q pillow numpy requests opencv-python-headless
       - name: 施工実績を見て、新着があれば動画を作る
         id: make
+        env:
+          KITANO_WP_APP_PASS: ${{ secrets.KITANO_WP_APP_PASS }}
         run: |
           set -o pipefail
           ARGS=""
