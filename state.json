@@ -764,6 +764,21 @@
    },
    "wp": "https://www.kashiba-yanereform.com/news/ig-105-mame-yane-katachi/",
    "wp_id": 340
+  },
+  "114_miryoku_second_opinion": {
+   "date": "2026-11-13 20:06",
+   "media_id": "18121533568767878",
+   "url": "https://www.instagram.com/reel/Dfre7EbipQJ/",
+   "category": "miryoku",
+   "slot": "evening",
+   "gbp_post": {
+    "name": "accounts/117464630818381172478/locations/1380594875886825358/localPosts/7458893138191452528",
+    "state": "PROCESSING",
+    "url": "https://local.google.com/place?id=6100690049524066194&use=posts&lpsid=CAIQACoeChxtc3BfaDowMlA3UTJLLTBKeXY5eUFPeUZ6TGRR",
+    "date": "2026-11-13 20:06"
+   },
+   "wp": "https://www.kashiba-yanereform.com/news/ig-114-miryoku-second-opinion/",
+   "wp_id": 342
   }
  },
  "replaced": {
