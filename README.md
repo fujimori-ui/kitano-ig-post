@@ -37,6 +37,21 @@ Instagram に1本投稿するたびに、`wp_post.py` が同じ内容を https:/
 - 手元で試す: `KITANO_WP_APP_PASS=... python3 wp_post.py --check` / `--test 13_amadoi`(表示だけ) / `--one 13_amadoi` / `--backfill`(投稿済みでまだ無いものを投稿日のまま全部)
 - サイト側: 新着情報の一覧(トップ・/news/・カテゴリ)は日付の新しい順に直した(2026-10-29、テーマ index.php / archive-news.php / taxonomy-category_news.php)
 
+## ホームページの施工実績を見て、自動で優先投稿(2026-11-14〜)
+
+ユーザー指示「施工実績も投稿。WEBを定期的に見て優先的に投稿する仕組みにしたい」。
+- `works.yml` が毎日 5:30 / 18:30 JST(GitHub の schedule。遅れても害なし)に `works_watch.py` を実行。
+  ホームページの施工実績(https://www.kashiba-yanereform.com/works/ 、WordPress REST API `/wp-json/wp/v2/works`)に新しい記事があれば、
+  写真を `content/works_photos/<記事slug>/` に保存し、記事の文章から「施工前→作業中→施工後→ひとこと」のストーリー動画(`make_story.py`)を
+  `posts/NN_jirei_web_<記事slug>_story.*` に作って commit する(中身の JSON は `content/story_web_YYYYMMDD_<slug>.json`)
+- `post.yml` も投稿の前に `works_watch.py --check` で新着を見て、あれば `works.yml` を起動する(動画ができるのは次の枠)
+- 投稿名に `_web_` が入るものは `post_ig.py` が**チラシの次に優先**して次の朝7時/夜20時に出す。結果メールの RESULT に「次はWEB施工実績を優先: …」が付く
+- 見た記事は `state.json` の `works.seen`(記事ID)、作った投稿は `works.made` に記録。初回は導入日(2026-11-14)までの記事を既読にする(それ以前は 03〜14・130〜136・126〜129 で投稿済み)。
+  別PCのブログツール(`~/kitano_blog/post_blog.py`)が先に Instagram へ出した記事(`manual_blog` に同じ slug)は作らない
+- 作り直し: Actions → kitano-ig-works → Run workflow → `force` に記事ID(例 310)か記事slug。`test=true` なら commit せず画像を Artifacts に出すだけ
+- 手元で試す: `KITANO_FONT=noto python works_watch.py --force 310 --test`(posts/ に作るだけ。state は変えない)
+- 文章は記事からの自動要約(見出し=各段落の最初の文を15字まで、本文=記事の段落をそのまま900字まで)。直したいときは JSON を直して `python make_story.py content/story_web_….json`
+
 ## ネタの自動作成(2026-10-26〜)
 
 毎週月曜5:00に claude.ai のルーティン「北野工作所IG: 毎週月曜 来週分14本を自動作成→メール報告」(trig_01SV6ZwBzUZry2VyU4opVGSW)が動き、

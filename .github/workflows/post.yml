@@ -25,6 +25,7 @@ concurrency:
 
 permissions:
   contents: write
+  actions: write   # 新着の施工実績があれば works.yml を起動するため(2026-11-14)
 
 jobs:
   post:
@@ -38,6 +39,16 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install requests pillow
+      - name: ホームページの施工実績に新着があれば works.yml(動画作成)を起動(作成後は次の枠で優先投稿)
+        if: ${{ github.event.inputs.dry_run != 'true' && github.event.inputs.slug == '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          OUT=$(python works_watch.py --check 2>&1 | tail -3) || true
+          echo "$OUT"
+          if echo "$OUT" | grep -q "^NEW [1-9]"; then
+            gh workflow run works.yml -R ${{ github.repository }} --ref main && echo "works.yml を起動しました"
+          fi
       - name: マイビジネス用の横長画像(gbp_img/)が足りなければ作って push(API が公開URLで取りに来るため先に公開)
         if: ${{ github.event.inputs.dry_run != 'true' }}
         run: |

@@ -20,6 +20,8 @@ mp4 が無ければ画像で投稿。
 --slug での手動投稿はこの判定をしない(時間帯の1本には数えない)。
 
 毎月のチラシ(flyer_YYYYMM)は必ず月1回出す: その月の7日前から他より先に投稿する。
+ホームページの施工実績から works_watch.py が自動で作った投稿(名前に _web_ が入る)は、チラシの次に優先して出す
+(2026-11-14 ユーザー指示「施工実績も投稿。WEBを定期的に見て優先的に投稿」。番号の小さい順=記事の古い順)。
 今月分のチラシがまだ posts/ に無いときは、朝の結果(RESULT行)に「⚠ 今月のチラシ未作成」を付けてメールで知らせる。
 
 使い方: python post_ig.py [--dry-run] [--slug 03_kawara] [--backup] [--plan 30]
@@ -104,6 +106,10 @@ def next_item(state, slug=None, posted=None):
     todo = [s for s in items if (s not in posted or posted[s].get("requeue")) and not s.startswith("flyer_")]   # requeue=出し直し待ち(2026-11-12)
     if not todo:
         return None
+    # ホームページの新着施工実績(works_watch.py が作る *_web_*)はチラシの次に優先(2026-11-14)
+    for s in todo:
+        if is_web(s):
+            return s
     # 種類ごとの「最後に出した日時」。まだ出ていない種類は "" で最優先
     # (この仕組みを入れた 2026-10-26 より前の投稿には category が無いので数えない → 今日から豆知識で始まる)
     last = {}
@@ -154,6 +160,16 @@ def planned_order(state=None):
         todo.append(nx)
         posted[nx] = {"date": f"9999-{len(todo):05d}", "category": category(nx)}
     return done + todo
+
+
+def is_web(slug):
+    """works_watch.py がホームページの施工実績から自動で作った投稿(優先して出す)"""
+    return "_web_" in slug
+
+
+def web_waiting(state):
+    """まだ出していないWEB施工実績の投稿(結果メール用)"""
+    return [s for s in all_items() if is_web(s) and (s not in state["posted"] or state["posted"][s].get("requeue"))]
 
 
 def flyer_ready(slug):
@@ -286,6 +302,9 @@ def main():
             return
         raise
     state["posted"][item] = {"date": time.strftime("%Y-%m-%d %H:%M"), "media_id": mid, "url": url, "category": category(item)}
+    wsrc = state.get("works", {}).get("made", {}).get(item)
+    if wsrc:   # ホームページの施工実績から作った投稿 → 元記事のURLも記録
+        state["posted"][item]["works_url"] = wsrc.get("url", "")
     if old.get("wp"):
         state["posted"][item]["wp_refresh"] = True   # 出し直し → ホームページの記事も新しい内容で上書き(wp_post.py)
     if slot:
@@ -355,7 +374,9 @@ def main():
     todo =[s for s in all_items() if s not in state["posted"]]
     stock = " ".join(f"{CATEGORY_NAMES[c]}{n}" for c, n in
                      sorted(((c, len([s for s in todo if category(s) == c])) for c in set(map(category, todo))), key=lambda x: -x[1]))
-    log(f"RESULT: POSTED {item} [{cat}] | {title} | {url} | 残り{len(todo)}本(1日2本なので約{len(todo) // 2}日分、内訳: {stock}){warn}{gbp}")
+    web = web_waiting(state)
+    webnote = f" | 次はWEB施工実績を優先: {' '.join(web[:3])}" if web else ""
+    log(f"RESULT: POSTED {item} [{cat}] | {title} | {url} | 残り{len(todo)}本(1日2本なので約{len(todo) // 2}日分、内訳: {stock}){warn}{gbp}{webnote}")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,87 @@
+name: kitano-ig-works
+
+# ホームページの施工実績(https://www.kashiba-yanereform.com/works/)を見て、新しい記事があれば
+# Instagram 用のストーリー動画(施工前→作業中→施工後)を works_watch.py + make_story.py で作って posts/ に commit する。
+# 作った投稿(名前に _web_)は post_ig.py がチラシの次に優先して次の枠(朝7時/夜20時)で投稿する。
+# 2026-11-14 ユーザー指示「施工実績も投稿。WEBを定期的に見て優先的に投稿する仕組みにしたい」
+# schedule は GitHub の都合で遅れることがあるが、ここは動画を作るだけなので遅れても害はない(投稿時刻はルーティン側)。
+on:
+  schedule:
+    - cron: "30 20 * * *"   # 5:30 JST(朝7時の投稿に間に合わせる)
+    - cron: "30 9 * * *"    # 18:30 JST(夜20時の投稿に間に合わせる)
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "作り直す記事のID(例 310)か記事slug。通常は空=新着だけ"
+        required: false
+        default: ""
+      test:
+        description: "true なら commit せず、できた画像を Artifacts に出すだけ(state も変えない)"
+        required: false
+        default: "false"
+
+concurrency:
+  group: kitano-ig-post
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  works:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      TZ: Asia/Tokyo
+      KITANO_FONT: noto
+    steps:
+      - uses: actions/checkout@v4
+      - name: 非公開素材(BGM)を取り込む
+        uses: actions/checkout@v4
+        with:
+          repository: fujimori-ui/kitano-ig-private
+          token: ${{ secrets.PHOTOS_TOKEN }}
+          path: private
+      - run: |
+          mkdir -p music/private photos_hd
+          cp private/music/* music/private/ || true
+          ls music/private | wc -l
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg > /dev/null
+          pip install -q pillow numpy requests opencv-python-headless
+      - name: 施工実績を見て、新着があれば動画を作る
+        id: make
+        run: |
+          set -o pipefail
+          ARGS=""
+          if [ -n "${{ github.event.inputs.force }}" ]; then ARGS="--force ${{ github.event.inputs.force }}"; fi
+          if [ "${{ github.event.inputs.test }}" = "true" ]; then ARGS="$ARGS --test"; fi
+          python works_watch.py $ARGS 2>&1 | tee out.log
+          MADE=$(grep '^MADE' out.log | tail -1 | sed 's/^MADE *//')
+          echo "made=$MADE" >> "$GITHUB_OUTPUT"
+          grep '^RESULT' out.log | tail -1 >> "$GITHUB_STEP_SUMMARY" || true
+      - name: 試作を Artifacts に出す(test のとき)
+        if: ${{ github.event.inputs.test == 'true' && steps.make.outputs.made != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: works-test
+          path: |
+            posts/*_web_*.jpg
+            posts/*_web_*.mp4
+            posts/*_web_*.txt
+            content/story_web_*.json
+          retention-days: 7
+      - name: posts/ content/ state.json を commit
+        if: ${{ github.event.inputs.test != 'true' }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add posts content state.json music_log.json
+          git diff --cached --quiet && echo "変更なし" && exit 0
+          git commit -m "WEB施工実績から自動作成: ${{ steps.make.outputs.made }} [skip ci]"
+          git pull --rebase --autostash origin main
+          git push
+          echo "RESULT: BUILT ${{ steps.make.outputs.made }}"
