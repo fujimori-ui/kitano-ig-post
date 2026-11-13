@@ -41,6 +41,7 @@ jobs:
       - run: pip install requests pillow
       - name: ホームページの施工実績に新着があれば works.yml(動画作成)を起動(作成後は次の枠で優先投稿)
         if: ${{ github.event.inputs.dry_run != 'true' && github.event.inputs.slug == '' }}
+        continue-on-error: true   # ここが失敗しても Instagram の投稿は止めない
         env:
           GH_TOKEN: ${{ github.token }}
           KITANO_WP_APP_PASS: ${{ secrets.KITANO_WP_APP_PASS }}
