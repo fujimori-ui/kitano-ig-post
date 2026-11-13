@@ -20,7 +20,7 @@ HERE = Path(__file__).parent
 CONTENT = HERE / "content"
 POSTS = HERE / "posts"
 LAYOUTS = {"list", "steps", "table", "photo", "quotes"}
-SLUG_RE = re.compile(r"^(mame|chuui|company|komari|jirei|season|news|faq)_[a-z0-9_]{3,30}$")
+SLUG_RE = re.compile(r"^(mame|chuui|company|komari|jirei|season|news|faq|miryoku)_[a-z0-9_]{3,30}$")
 # 屋根・雨漏り・板金以外の工事の話題(床の張替え・玄関ドア・窓・内装・水まわり・外壁塗装)はNG(ユーザー指示 2026-11-06)
 OFF_TOPIC_WORDS = ["床の張替", "床を張り替", "床がへこ", "床の下地", "玄関ドア", "ドアの交換", "サッシの交換", "サッシ交換", "窓の交換", "窓の改修",
                    "内装", "キッチン", "トイレ", "お風呂", "浴室", "洗面", "外壁塗装", "クロス", "畳", "フローリング", "YKK"]
@@ -39,8 +39,9 @@ def existing_numbers():
         if m:
             nums.append(int(m.group(1)))
     for f in CONTENT.glob("*.json"):
-        for it in json.loads(f.read_text(encoding="utf-8")):
-            if it.get("n"):
+        data = json.loads(f.read_text(encoding="utf-8"))
+        for it in (data if isinstance(data, list) else [data]):   # genba_*.json(make_genba.py 用)は1件だけの形
+            if isinstance(it, dict) and it.get("n"):
                 nums.append(int(it["n"]))
     return nums
 
@@ -48,7 +49,7 @@ def existing_numbers():
 def check_item(it, errors, photos=None):
     slug = it.get("slug", "")
     if not SLUG_RE.match(slug):
-        errors.append(f"{slug}: slug は mame_/chuui_/company_/komari_/jirei_/season_/news_/faq_ で始まる英小文字・数字・_ (例 mame_koke)")
+        errors.append(f"{slug}: slug は mame_/chuui_/company_/miryoku_/komari_/jirei_/season_/news_/faq_ で始まる英小文字・数字・_ (例 mame_koke)")
     lay = it.get("layout", "list")
     if lay not in LAYOUTS:
         errors.append(f"{slug}: layout は {sorted(LAYOUTS)} のどれか")
@@ -131,7 +132,9 @@ def check_item(it, errors, photos=None):
 
 
 def load_items(files=None):
-    files = files or sorted(CONTENT.glob("*.json"))
+    # genba_*.json(make_genba.py)・story_*.json(make_story.py)は別の形なので、ここでは読まない
+    # (2026-11-10 これが混ざって自動の画像づくりが止まっていた)
+    files = files or sorted(f for f in CONTENT.glob("*.json") if not f.name.startswith(("genba_", "story_")))
     out = []
     for f in files:
         try:
@@ -231,6 +234,25 @@ def main():
         made.append(slug)
         if sum(1 for m in mp.FACE_LOG if m.startswith("⚠")) > n_warn:
             face_ng.append(slug)
+    if len(made) > 1:
+        # 新しい投稿どうしで構図・写真の形・箇条書きの形が続かないよう、投稿予定の順に決め直して作り直す
+        # (画像ができて初めて投稿予定の順番が分かるため。ユーザー指示 2026-11-10「投稿ごとに画像のカタチをかえる」)
+        try:
+            import post_ig
+            order = post_ig.planned_order()
+            by_name = {f"{it['n']:02d}_{it['slug']}": it for it in items if it.get("n")}
+            redo = sorted(made, key=lambda x: order.index(x) if x in order else len(order))
+            for path in (mp.LAYOUT_LOG, mp.STYLE_LOG):
+                if path.exists():
+                    lg = json.loads(path.read_text(encoding="utf-8"))
+                    for x in redo:
+                        lg.pop(x, None)
+                    path.write_text(json.dumps(dict(sorted(lg.items())), ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+            mp.COMP_LOG.clear(); mp.STYLE_NOTES.clear(); mp._DECIDED.clear()
+            for x in redo:
+                build(by_name[x], mp)
+        except Exception as e:
+            print(f"(見た目の決め直しは飛ばしました: {e})")
     for f in changed_files:
         items_f = [{k: v for k, v in it.items() if k != "_file"} for it in items if it["_file"] == f]
         f.write_text(json.dumps(items_f, ensure_ascii=False, indent=1), encoding="utf-8")
@@ -238,6 +260,8 @@ def main():
         print("⚠ 顔が切れる写真の投稿(別の写真に替えてください): " + " ".join(face_ng))
     if mp.COMP_LOG:   # 構図(2026-11-06〜 投稿ごとに自動で変わる。layout_log.json に記録)
         print("構図: " + " / ".join(mp.COMP_LOG))
+    if mp.STYLE_NOTES:   # 写真の形・箇条書きの形(2026-11-10〜 投稿ごとに自動で変わる。style_log.json に記録)
+        print("見た目: " + " / ".join(dict.fromkeys(mp.STYLE_NOTES)))
     print("MADE " + " ".join(made))
 
 

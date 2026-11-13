@@ -125,6 +125,7 @@ def rounded(d, box, r, fill):
 def base(subtitle="香芝市の屋根・雨漏り修理"):
     im = Image.new("RGB", (W, H), WHITE)
     d = ImageDraw.Draw(im)
+    CUR["name"] = None   # 新しい1枚の始まり(前の投稿の名前を引きずらない)
     # ヘッダー: ロゴ
     lg = LOGO.copy(); lh = 64; lg = lg.resize((int(lg.width * lh / lg.height), lh), Image.LANCZOS)
     im.paste(lg, (48, 38), lg)
@@ -765,7 +766,124 @@ def short(desc):
         m = re.match(r"^(.+?[。！？!?].+?[。！？!?])", t) or m
     return m.group(1) if m else t
 
-def photo_band(im, d, photo, y, h, focus=0.5, labels=None, tag=None):
+# ---------- 見た目(写真の形・箇条書きの形・番号の形)。ユーザー指示 2026-11-10「投稿ごとに画像のカタチやアニメーションをかえる」 ----------
+# 構図(COMPS)に加えて、投稿ごとに下の3つも変える。決め方は構図と同じ(投稿名から決まる・直前の投稿と同じものは使わない・
+# 決めた結果は style_log.json に記録。決め直すときは style_log.json からその投稿の行を消して作り直す)
+SHAPES = ["rect", "round", "slant", "leaf", "arch", "tilt", "frame"]
+SHAPE_NAMES = {"rect": "四角", "round": "角丸", "slant": "斜めカット", "leaf": "葉っぱ形(対角だけ丸)", "arch": "右が丸いカプセル",
+               "tilt": "白ふちで少しななめ", "frame": "黄色の影つき"}
+ITEMS = ["card", "outline", "bar", "tab"]
+ITEM_NAMES = {"card": "水色カード", "outline": "青い線の枠", "bar": "左に青い線", "tab": "左に青い番号札"}
+BADGES = ["circle_blue", "circle_yellow", "square_blue"]
+STYLE_LOG = HERE / "style_log.json"
+STYLE_RECENT = {"shape": 3, "item": 2, "badge": 1}
+STYLE_NOTES = []   # 今回どの見た目にしたか(build_auto.py がメールに載せる)
+_DECIDED = []      # この実行で決めた投稿(予定の順番にまだ入っていない新しい投稿どうしでも被らないように)
+CUR = {"name": None}   # いま作っている投稿名(photo_band などが見た目を決めるのに使う)
+
+def choose_style(key, allowed):
+    """いま作っている投稿(CUR["name"])の key(shape/item/badge)を、直前の投稿と違うものに決めて記録する"""
+    import json, random, zlib
+    name = CUR.get("name")
+    if not name:
+        return allowed[0]
+    log = json.loads(STYLE_LOG.read_text(encoding="utf-8")) if STYLE_LOG.exists() else {}
+    mine = log.get(name, {})
+    if mine.get(key) in allowed:
+        return mine[key]
+    order = _post_order()
+    i = order.index(name) if name in order else len(order)
+    before = [k for k in order[:i] if k in log] + [k for k in _DECIDED if k != name and k in log and k not in order[:i]]
+    used = [log[k][key] for k in before if key in log[k]]
+    nxt = [log[k][key] for k in order[i + 1:] if k in log and key in log[k]][:1]   # すぐ後に出る投稿(決定済み)とも変える
+    n = STYLE_RECENT.get(key, 2)
+    cands = allowed
+    for m in range(n, 0, -1):   # 直前n本で使っていないもの → だめなら直前n-1本 … と条件をゆるめる
+        c = [a for a in allowed if a not in used[-m:] + nxt] or [a for a in allowed if a not in used[-m:]]
+        if c:
+            cands = c; break
+    val = random.Random(zlib.crc32(f"{name}:{key}".encode()) ^ 0x57A1E).choice(cands)
+    mine[key] = val; log[name] = mine
+    STYLE_LOG.write_text(json.dumps(dict(sorted(log.items())), ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    if name not in _DECIDED:
+        _DECIDED.append(name)
+    return val
+
+def shape_mask(w, h, shape):
+    """写真の形のマスク(白=見える)。2倍で描いて縮め、ふちをなめらかに"""
+    k = 2
+    m = Image.new("L", (w * k, h * k), 0); md = ImageDraw.Draw(m)
+    W2, H2 = w * k, h * k
+    if shape == "round":
+        md.rounded_rectangle([0, 0, W2 - 1, H2 - 1], radius=min(44, h // 4) * k, fill=255)
+    elif shape == "slant":
+        sl = min(90, h // 2) * k
+        md.polygon([(sl, 0), (W2, 0), (W2 - sl, H2), (0, H2)], fill=255)
+    elif shape == "leaf":
+        r = min(120, h // 2 - 4) * k
+        md.rounded_rectangle([0, 0, W2 - 1, H2 - 1], radius=r, fill=255, corners=(True, False, True, False))
+    elif shape == "arch":
+        md.rounded_rectangle([0, 0, W2 - 1, H2 - 1], radius=(h // 2 - 4) * k, fill=255, corners=(False, True, True, False))
+    else:
+        md.rectangle([0, 0, W2, H2], fill=255)
+    return m.resize((w, h), Image.LANCZOS)
+
+def paste_shaped(im, d, ph_img, x, y, shape):
+    """切り抜き済みの写真 ph_img を、形 shape で (x, y) に置く。tilt/frame は同じ枠の中に収まるよう少し小さくして置く"""
+    w, h = ph_img.size
+    if shape == "tilt":
+        # 白ふちの写真を少しななめに(プリント写真ふう)。影つき
+        pw, ph = w - 70, h - 34
+        inner = cover(ph_img, pw - 20, ph - 20)
+        card = Image.new("RGBA", (pw, ph), WHITE + (255,)); card.paste(inner, (10, 10))
+        ImageDraw.Draw(card).rectangle([0, 0, pw - 1, ph - 1], outline=(205, 213, 222, 255), width=2)
+        ang = 1.3 if (zlib_crc(CUR.get("name") or "") % 2) else -1.3
+        rot = card.rotate(ang, resample=Image.BICUBIC, expand=True)
+        sh = Image.new("RGBA", rot.size, (0, 0, 0, 0)); sh.paste((120, 130, 140, 70), (0, 0), rot.getchannel("A"))
+        ox, oy = x + (w - rot.width) // 2, y + (h - rot.height) // 2
+        im.paste(sh, (ox + 6, oy + 6), sh); im.paste(rot, (ox, oy), rot)
+        return
+    if shape == "frame":
+        # 写真の右下に黄色の影(ずらした四角)。枠の中に収める
+        off = 14
+        inner = cover(ph_img, w - off, h - off)
+        rounded(d, [x + off, y + off, x + w, y + h], 18, YELLOW)
+        im.paste(inner, (x, y), shape_mask(w - off, h - off, "round"))
+        return
+    im.paste(ph_img, (x, y), shape_mask(w, h, shape))
+
+def zlib_crc(text):
+    import zlib
+    return zlib.crc32(text.encode())
+
+def badge(d, x, y, cs, text, fn, kind="circle_blue", dy=0.08):
+    """番号の印(丸い青 / 丸い黄色 / 角丸の青い四角)"""
+    if kind == "circle_yellow":
+        d.ellipse([x, y, x + cs, y + cs], fill=YELLOW); fg = INK
+    elif kind == "square_blue":
+        rounded(d, [x, y, x + cs, y + cs], int(cs * 0.24), BLUE); fg = WHITE
+    else:
+        d.ellipse([x, y, x + cs, y + cs], fill=BLUE); fg = WHITE
+    d.text((x + cs / 2 - fn.getlength(text) / 2, y + cs * dy), text, font=fn, fill=fg)
+
+def item_box(d, x0, y, x1, bh, cs, cy0, num, fn, style, bdg):
+    """箇条書き1行ぶんの下地と番号。style: card 水色カード / outline 青い線の枠 / bar 左に青い線 / tab 左に青い番号札"""
+    if style == "outline":
+        d.rounded_rectangle([x0, y, x1, y + bh], radius=22, fill=WHITE, outline=BLUE, width=3)
+        badge(d, 76, cy0, cs, num, fn, "circle_yellow" if bdg == "circle_yellow" else bdg)
+    elif style == "bar":
+        d.rectangle([x0, y, x0 + 10, y + bh], fill=BLUE)
+        d.rectangle([x0 + 10, y + bh - 3, x1, y + bh], fill=LIGHT)
+        badge(d, 76, cy0, cs, num, fn, bdg)
+    elif style == "tab":
+        rounded(d, [x0, y, x1, y + bh], 22, LIGHT)
+        d.rounded_rectangle([x0, y, 76 + cs + 6, y + bh], radius=22, fill=BLUE, corners=(True, False, False, True))
+        d.text((x0 + (76 + cs + 6 - x0) / 2 - fn.getlength(num) / 2, y + (bh - fn.size) / 2 - fn.size * 0.12), num, font=fn, fill=WHITE)
+    else:
+        rounded(d, [x0, y, x1, y + bh], 22, LIGHT)
+        badge(d, 76, cy0, cs, num, fn, bdg)
+
+def photo_band(im, d, photo, y, h, focus=0.5, labels=None, tag=None, shapes=None):
     """写真の帯(幅984)。labels=[(文字, x, y)] で写真の上に名前札(x,y は帯内の px、1以下なら割合)。tag=(大きな数字, 説明) を左下に。
     illust_*.png(透明背景のイラスト)は切り抜かず、薄い青の帯の中に収める"""
     if photo.startswith("illust_"):
@@ -777,14 +895,24 @@ def photo_band(im, d, photo, y, h, focus=0.5, labels=None, tag=None):
     if "+" in photo or "@" in photo:
         # "a.jpg+b.jpg@0.2" … 複数の写真を横に並べる(@ のあとは縦位置。ユーザー指示 2026-10-30「訪問販売系の写真で構成」)
         names = photo.split("+"); gap = 8
+        shape = choose_style("shape", ["rect", "round", "slant"] if not (labels or tag) else ["rect", "round"])
         pw = (984 - gap * (len(names) - 1)) // len(names)
         for i, nm in enumerate(names):
             nm, _, fc = nm.partition("@")
             ph = cover(Image.open(HD / nm).convert("RGB"), pw, h, focus=float(fc) if fc else focus)
-            im.paste(ph, (48 + i * (pw + gap), y))
+            paste_shaped(im, d, ph, 48 + i * (pw + gap), y, shape)
     else:
+        # 写真の形は投稿ごとに変える(名前札つきは四角か角丸だけ、数字札つきは左下が切れない形だけ)
+        allowed = ["rect", "round"] if labels else (["rect", "round", "leaf", "arch"] if tag else list(SHAPES))
+        if h > 330:   # 大きい写真は、細長い帯向けの形(カプセル)を使わない
+            allowed = [a for a in allowed if a != "arch"]
+        if shapes:    # 構図の都合で使える形がしぼられるとき(写真の上に題名を重ねる構図など)
+            allowed = [a for a in allowed if a in shapes] or ["rect"]
+        shape = choose_style("shape", allowed)
         ph = cover(Image.open(HD / photo).convert("RGB"), 984, h, focus=focus)
-        im.paste(ph, (48, y))
+        paste_shaped(im, d, ph, 48, y, shape)
+    if CUR.get("name"):
+        STYLE_NOTES.append(f"{CUR['name']}: 写真={SHAPE_NAMES[shape]}")
     for text, lx, ly in (labels or []):
         px = 48 + (lx * 984 if lx <= 1 else lx); py = y + (ly * h if ly <= 1 else ly)
         f = font(28); tw = f.getlength(text) + 36
@@ -808,23 +936,14 @@ COMPS = ["standard", "photo_top", "title_on_photo", "photo_bottom", "person_left
 COMP_NAMES = {"standard": "題名→写真→本文", "photo_top": "写真→題名→本文", "title_on_photo": "写真の上に題名",
               "photo_bottom": "題名→本文→写真", "person_left": "社長が左・題名が右", "photo_circle": "丸い写真"}
 LAYOUT_LOG = HERE / "layout_log.json"
-COMP_RECENT = 2
+COMP_RECENT = 3
 COMP_LOG = []   # 今回どの構図にしたか(build_auto.py がメールに載せる)
 
 def _post_order():
-    """投稿済み(古い順)＋これから出る予定の順番(make_videos.post_order と同じ)"""
+    """投稿済み(古い順)＋これから出る予定の順番(post_ig.planned_order。make_videos と同じ)"""
     try:
         import post_ig
-        state = post_ig.load_state()
-        done = [k for k, v in sorted(state["posted"].items(), key=lambda kv: kv[1].get("date", ""))]
-        posted = {k: dict(v) for k, v in state["posted"].items()}
-        todo = []
-        while True:
-            nx = post_ig.next_item(state, posted=posted)
-            if not nx or nx in posted:
-                break
-            todo.append(nx); posted[nx] = {"date": "9999", "category": post_ig.category(nx)}
-        return done + todo
+        return post_ig.planned_order()
     except Exception:
         return sorted(p.stem for p in OUT.glob("*.jpg"))
 
@@ -837,10 +956,17 @@ def choose_comp(name, allowed=None):
         return log[name]
     order = _post_order()
     i = order.index(name) if name in order else len(order)
-    prev = [log[k] for k in order[:i] if k in log][-COMP_RECENT:]
-    cands = [c for c in allowed if c not in prev] or allowed
+    prev = [log[k] for k in order[:i] if k in log] + [log[k] for k in _DECIDED if k != name and k in log and k not in order[:i]]
+    nxt = [log[k] for k in order[i + 1:] if k in log][:1]   # すぐ後に出る投稿(決定済み)とも変える
+    cands = allowed
+    for m in range(COMP_RECENT, 0, -1):   # 直前3本と違う構図 → 無ければ直前2本 → 直前1本
+        c = [a for a in allowed if a not in prev[-m:] + nxt] or [a for a in allowed if a not in prev[-m:]]
+        if c:
+            cands = c; break
     comp = random.Random(zlib.crc32(name.encode()) ^ 0xC0DE).choice(cands)
     log[name] = comp
+    if name not in _DECIDED:
+        _DECIDED.append(name)
     LAYOUT_LOG.write_text(json.dumps(dict(sorted(log.items())), ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     return comp
 
@@ -857,6 +983,7 @@ def head_area(im, d, name, title, photo, band_h, pill_text=None, pill_bg=BLUE, p
     """構図に合わせて pill・題名・社長写真・写真(帯 or 丸)を描く。
     戻り値 (本文の開始y, 本文の終わりy, 後処理)。後処理があれば本文を描いたあとに呼ぶ(photo_bottom は写真を最後に描く)。
     社長写真は必ず入れる(ユーザー指示 2026-10-26)。題名は黄色のマーカー帯のまま。"""
+    CUR["name"] = name
     allowed = list(COMPS)
     if not photo:
         allowed = ["standard", "person_left"]
@@ -879,7 +1006,7 @@ def head_area(im, d, name, title, photo, band_h, pill_text=None, pill_bg=BLUE, p
         y = title_hl(d, title, y, title_size, 780) + 24
     elif comp == "title_on_photo":
         bh = 430
-        photo_band(im, d, photo, 170, bh, focus=focus, labels=labels, tag=stat)
+        photo_band(im, d, photo, 170, bh, focus=focus, labels=labels, tag=stat, shapes=["rect", "round"])
         f = font(title_size); th = len(wrap(title, f, 780 - 28)) * int(title_size * 1.3) + 8
         if pill_text:
             pill(d, pill_text, 170 + 20, bg=pill_bg, fg=pill_fg)
@@ -963,14 +1090,17 @@ def list_post(n, slug, pill_text, title, points, note, cap, pill_bg=BLUE, pill_f
         fh = font({3: 44, 4: 40}.get(rows, 40)); fs = font({3: 34, 4: 31}.get(rows, 26), False)
         fn = font({3: 50, 4: 44}.get(rows, 40)); cs = {3: 80, 4: 68}.get(rows, 60); sp = 1.4
     points = [(h, "" if rows >= 5 else short(dsc)) for h, dsc in points]
+    CUR["name"] = f"{n:02d}_{slug}"
+    ist = choose_style("item", ITEMS)       # 箇条書きの形(投稿ごとに変える)
+    bdg = choose_style("badge", BADGES)     # 番号の印の形
+    STYLE_NOTES.append(f"{CUR['name']}: 箇条書き={ITEM_NAMES[ist]}")
     for i, (head, desc) in enumerate(points):
-        rounded(d, [48, y, W - 48, y + bh], 22, LIGHT)
         top = 24 if (rows < 5 and not photo) else 14
         cy0 = y + (bh - cs) // 2 if (rows >= 5 or (photo and rows >= 4)) else y + top
         if not desc:   # 見出しだけ: 丸も文字も枠の縦まん中に
             cy0 = y + (bh - cs) // 2
-        d.ellipse([76, cy0, 76 + cs, cy0 + cs], fill=BLUE)
-        t = str(i + 1); d.text((76 + cs / 2 - fn.getlength(t) / 2, cy0 + cs * 0.08), t, font=fn, fill=WHITE)
+        t = str(i + 1)
+        item_box(d, 48, y, W - 48, bh, cs, cy0, t, fn, ist, bdg)
         tx = 76 + cs + 28
         ty = y + (18 if (rows < 5 and not photo) else 12)
         maxw = W - 48 - tx - 24
@@ -988,10 +1118,9 @@ def list_post(n, slug, pill_text, title, points, note, cap, pill_bg=BLUE, pill_f
                 fd = font(fd.size - 2, False)
             if len(wrap(desc, fd, maxw)) * fd.size * sp + fh.size + 10 + 12 + 10 > bh:
                 print(f"LONG {n:02d}_{slug} | {desc} | {len(desc)}")
-                rounded(d, [48, y, W - 48, y + bh], 22, LIGHT)
+                d.rectangle([48, y, W - 48, y + bh], fill=WHITE)
                 cy1 = y + (bh - cs) // 2
-                d.ellipse([76, cy1, 76 + cs, cy1 + cs], fill=BLUE)
-                d.text((76 + cs / 2 - fn.getlength(t) / 2, cy1 + cs * 0.08), t, font=fn, fill=WHITE)
+                item_box(d, 48, y, W - 48, bh, cs, cy1, t, fn, ist, bdg)
                 fh1 = fh
                 while fh1.getlength(head) > maxw and fh1.size > 28:
                     fh1 = font(fh1.size - 2)
@@ -1755,10 +1884,11 @@ def steps_post(n, slug, title, steps, note, cap, title_size=52, photo=None, focu
         person(im, d, *SMALL_PERSON)
         y = 330 if k >= 4 else 360; gap = 200 if k >= 4 else 250; cs = 110
         fn = font(64); ft = font(44); fd = font(33, False)
+    CUR["name"] = f"{n:02d}_{slug}"
+    bdg = choose_style("badge", BADGES)
     for i, (t, desc) in enumerate(steps):
         desc = short(desc)
-        d.ellipse([48, y, 48 + cs, y + cs], fill=BLUE)
-        s = str(i + 1); d.text((48 + cs / 2 - fn.getlength(s) / 2, y + cs * 0.13), s, font=fn, fill=WHITE)
+        badge(d, 48, y, cs, str(i + 1), fn, bdg, dy=0.13)
         tx = 48 + cs + 32
         d.text((tx, y - 2), t, font=ft, fill=BLUE)
         draw_text(d, (tx, y + ft.size + 10), desc.replace("\n", " ") if photo else desc, fd, INK, maxw=W - 48 - tx, spacing=1.4)

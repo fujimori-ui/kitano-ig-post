@@ -56,6 +56,7 @@ def load_state():
 # ---- 投稿の種類(カテゴリ)。同じ種類ばかり続かないよう、いちばん久しく出ていない種類から順番に出す ----
 # 種類の見分けは投稿名(slug)のキーワードで行う。上から順に最初に当たったもの。
 CATEGORY_RULES = [
+    ("miryoku", ["miryoku_"]),   # 北野工作所の魅力(ホームページの「選ばれる理由」「お悩み別」から。ユーザー指示 2026-11-10)
     ("chuui",   ["houmon", "cooling_off", "news_tenken", "news_kimari", "news_kasai", "news_bundenban", "chuui_"]),
     ("komari",  ["komari_"]),
     ("mame",    ["mame_", "sign_", "season_", "amamori_sign"]),
@@ -63,9 +64,12 @@ CATEGORY_RULES = [
                  "case_", "blog_", "jirei_", "ba_"]),
 ]
 CATEGORY_NAMES = {"jirei": "施工事例", "mame": "豆知識", "chuui": "訪問販売注意", "company": "会社紹介",
-                  "komari": "お困りごと", "flyer": "チラシ"}
+                  "komari": "お困りごと", "flyer": "チラシ", "miryoku": "北野の魅力"}
 # 久しさが同じとき(まだ一度も出ていない種類が複数あるとき)の優先順
-CATEGORY_ORDER = ["mame", "chuui", "jirei", "company", "komari"]
+CATEGORY_ORDER = ["miryoku", "mame", "jirei", "company", "komari", "chuui"]
+# 訪問販売の注意は続くと多く感じる → 前の注意ネタのあと、ほかの種類を5本はさむ(6本に1本=3日に1本くらい)
+# ユーザー指示 2026-11-10「最近訪問営業のネタが多いので、北野工作所の魅力も投稿してほしい」
+CHUUI_GAP = 5
 
 
 CATEGORY_OVERRIDE = {"13_amadoi": "mame", "43_blog_shimi": "mame"}  # キーワードで決めにくいもの
@@ -110,6 +114,10 @@ def next_item(state, slug=None, posted=None):
         last[c] = max(last.get(c, ""), v.get("date", ""))
     cats = sorted({category(s) for s in todo},
                   key=lambda c: (last.get(c, ""), CATEGORY_ORDER.index(c) if c in CATEGORY_ORDER else 99))
+    if "chuui" in cats and len(cats) > 1 and last.get("chuui"):
+        since = sum(1 for v in posted.values() if v.get("date", "") > last["chuui"] and not v.get("skipped"))
+        if since < CHUUI_GAP:
+            cats.remove("chuui")
     cat = cats[0]
     return [s for s in todo if category(s) == cat][0]
 
@@ -130,6 +138,22 @@ def plan(state, n=30):
         print(f"{d.month}/{d.day} {SLOTS[slots[i % 2]]}  {s:24s} [{CATEGORY_NAMES[category(s)]}]")
         posted[s] = {"date": f"{d.isoformat()} {['07:00', '20:00'][i % 2]}", "category": category(s)}
         i += 1
+
+
+def planned_order(state=None):
+    """投稿済み(古い順)＋これから出る予定の順番。構図・写真の形・アニメーションを直前の投稿と変えるために使う
+    (make_posts.py / make_videos.py)。予定の分には順番どおりの仮の日時を入れる(同じ日時だと順番が狂うため)"""
+    state = state or load_state()
+    done = [k for k, v in sorted(state["posted"].items(), key=lambda kv: kv[1].get("date", "")) if v.get("date")]
+    posted = {k: dict(v) for k, v in state["posted"].items()}
+    todo = []
+    while True:
+        nx = next_item(state, posted=posted)
+        if not nx or (nx in posted and not posted[nx].get("requeue")):
+            break
+        todo.append(nx)
+        posted[nx] = {"date": f"9999-{len(todo):05d}", "category": category(nx)}
+    return done + todo
 
 
 def flyer_ready(slug):
@@ -331,7 +355,7 @@ def main():
     todo =[s for s in all_items() if s not in state["posted"]]
     stock = " ".join(f"{CATEGORY_NAMES[c]}{n}" for c, n in
                      sorted(((c, len([s for s in todo if category(s) == c])) for c in set(map(category, todo))), key=lambda x: -x[1]))
-    log(f"RESULT: POSTED {item} [{cat}] | {title} | {url} | 残り{len(todo)}本(1日3本なので約{len(todo) // 3}日分、内訳: {stock}){warn}{gbp}")
+    log(f"RESULT: POSTED {item} [{cat}] | {title} | {url} | 残り{len(todo)}本(1日2本なので約{len(todo) // 2}日分、内訳: {stock}){warn}{gbp}")
 
 
 if __name__ == "__main__":

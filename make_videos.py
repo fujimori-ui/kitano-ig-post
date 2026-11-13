@@ -29,7 +29,7 @@
 import json, random, subprocess, sys, zlib
 from pathlib import Path
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageDraw
 from make_music import add_music
 
 HERE = Path(__file__).parent
@@ -91,7 +91,11 @@ PATTERN_OVERRIDE = {
 }
 
 
-FAMILIES = ["blocks", "photo_first", "focus_items", "scan_zoom"]
+# 2026-11-10 ユーザー「投稿ごとにアニメーションをかえる」→ 系統を4つ追加(iris 丸く開く / diag 斜めに開く /
+# tiles タイル状に現れる / zigzag 左右から交互に入る)。直前3本と同じ系統は使わない
+FAMILIES = ["blocks", "photo_first", "focus_items", "scan_zoom", "iris", "diag", "tiles", "zigzag"]
+FAMILY_NAMES = {"blocks": "順番に出る", "photo_first": "写真から始まる", "focus_items": "1行ずつ拡大", "scan_zoom": "青い線が走る",
+                "iris": "丸く開く", "diag": "斜めに開く", "tiles": "タイル状に現れる", "zigzag": "左右から交互に入る"}
 ANIM_LOG = HERE / "anim_log.json"   # どの投稿にどの動きを使ったかの記録(作り直しても同じ動きになる)
 RECENT = 3                          # 直前の何本と被らないようにするか
 
@@ -108,17 +112,7 @@ def post_order():
     """投稿済み(古い順)＋これから出る予定の順番。動きを「直前の投稿と被らない」ように決めるために使う"""
     try:
         import post_ig
-        state = post_ig.load_state()
-        done = [k for k, v in sorted(state["posted"].items(), key=lambda kv: kv[1].get("date", ""))]
-        posted = {k: dict(v) for k, v in state["posted"].items()}
-        todo = []
-        while True:
-            nx = post_ig.next_item(state, posted=posted)
-            if not nx or nx in posted:
-                break
-            todo.append(nx)
-            posted[nx] = {"date": "9999", "category": post_ig.category(nx)}
-        return done + todo
+        return post_ig.planned_order()
     except Exception as e:
         print(f"(予定順が取れないので番号順で決めます: {e})")
         return sorted(p.stem for p in POSTS.glob("*.jpg"))
@@ -138,7 +132,7 @@ def choose_pattern(slug, log=None, order=None):
     i = order.index(slug) if slug in order else len(order)
     prev = [log[k] for k in order[:i] if k in log][-RECENT:]
     r = random.Random(zlib.crc32(slug.encode()) ^ 0x5eed)
-    fams = [f for f in FAMILIES if f not in [p.get("family", "blocks") for p in prev[-2:]]]
+    fams = [f for f in FAMILIES if f not in [p.get("family", "blocks") for p in prev[-3:]]]
     if not has_photo(slug):
         fams = [f for f in fams if f != "photo_first"] or ["blocks"]
     used = {}
@@ -197,6 +191,10 @@ def draw(fr, kind, im, y0, p, now, s, d):
         fr.paste(blend(im, p), (-int((1 - p) * 160), y))
     elif kind == "slide_r":
         fr.paste(blend(im, p), (int((1 - p) * 160), y))
+    elif kind == "fly_l":   # 画面の外(左)から大きく入る
+        fr.paste(im, (-int((1 - p) * W), y))
+    elif kind == "fly_r":   # 画面の外(右)から大きく入る
+        fr.paste(im, (int((1 - p) * W), y))
     elif kind == "rise":
         fr.paste(blend(im, p), (0, y + int((1 - p) * 40)))
     elif kind in ("pop", "zoom"):
@@ -258,6 +256,7 @@ def make(slug, log=None, order=None):
     scan = None     # scan_zoom: (開始秒, 長さ)
     focus = []      # focus_items: (開始秒, 長さ, 範囲) 1行ずつ拡大して読ませる
     hero = None     # photo_first: (大きく見せる秒, 元の位置へ戻る秒, 写真の範囲)
+    reveal = None   # iris/diag/tiles: (開始秒, 長さ, 種類) 中身ぜんたいを形で開く
     if fam == "photo_first":
         hero = (1.3 * sp, 0.7 * sp, photo)
         plan = [(0.9 * sp, 0.6 * sp, pat["head"], (0, HEAD)), (1.1 * sp, 0.6 * sp, pat["foot"], (FOOT, H))]
@@ -279,6 +278,13 @@ def make(slug, log=None, order=None):
                 focus.append((t, 0.75 * sp, (b0, b1)))
                 t += 0.6 * sp
         t = max(t - 2.0, 0.5)
+    elif fam in ("iris", "diag", "tiles"):
+        reveal = (0.6, 2.2 * sp, fam)
+        t = 0.6 + 2.2 * sp - 1.0
+    elif fam == "zigzag":
+        for k, (b0, b1) in enumerate(blocks):
+            plan.append((t, 0.6 * sp, "fly_l" if k % 2 == 0 else "fly_r", (b0, b1)))
+            t += 0.42 * sp
     elif fam == "scan_zoom":
         scan = (0.5, 2.6 * sp)   # ヘッダー・フッターのあと、上から下へ青い線が走って中身が現れる
         t = 0.5 + 2.6 * sp - 1.0
@@ -291,7 +297,8 @@ def make(slug, log=None, order=None):
     total = max(8.0, t + 4.0) + pat["extra"]
     nframes = int(total * FPS)
     done = max([s + d for s, d, _, _ in plan] + [s + d for s, d, _ in focus]
-               + ([hero[0] + hero[1]] if hero else []) + ([sum(scan)] if scan else [])) + 0.3
+               + ([hero[0] + hero[1]] if hero else []) + ([sum(scan)] if scan else [])
+               + ([reveal[0] + reveal[1]] if reveal else [])) + 0.3
 
     out = POSTS / f"{slug}.mp4"
     cmd = ["ffmpeg", "-y", "-loglevel", "error",
@@ -323,6 +330,8 @@ def make(slug, log=None, order=None):
         for s, d, (b0, b1) in focus:
             if s <= now < s + d:
                 draw_focus(fr, card, b0, b1, (now - s) / d)
+        if reveal:
+            draw_reveal(fr, card, reveal, now)
         if scan:
             fr = draw_scan(fr, card, scan, now, total)
         ff.stdin.write(fr.tobytes())
@@ -385,6 +394,40 @@ def draw_scan(fr, card, scan, now, total):
     cw, ch = VW / z, VH / z
     box = (int((VW - cw) / 2), int((VH - ch) / 2), int((VW + cw) / 2), int((VH + ch) / 2))
     return fr.crop(box).resize((VW, VH), Image.BILINEAR)
+
+
+def draw_reveal(fr, card, reveal, now):
+    """iris: まん中から丸く開く / diag: 左上から斜めに開く(境目に青い線) / tiles: タイルが左上から順にポンポン現れる"""
+    s0, d, kind = reveal
+    if now <= s0 or now >= s0 + d:
+        return
+    lin = (now - s0) / d
+    p = ease(lin)
+    bw, bh = W, FOOT - HEAD
+    mask = Image.new("L", (bw, bh), 0)
+    md = ImageDraw.Draw(mask)
+    edge = None
+    if kind == "iris":
+        r = p * (bw ** 2 + bh ** 2) ** 0.5 / 2 * 1.02
+        md.ellipse([bw / 2 - r, bh / 2 - r, bw / 2 + r, bh / 2 + r], fill=255)
+    elif kind == "diag":
+        L = p * (bw + bh)
+        md.polygon([(0, 0), (L, 0), (0, L)], fill=255)
+        edge = [(L, 0), (0, L)]
+    else:
+        cols = 6; ts = bw // cols; rows = -(-bh // ts)
+        for j in range(rows):
+            for i in range(cols):
+                q = min(max((lin - (i + j) / (cols + rows) * 0.7) / 0.3, 0.0), 1.0)
+                if q <= 0:
+                    continue
+                q = ease(q); cx, cy = i * ts + ts / 2, j * ts + ts / 2; h = ts / 2 * q + 0.5
+                md.rectangle([cx - h, cy - h, cx + h, cy + h], fill=255)
+    fr.paste(card.crop((0, HEAD, W, FOOT)), (0, OY + HEAD), mask)
+    if edge:   # 境目の青い線(ヘッダー・フッターにはみ出さないよう、中身の範囲だけに描く)
+        body = fr.crop((0, OY + HEAD, W, OY + FOOT))
+        ImageDraw.Draw(body).line(edge, fill=BLUE, width=6)
+        fr.paste(body, (0, OY + HEAD))
 
 
 def save_cover(slug, frame=None):

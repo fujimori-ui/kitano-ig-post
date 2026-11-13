@@ -1,0 +1,291 @@
+{
+ "101_company_kinjo_hairyo": {
+  "badge": "square_blue"
+ },
+ "103_season_fuyu_calendar": {
+  "shape": "rect"
+ },
+ "104_chuui_taiyoukou_tenken": {
+  "shape": "tilt",
+  "item": "tab",
+  "badge": "circle_yellow"
+ },
+ "105_mame_yane_katachi": {
+  "item": "bar",
+  "badge": "circle_blue",
+  "shape": "leaf"
+ },
+ "106_faq_tsuika_hiyou": {
+  "shape": "arch",
+  "item": "outline",
+  "badge": "circle_blue"
+ },
+ "107_mame_fukinaoshi": {
+  "shape": "slant",
+  "badge": "circle_yellow"
+ },
+ "109_chuui_karyou_hanbai": {
+  "shape": "tilt",
+  "item": "card",
+  "badge": "square_blue"
+ },
+ "110_season_fuyu_kouji": {
+  "shape": "leaf",
+  "item": "outline",
+  "badge": "circle_blue"
+ },
+ "112_mame_shokunin_miru": {
+  "item": "outline",
+  "badge": "circle_yellow"
+ },
+ "114_miryoku_second_opinion": {
+  "shape": "slant",
+  "item": "card",
+  "badge": "circle_yellow"
+ },
+ "115_miryoku_chiisaku_naosu": {
+  "shape": "round",
+  "item": "bar",
+  "badge": "circle_yellow"
+ },
+ "116_miryoku_genin_fumei": {
+  "shape": "rect",
+  "badge": "square_blue"
+ },
+ "117_miryoku_oukyu_dake": {
+  "shape": "round"
+ },
+ "118_miryoku_jikka_akiya": {
+  "shape": "arch",
+  "item": "tab",
+  "badge": "circle_yellow"
+ },
+ "119_miryoku_after_support": {
+  "item": "bar",
+  "badge": "circle_yellow",
+  "shape": "tilt"
+ },
+ "120_miryoku_nattoku_kouji": {
+  "badge": "square_blue"
+ },
+ "121_miryoku_dougyou_hyouban": {
+  "item": "outline",
+  "badge": "circle_yellow"
+ },
+ "122_miryoku_furui_yane": {
+  "shape": "leaf"
+ },
+ "123_miryoku_omoidasu_mise": {
+  "item": "outline",
+  "badge": "circle_yellow",
+  "shape": "frame"
+ },
+ "124_miryoku_amamori_3000": {
+  "item": "card",
+  "badge": "square_blue",
+  "shape": "leaf"
+ },
+ "137_mame_soudan_top5": {
+  "item": "outline",
+  "badge": "circle_blue",
+  "shape": "frame"
+ },
+ "138_mame_yane_zentai_meyasu": {
+  "shape": "rect"
+ },
+ "140_miryoku_tosou_muri_shinai": {
+  "shape": "round",
+  "item": "card",
+  "badge": "square_blue"
+ },
+ "31_season_jikka": {
+  "shape": "leaf",
+  "item": "outline",
+  "badge": "circle_yellow"
+ },
+ "43_blog_shimi": {
+  "shape": "tilt",
+  "item": "card",
+  "badge": "circle_blue"
+ },
+ "50_mame_amamori_genin": {
+  "shape": "round",
+  "item": "tab",
+  "badge": "square_blue"
+ },
+ "51_mame_cover_fukikae": {
+  "shape": "arch",
+  "item": "tab",
+  "badge": "square_blue"
+ },
+ "52_mame_koke": {
+  "shape": "rect",
+  "item": "tab",
+  "badge": "circle_yellow"
+ },
+ "53_mame_shikkui": {
+  "shape": "slant",
+  "item": "outline",
+  "badge": "circle_blue"
+ },
+ "55_company_yane_jumyou": {
+  "shape": "rect"
+ },
+ "56_mame_amadoi_buhin": {
+  "shape": "round"
+ },
+ "57_mame_yane_miwake": {
+  "shape": "arch",
+  "item": "tab",
+  "badge": "circle_blue"
+ },
+ "58_mame_kasagi": {
+  "shape": "leaf"
+ },
+ "59_mame_tani_bankin": {
+  "item": "bar",
+  "badge": "square_blue",
+  "shape": "slant"
+ },
+ "60_mame_namiita_sozai": {
+  "shape": "rect"
+ },
+ "61_mame_amamori_oukyu": {
+  "shape": "round",
+  "badge": "circle_blue"
+ },
+ "62_mame_galva": {
+  "shape": "slant",
+  "item": "tab",
+  "badge": "circle_yellow"
+ },
+ "63_chuui_saitama_shobun": {
+  "shape": "rect",
+  "item": "tab",
+  "badge": "square_blue"
+ },
+ "64_chuui_65sai_saita": {
+  "shape": "rect",
+  "item": "tab",
+  "badge": "square_blue"
+ },
+ "65_chuui_kyutoki_tenken": {
+  "shape": "rect",
+  "item": "card",
+  "badge": "circle_yellow"
+ },
+ "67_chuui_kaetta_ato": {
+  "badge": "square_blue"
+ },
+ "68_faq_tanomikata": {
+  "shape": "round",
+  "item": "bar",
+  "badge": "circle_blue"
+ },
+ "69_faq_mitsumori_kotowari": {
+  "shape": "arch",
+  "item": "card",
+  "badge": "circle_blue"
+ },
+ "70_company_shashin_soudan": {
+  "badge": "circle_yellow",
+  "shape": "round"
+ },
+ "71_company_hajimete": {
+  "shape": "slant"
+ },
+ "72_season_aki_tenken": {
+  "item": "bar",
+  "badge": "square_blue"
+ },
+ "73_season_veranda_haisui": {
+  "shape": "tilt",
+  "item": "outline",
+  "badge": "circle_yellow"
+ },
+ "74_season_osouji_mado": {
+  "shape": "rect"
+ },
+ "78_mame_yane_sanso": {
+  "shape": "frame"
+ },
+ "79_mame_coking_toha": {
+  "shape": "arch",
+  "item": "tab",
+  "badge": "circle_blue"
+ },
+ "80_mame_tatehira_toha": {
+  "shape": "round"
+ },
+ "81_mame_jishin_ato": {
+  "badge": "circle_yellow",
+  "shape": "tilt"
+ },
+ "82_mame_kawara_zure": {
+  "shape": "leaf",
+  "item": "outline",
+  "badge": "circle_blue"
+ },
+ "83_mame_amadoi_kanagu": {
+  "shape": "slant",
+  "item": "card",
+  "badge": "square_blue"
+ },
+ "84_mame_bubun_shuuri": {
+  "item": "tab",
+  "badge": "circle_blue"
+ },
+ "86_chuui_saigai_binjou": {
+  "shape": "leaf",
+  "item": "outline",
+  "badge": "square_blue"
+ },
+ "87_chuui_yakusho_nanoru": {
+  "item": "card",
+  "badge": "square_blue"
+ },
+ "88_chuui_yukashita_tenken": {
+  "shape": "arch",
+  "item": "bar",
+  "badge": "circle_yellow"
+ },
+ "89_chuui_tsuika_keiyaku": {
+  "shape": "arch",
+  "item": "tab",
+  "badge": "circle_yellow"
+ },
+ "90_company_naoshikata": {
+  "shape": "round",
+  "item": "bar",
+  "badge": "circle_blue"
+ },
+ "91_company_mienai_bubun": {
+  "shape": "tilt",
+  "item": "bar",
+  "badge": "circle_blue"
+ },
+ "92_faq_isogi_amamori": {
+  "shape": "arch",
+  "item": "bar",
+  "badge": "circle_yellow"
+ },
+ "93_company_soudan_houhou": {
+  "shape": "rect"
+ },
+ "94_season_nennai_shuuri": {
+  "shape": "round"
+ },
+ "95_season_fuyu_kaze_oto": {
+  "shape": "leaf",
+  "item": "card",
+  "badge": "circle_yellow"
+ },
+ "96_season_fuyu_terasu": {
+  "shape": "slant"
+ },
+ "99_mame_ketsuro_amamori": {
+  "shape": "rect",
+  "item": "bar",
+  "badge": "circle_blue"
+ }
+}
