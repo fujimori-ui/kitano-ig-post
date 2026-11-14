@@ -798,6 +798,10 @@
    },
    "wp": "https://www.kashiba-yanereform.com/news/ig-111-company-bankin-shokunin/",
    "wp_id": 344
+  },
+  "141_genba_bankin_kakou_story": {
+   "manual_blog": "https://www.kashiba-yanereform.com/news/blog-bankin-kakou-koujou/",
+   "requeue": true
   }
  },
  "replaced": {
