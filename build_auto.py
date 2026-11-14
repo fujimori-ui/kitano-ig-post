@@ -50,6 +50,8 @@ def check_item(it, errors, photos=None):
     slug = it.get("slug", "")
     if not SLUG_RE.match(slug):
         errors.append(f"{slug}: slug は mame_/chuui_/company_/miryoku_/komari_/jirei_/season_/news_/faq_ で始まる英小文字・数字・_ (例 mame_koke)")
+    if slug.startswith("chuui_"):
+        errors.append(f"{slug}: 訪問販売の注意ネタ(chuui_)は作らない(ユーザー指示 2026-11-14)")
     lay = it.get("layout", "list")
     if lay not in LAYOUTS:
         errors.append(f"{slug}: layout は {sorted(LAYOUTS)} のどれか")

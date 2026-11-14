@@ -104,23 +104,20 @@ def next_item(state, slug=None, posted=None):
         if s.startswith("flyer_") and s not in posted and flyer_ready(s):
             return s
     todo = [s for s in items if (s not in posted or posted[s].get("requeue")) and not s.startswith("flyer_")]   # requeue=出し直し待ち(2026-11-12)
+    # 訪問販売の注意ネタは出さない(ユーザー指示 2026-11-14「訪問販売の注意はいらない」)。作ってある分も順番から外す
+    todo = [s for s in todo if category(s) != "chuui"]
     if not todo:
         return None
     # ホームページの新着施工実績(works_watch.py が作る *_web_*)はチラシの次に優先(2026-11-14)
     for s in todo:
         if is_web(s):
             return s
-    # 施工事例(今日の現場・工場の様子も含む)を優先: 在庫があるあいだ、2本に1本(=1日1本)は施工事例にする
-    # ユーザー指示 2026-11-14「施工事例を優先して発信してほしい」。直前が施工事例のときだけ、ほかの種類を1本はさむ
+    # 施工事例(今日の現場・工場の様子も含む)は前倒し: 在庫があるかぎり、ほかの種類より先に続けて出す
+    # ユーザー指示 2026-11-14「施工事例を優先して発信」「施工事例前倒し」。ブログと一緒に作った新しい現場(requeue)が先
     jirei = [s for s in todo if category(s) == "jirei"]
-    jirei.sort(key=lambda s: not posted.get(s, {}).get("requeue"))   # ブログと一緒に作った新しい現場(requeue)を先に
     if jirei:
-        done = [v for v in posted.values() if v.get("date") and not v.get("skipped") and not v.get("requeue")]
-        prev = max(done, key=lambda v: v["date"]).get("category") if done else None
-        if prev != "jirei":
-            return jirei[0]
-        if len(jirei) < len(todo):
-            todo = [s for s in todo if category(s) != "jirei"]
+        jirei.sort(key=lambda s: not posted.get(s, {}).get("requeue"))
+        return jirei[0]
     # 種類ごとの「最後に出した日時」。まだ出ていない種類は "" で最優先
     # (この仕組みを入れた 2026-10-26 より前の投稿には category が無いので数えない → 今日から豆知識で始まる)
     last = {}
