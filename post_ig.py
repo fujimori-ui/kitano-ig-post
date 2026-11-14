@@ -110,6 +110,17 @@ def next_item(state, slug=None, posted=None):
     for s in todo:
         if is_web(s):
             return s
+    # 施工事例(今日の現場・工場の様子も含む)を優先: 在庫があるあいだ、2本に1本(=1日1本)は施工事例にする
+    # ユーザー指示 2026-11-14「施工事例を優先して発信してほしい」。直前が施工事例のときだけ、ほかの種類を1本はさむ
+    jirei = [s for s in todo if category(s) == "jirei"]
+    jirei.sort(key=lambda s: not posted.get(s, {}).get("requeue"))   # ブログと一緒に作った新しい現場(requeue)を先に
+    if jirei:
+        done = [v for v in posted.values() if v.get("date") and not v.get("skipped") and not v.get("requeue")]
+        prev = max(done, key=lambda v: v["date"]).get("category") if done else None
+        if prev != "jirei":
+            return jirei[0]
+        if len(jirei) < len(todo):
+            todo = [s for s in todo if category(s) != "jirei"]
     # 種類ごとの「最後に出した日時」。まだ出ていない種類は "" で最優先
     # (この仕組みを入れた 2026-10-26 より前の投稿には category が無いので数えない → 今日から豆知識で始まる)
     last = {}
