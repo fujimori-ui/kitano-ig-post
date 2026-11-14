@@ -751,8 +751,13 @@
    "wp": "https://www.kashiba-yanereform.com/news/blog-kawara-nokisaki-bankin/"
   },
   "129_genba_amadoi_souji_story": {
+   "date": "2026-11-14 20:05",
+   "media_id": "18060466397565444",
+   "url": "https://www.instagram.com/reel/DfuDr8wlZ96/",
+   "category": "jirei",
+   "slot": "evening",
    "manual_blog": "https://www.kashiba-yanereform.com/news/blog-amadoi-souji-doro-ochiba/",
-   "requeue": true
+   "wp": "https://www.kashiba-yanereform.com/news/blog-amadoi-souji-doro-ochiba/"
   },
   "105_mame_yane_katachi": {
    "date": "2026-11-13 07:13",
