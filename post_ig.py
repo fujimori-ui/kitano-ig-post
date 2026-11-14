@@ -225,13 +225,20 @@ def api_post(path, data):
     return j
 
 
-def publish(user_id, token, image_url, caption, video_url=None, cover_url=None):
+# 投稿に付ける位置情報「香芝市」(Facebookの場所ID。ユーザー指示 2026-11-14「位置情報を香芝市に」)。空にすると付けない
+LOCATION_ID = os.environ.get("KITANO_IG_LOCATION_ID", "184510545004465")
+
+
+def _container(user_id, token, image_url, caption, video_url, cover_url, location_id):
+    """投稿の入れ物を作り、取り込み完了まで待つ(まだ公開はしない)"""
+    d = {"caption": caption, "access_token": token}
     if video_url:
-        c = api_post(f"{user_id}/media", {"media_type": "REELS", "video_url": video_url, "cover_url": cover_url or image_url,
-                                          "share_to_feed": "true", "caption": caption, "access_token": token})
+        d.update({"media_type": "REELS", "video_url": video_url, "cover_url": cover_url or image_url, "share_to_feed": "true"})
     else:
-        c = api_post(f"{user_id}/media", {"image_url": image_url, "caption": caption, "access_token": token})
-    cid = c["id"]
+        d["image_url"] = image_url
+    if location_id:
+        d["location_id"] = location_id
+    cid = api_post(f"{user_id}/media", d)["id"]
     for _ in range(60):  # 動画は取り込みに時間がかかる(最大5分待つ)
         s = requests.get(f"{API}/{cid}", params={"fields": "status_code,status", "access_token": token}, timeout=60).json()
         if s.get("status_code") == "FINISHED":
@@ -239,6 +246,20 @@ def publish(user_id, token, image_url, caption, video_url=None, cover_url=None):
         if s.get("status_code") == "ERROR":
             raise RuntimeError(f"container error: {s}")
         time.sleep(5)
+    return cid
+
+
+def publish(user_id, token, image_url, caption, video_url=None, cover_url=None):
+    # 位置情報つきで入れ物を作る。断られたら位置なしで作り直す(公開前の段階だけやり直すので二重投稿にはならない)
+    try:
+        cid = _container(user_id, token, image_url, caption, video_url, cover_url, LOCATION_ID)
+        if LOCATION_ID:
+            print(f"LOCATION: 位置情報つき({LOCATION_ID})で作成")
+    except RuntimeError as e:
+        if not LOCATION_ID:
+            raise
+        print(f"LOCATION: 位置情報つきは失敗 → 位置なしで作り直します: {e}")
+        cid = _container(user_id, token, image_url, caption, video_url, cover_url, None)
     p = api_post(f"{user_id}/media_publish", {"creation_id": cid, "access_token": token})
     mid = p["id"]
     info = requests.get(f"{API}/{mid}", params={"fields": "permalink", "access_token": token}, timeout=60).json()
