@@ -827,6 +827,21 @@
    },
    "wp": "https://www.kashiba-yanereform.com/news/ig-130-jirei-kawara-zure-story/",
    "wp_id": 350
+  },
+  "131_jirei_terasu_namiita_story": {
+   "date": "2026-11-16 07:13",
+   "media_id": "17889981918494509",
+   "url": "https://www.instagram.com/reel/Dfx037DGdYX/",
+   "category": "jirei",
+   "slot": "morning",
+   "gbp_post": {
+    "name": "accounts/117464630818381172478/locations/1380594875886825358/localPosts/4976554510163445391",
+    "state": "PROCESSING",
+    "url": "https://local.google.com/place?id=6100690049524066194&use=posts&lpsid=CAIQACoeChxtc3BfaDoxUzFPd2YzOHJteDFqOWFldTNfVVp3",
+    "date": "2026-11-16 07:13"
+   },
+   "wp": "https://www.kashiba-yanereform.com/news/ig-131-jirei-terasu-namiita-story/",
+   "wp_id": 352
   }
  },
  "replaced": {
