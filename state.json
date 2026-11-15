@@ -812,6 +812,21 @@
    "slot": "morning",
    "manual_blog": "https://www.kashiba-yanereform.com/news/blog-bankin-kakou-koujou/",
    "wp": "https://www.kashiba-yanereform.com/news/blog-bankin-kakou-koujou/"
+  },
+  "130_jirei_kawara_zure_story": {
+   "date": "2026-11-15 20:05",
+   "media_id": "18122005021771173",
+   "url": "https://www.instagram.com/reel/DfwoeaVGUhX/",
+   "category": "jirei",
+   "slot": "evening",
+   "gbp_post": {
+    "name": "accounts/117464630818381172478/locations/1380594875886825358/localPosts/6487485189981966597",
+    "state": "PROCESSING",
+    "url": "https://local.google.com/place?id=6100690049524066194&use=posts&lpsid=CAIQACoeChxtc3BfaDoyaXdlWFpYNkNCVk9XcXBmT1BRUE5B",
+    "date": "2026-11-15 20:05"
+   },
+   "wp": "https://www.kashiba-yanereform.com/news/ig-130-jirei-kawara-zure-story/",
+   "wp_id": 350
   }
  },
  "replaced": {
