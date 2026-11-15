@@ -98,6 +98,58 @@
   "item": "card",
   "badge": "square_blue"
  },
+ "142_miryoku_saihatsu_amamori": {
+  "item": "bar",
+  "badge": "circle_yellow"
+ },
+ "143_mame_nokiura_shimi": {
+  "shape": "leaf",
+  "item": "tab",
+  "badge": "circle_yellow"
+ },
+ "144_season_fuyu_ame_ooi": {
+  "shape": "rect",
+  "item": "bar",
+  "badge": "square_blue"
+ },
+ "145_miryoku_yosan_soudan": {
+  "badge": "circle_blue",
+  "shape": "frame"
+ },
+ "146_mame_kabe_tsunagime": {
+  "shape": "arch",
+  "item": "tab",
+  "badge": "square_blue"
+ },
+ "147_faq_amamori_hiyou": {
+  "shape": "tilt"
+ },
+ "149_mame_amamori_shirabekata": {
+  "shape": "slant",
+  "badge": "square_blue"
+ },
+ "150_komari_tatedoi": {
+  "shape": "rect"
+ },
+ "151_miryoku_hosho_futatsu": {
+  "shape": "round",
+  "item": "card",
+  "badge": "square_blue"
+ },
+ "152_season_fuyu_toutai": {
+  "shape": "rect",
+  "item": "tab",
+  "badge": "circle_yellow"
+ },
+ "154_mame_amadoi_nai_to": {
+  "shape": "round",
+  "item": "tab",
+  "badge": "circle_blue"
+ },
+ "155_company_kouji_toujitsu": {
+  "badge": "circle_blue",
+  "shape": "slant"
+ },
  "31_season_jikka": {
   "shape": "leaf",
   "item": "outline",

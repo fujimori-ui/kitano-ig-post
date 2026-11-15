@@ -279,6 +279,146 @@
   "speed": 1.25,
   "extra": 3.0
  },
+ "142_miryoku_saihatsu_amamori": {
+  "family": "tiles",
+  "head": "slide_l",
+  "foot": "slide_r",
+  "big": "wipe",
+  "small": "wipe_flat",
+  "order": "small_first",
+  "speed": 1.0,
+  "extra": 0
+ },
+ "143_mame_nokiura_shimi": {
+  "family": "tiles",
+  "head": "fade",
+  "foot": "fade_in",
+  "big": "slide_l",
+  "small": "slide_l",
+  "order": "small_first",
+  "speed": 1.0,
+  "extra": 1.0
+ },
+ "144_season_fuyu_ame_ooi": {
+  "family": "zigzag",
+  "head": "slide_l",
+  "foot": "slide_l",
+  "big": "wipe",
+  "small": "pop",
+  "order": "big_first",
+  "speed": 1.25,
+  "extra": 3.0
+ },
+ "145_miryoku_yosan_soudan": {
+  "family": "blocks",
+  "head": "fade",
+  "foot": "fade_in",
+  "big": "slide_l",
+  "small": "slide_l",
+  "order": "top",
+  "speed": 1.0,
+  "extra": 2.5
+ },
+ "146_mame_kabe_tsunagime": {
+  "family": "iris",
+  "head": "slide_l",
+  "foot": "slide_r",
+  "big": "curtain",
+  "small": "wipe_flat",
+  "order": "small_first",
+  "speed": 0.8,
+  "extra": 3.0
+ },
+ "147_faq_amamori_hiyou": {
+  "family": "tiles",
+  "head": "down",
+  "foot": "fade_in",
+  "big": "slide_l",
+  "small": "slide_l",
+  "order": "small_first",
+  "speed": 1.0,
+  "extra": 1.0
+ },
+ "148_miryoku_kaisha_souko": {
+  "family": "zigzag",
+  "head": "down",
+  "foot": "slide_r",
+  "big": "curtain",
+  "small": "wipe_flat",
+  "order": "small_first",
+  "speed": 0.8,
+  "extra": 0
+ },
+ "149_mame_amamori_shirabekata": {
+  "family": "photo_first",
+  "head": "slide_l",
+  "foot": "slide_l",
+  "big": "wipe_r",
+  "small": "slide_r",
+  "order": "small_first",
+  "speed": 1.0,
+  "extra": 1.0
+ },
+ "150_komari_tatedoi": {
+  "family": "zigzag",
+  "head": "fade",
+  "foot": "slide_l",
+  "big": "curtain",
+  "small": "wipe_flat",
+  "order": "top",
+  "speed": 1.25,
+  "extra": 1.5
+ },
+ "151_miryoku_hosho_futatsu": {
+  "family": "blocks",
+  "head": "fade",
+  "foot": "fade_in",
+  "big": "zoom",
+  "small": "pop",
+  "order": "top",
+  "speed": 1.0,
+  "extra": 3.0
+ },
+ "152_season_fuyu_toutai": {
+  "family": "blocks",
+  "head": "slide_l",
+  "foot": "slide_l",
+  "big": "zoom",
+  "small": "slide_l",
+  "order": "big_first",
+  "speed": 0.8,
+  "extra": 2.0
+ },
+ "153_miryoku_ikaseru_mono": {
+  "family": "zigzag",
+  "head": "slide_l",
+  "foot": "slide_l",
+  "big": "wipe_r",
+  "small": "fade",
+  "order": "small_first",
+  "speed": 1.25,
+  "extra": 3.0
+ },
+ "154_mame_amadoi_nai_to": {
+  "family": "photo_first",
+  "head": "fade",
+  "foot": "slide_r",
+  "big": "slide_l",
+  "small": "wipe_flat",
+  "order": "big_first",
+  "speed": 1.0,
+  "extra": 1.0
+ },
+ "155_company_kouji_toujitsu": {
+  "family": "iris",
+  "head": "fade",
+  "foot": "slide_r",
+  "big": "wipe",
+  "small": "fade",
+  "order": "small_first",
+  "speed": 0.8,
+  "extra": 2.5
+ },
  "20_mame_noboranai": {
   "head": "fade",
   "foot": "fade_in",

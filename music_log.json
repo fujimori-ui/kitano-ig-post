@@ -259,10 +259,80 @@
   "start": 16.5,
   "len": 11.0
  },
+ "142_miryoku_saihatsu_amamori": {
+  "track": "audiostock_1085297.mp3",
+  "start": 6.5,
+  "len": 8.0
+ },
+ "143_mame_nokiura_shimi": {
+  "track": "audiostock_41613.mp3",
+  "start": 70.0,
+  "len": 9.0
+ },
+ "144_season_fuyu_ame_ooi": {
+  "track": "audiostock_41606.mp3",
+  "start": 21.5,
+  "len": 11.0
+ },
+ "145_miryoku_yosan_soudan": {
+  "track": "audiostock_1085297.mp3",
+  "start": 7.5,
+  "len": 10.5
+ },
+ "146_mame_kabe_tsunagime": {
+  "track": "audiostock_41613.mp3",
+  "start": 76.0,
+  "len": 11.0
+ },
+ "147_faq_amamori_hiyou": {
+  "track": "audiostock_1085297.mp3",
+  "start": 5.0,
+  "len": 9.0
+ },
+ "148_miryoku_kaisha_souko": {
+  "track": "audiostock_41613.mp3",
+  "start": 132.5,
+  "len": 8.0
+ },
+ "149_mame_amamori_shirabekata": {
+  "track": "audiostock_41606.mp3",
+  "start": 45.0,
+  "len": 9.1
+ },
  "14_area": {
   "track": "audiostock_41613.mp3",
   "start": 16.0,
   "len": 8.0
+ },
+ "150_komari_tatedoi": {
+  "track": "audiostock_1085297.mp3",
+  "start": 4.0,
+  "len": 10.2
+ },
+ "151_miryoku_hosho_futatsu": {
+  "track": "audiostock_41613.mp3",
+  "start": 101.5,
+  "len": 11.0
+ },
+ "152_season_fuyu_toutai": {
+  "track": "audiostock_41606.mp3",
+  "start": 50.5,
+  "len": 10.0
+ },
+ "153_miryoku_ikaseru_mono": {
+  "track": "audiostock_41613.mp3",
+  "start": 108.0,
+  "len": 11.2
+ },
+ "154_mame_amadoi_nai_to": {
+  "track": "audiostock_1085297.mp3",
+  "start": 5.5,
+  "len": 9.0
+ },
+ "155_company_kouji_toujitsu": {
+  "track": "audiostock_41613.mp3",
+  "start": 43.5,
+  "len": 10.5
  },
  "15_komari_yane": {
   "track": "audiostock_41606.mp3",
