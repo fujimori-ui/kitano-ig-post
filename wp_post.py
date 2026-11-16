@@ -103,7 +103,8 @@ def body_text(slug, folder=POSTS):
     text = "\n".join(lines).strip()
     while "\n\n\n" in text:
         text = text.replace("\n\n\n", "\n\n")
-    return text
+    import gbp_export
+    return gbp_export.web_wording(text)   # 「DM(メッセージ)」→「LINE」
 
 
 def _esc(s):

@@ -59,6 +59,12 @@ Instagram に自動投稿されるたびに、同じ内容の「マイビジネ�
 
 
 # ---------------- 本文 ----------------
+def web_wording(text):
+    """Instagram だけの言い回しを、ホームページ・マイビジネス用に直す
+    (ユーザー指示 2026-11-16「WEBは電話かLINE」。DM は Instagram にしか無い)"""
+    return re.sub(r"DM\s*[\((]メッセージ[\))]", "LINE", text)
+
+
 def gbp_text(slug):
     """IG の本文(txt)をマイビジネス用に。ハッシュタグ・電話番号・URL の行を外す。1500字に収める
     (マイビジネスは本文に電話番号があると「ポリシー違反」で投稿が止められる(2026-10-31)。
@@ -75,7 +81,7 @@ def gbp_text(slug):
             continue
         lines.append(ln)
     # 末尾の空行・区切り線の整理
-    text = "\n".join(lines).strip()
+    text = web_wording("\n".join(lines).strip())
     while "\n\n\n" in text:
         text = text.replace("\n\n\n", "\n\n")
     if len(text) > GBP_MAX:
