@@ -849,7 +849,13 @@
    "url": "https://www.instagram.com/reel/DfyE83vAog2/",
    "category": "company",
    "manual_blog": "https://www.kashiba-yanereform.com/news/",
-   "wp": "https://www.kashiba-yanereform.com/news/"
+   "wp": "https://www.kashiba-yanereform.com/news/",
+   "gbp_post": {
+    "name": "accounts/117464630818381172478/locations/1380594875886825358/localPosts/754613758273607942",
+    "state": "PROCESSING",
+    "url": "https://local.google.com/place?id=6100690049524066194&use=posts&lpsid=CAIQACoeChxtc3BfaDpTQzVPS05OZlZDeHI5UkxHWkwtVVdR",
+    "date": "2026-11-16 11:09"
+   }
   }
  },
  "replaced": {
