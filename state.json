@@ -856,6 +856,21 @@
    },
    "wp": "https://www.kashiba-yanereform.com/news/ig-156-company-bowling-story/",
    "wp_id": 354
+  },
+  "132_jirei_kabegiwa_amamori_story": {
+   "date": "2026-11-16 20:05",
+   "media_id": "17913001599482705",
+   "url": "https://www.instagram.com/reel/DfzNQsZkyVP/",
+   "category": "jirei",
+   "slot": "evening",
+   "gbp_post": {
+    "name": "accounts/117464630818381172478/locations/1380594875886825358/localPosts/2884753563140586015",
+    "state": "PROCESSING",
+    "url": "https://local.google.com/place?id=6100690049524066194&use=posts&lpsid=CAIQACoeChxtc3BfaDo1Z1lPSVdKUWR0dzUtbk5fd2pVbWNn",
+    "date": "2026-11-16 20:05"
+   },
+   "wp": "https://www.kashiba-yanereform.com/news/ig-132-jirei-kabegiwa-amamori-story/",
+   "wp_id": 356
   }
  },
  "replaced": {
