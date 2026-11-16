@@ -871,6 +871,21 @@
    },
    "wp": "https://www.kashiba-yanereform.com/news/ig-132-jirei-kabegiwa-amamori-story/",
    "wp_id": 356
+  },
+  "133_jirei_kasagi_tatehira_story": {
+   "date": "2026-11-17 07:14",
+   "media_id": "18131520889860150",
+   "url": "https://www.instagram.com/reel/Df0Zx0nDC85/",
+   "category": "jirei",
+   "slot": "morning",
+   "gbp_post": {
+    "name": "accounts/117464630818381172478/locations/1380594875886825358/localPosts/326852504817055918",
+    "state": "PROCESSING",
+    "url": "https://local.google.com/place?id=6100690049524066194&use=posts&lpsid=CAIQACoeChxtc3BfaDpHeGxPNFF2dWNLTTZCVXBhc0Nvc0hB",
+    "date": "2026-11-17 07:14"
+   },
+   "wp": "https://www.kashiba-yanereform.com/news/ig-133-jirei-kasagi-tatehira-story/",
+   "wp_id": 359
   }
  },
  "replaced": {
