@@ -901,6 +901,21 @@
    },
    "wp": "https://www.kashiba-yanereform.com/news/ig-134-jirei-hisashi-koukan-story/",
    "wp_id": 361
+  },
+  "135_jirei_mune_bankin_koukan_story": {
+   "date": "2026-11-18 07:13",
+   "media_id": "18133900681830430",
+   "url": "https://www.instagram.com/reel/Df2-c0KEtO7/",
+   "category": "jirei",
+   "slot": "morning",
+   "gbp_post": {
+    "name": "accounts/117464630818381172478/locations/1380594875886825358/localPosts/162078094964368503",
+    "state": "PROCESSING",
+    "url": "https://local.google.com/place?id=6100690049524066194&use=posts&lpsid=CAIQACoeChxtc3BfaDpLbk82alhWdUU2a2EyY2MyR3ZwN0V3",
+    "date": "2026-11-18 07:13"
+   },
+   "wp": "https://www.kashiba-yanereform.com/news/ig-135-jirei-mune-bankin-koukan-story/",
+   "wp_id": 363
   }
  },
  "replaced": {
