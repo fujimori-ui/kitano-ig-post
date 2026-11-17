@@ -886,6 +886,21 @@
    },
    "wp": "https://www.kashiba-yanereform.com/news/ig-133-jirei-kasagi-tatehira-story/",
    "wp_id": 359
+  },
+  "134_jirei_hisashi_koukan_story": {
+   "date": "2026-11-17 20:05",
+   "media_id": "18120881542782174",
+   "url": "https://www.instagram.com/reel/Df1yAUpASN6/",
+   "category": "jirei",
+   "slot": "evening",
+   "gbp_post": {
+    "name": "accounts/117464630818381172478/locations/1380594875886825358/localPosts/2811249463657892018",
+    "state": "PROCESSING",
+    "url": "https://local.google.com/place?id=6100690049524066194&use=posts&lpsid=CAIQACoeChxtc3BfaDp3SXZGYUY1bngxV3RHVzZZeDYtcldn",
+    "date": "2026-11-17 20:05"
+   },
+   "wp": "https://www.kashiba-yanereform.com/news/ig-134-jirei-hisashi-koukan-story/",
+   "wp_id": 361
   }
  },
  "replaced": {
