@@ -916,6 +916,10 @@
    },
    "wp": "https://www.kashiba-yanereform.com/news/ig-135-jirei-mune-bankin-koukan-story/",
    "wp_id": 363
+  },
+  "157_genba_y_yane_polyca_story": {
+   "manual_blog": "https://www.kashiba-yanereform.com/news/blog-yane-polyca-harikae-y/",
+   "requeue": true
   }
  },
  "replaced": {
