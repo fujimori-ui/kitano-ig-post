@@ -925,6 +925,21 @@
    "slot": "evening",
    "manual_blog": "https://www.kashiba-yanereform.com/news/blog-yane-polyca-harikae-y/",
    "wp": "https://www.kashiba-yanereform.com/news/blog-yane-polyca-harikae-y/"
+  },
+  "136_jirei_mune_tsuminaoshi_story": {
+   "date": "2026-11-19 07:12",
+   "media_id": "18344186056259475",
+   "url": "https://www.instagram.com/reel/Df5jJZiFPge/",
+   "category": "jirei",
+   "slot": "morning",
+   "gbp_post": {
+    "name": "accounts/117464630818381172478/locations/1380594875886825358/localPosts/7918443437609440511",
+    "state": "PROCESSING",
+    "url": "https://local.google.com/place?id=6100690049524066194&use=posts&lpsid=CAIQACoeChxtc3BfaDpQT1pVbEMybUcxbDJyYTlrRWlsak1B",
+    "date": "2026-11-19 07:12"
+   },
+   "wp": "https://www.kashiba-yanereform.com/news/ig-136-jirei-mune-tsuminaoshi-story/",
+   "wp_id": 371
   }
  },
  "replaced": {
