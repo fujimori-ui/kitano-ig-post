@@ -940,6 +940,21 @@
    },
    "wp": "https://www.kashiba-yanereform.com/news/ig-136-jirei-mune-tsuminaoshi-story/",
    "wp_id": 371
+  },
+  "150_komari_tatedoi": {
+   "date": "2026-11-19 20:04",
+   "media_id": "18030672749696703",
+   "url": "https://www.instagram.com/reel/Df67jYPDkBM/",
+   "category": "komari",
+   "slot": "evening",
+   "gbp_post": {
+    "name": "accounts/117464630818381172478/locations/1380594875886825358/localPosts/7876358276940413231",
+    "state": "PROCESSING",
+    "url": "https://local.google.com/place?id=6100690049524066194&use=posts&lpsid=CAIQACoeChxtc3BfaDp6NmdIOFZWTF91Z3pWeWdmTkhpUG9n",
+    "date": "2026-11-19 20:04"
+   },
+   "wp": "https://www.kashiba-yanereform.com/news/ig-150-komari-tatedoi/",
+   "wp_id": 373
   }
  },
  "replaced": {
