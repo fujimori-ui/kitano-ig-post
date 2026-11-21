@@ -1,0 +1,33 @@
+name: kitano-cleanup
+on:
+  workflow_dispatch:
+    inputs:
+      wp_ids:
+        description: "HP新着情報(news)の記事ID(カンマ区切り)。ゴミ箱へ"
+        default: ""
+      gbp_keywords:
+        description: "マイビジネス投稿の本文に含まれる語(カンマ区切り)。一致した投稿を削除"
+        default: ""
+      dry_run:
+        description: "true なら消さずに一覧だけ"
+        default: "true"
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests pillow
+      - env:
+          KITANO_WP_APP_PASS: ${{ secrets.KITANO_WP_APP_PASS }}
+          GBP_CLIENT_ID: ${{ secrets.GBP_CLIENT_ID }}
+          GBP_CLIENT_SECRET: ${{ secrets.GBP_CLIENT_SECRET }}
+          GBP_REFRESH_TOKEN: ${{ secrets.GBP_REFRESH_TOKEN }}
+        run: |
+          ARGS=""
+          [ -n "${{ github.event.inputs.wp_ids }}" ] && ARGS="$ARGS --wp ${{ github.event.inputs.wp_ids }}"
+          [ -n "${{ github.event.inputs.gbp_keywords }}" ] && ARGS="$ARGS --gbp \"${{ github.event.inputs.gbp_keywords }}\""
+          [ "${{ github.event.inputs.dry_run }}" = "true" ] && ARGS="$ARGS --dry"
+          eval python delete_posts.py $ARGS
