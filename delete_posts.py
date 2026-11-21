@@ -29,10 +29,10 @@ if a.wp:
 if a.gbp:
     keys = [k.strip() for k in a.gbp.split(",") if k.strip()]
     g = gbp_post.GBP()
-    acct = g.accounts()[0]["name"]
-    locs = g.locations(acct)
-    loc = locs[0]["name"]
-    print(f"GBP account={acct} location={loc} ({locs[0].get('title')})")
+    st = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "state.json"), encoding="utf-8"))
+    gl = st["gbp_location"]  # 北野工作所の店舗(state.json に設定済み)
+    acct, loc = gl["account"], gl["location"]
+    print(f"GBP account={acct} location={loc} ({gl.get('title')})")
     posts, token = [], None
     while True:
         prm = {"pageSize": 100}
