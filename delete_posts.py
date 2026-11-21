@@ -47,9 +47,11 @@ if a.gbp:
     hit = []
     for p in posts:
         s = (p.get("summary") or "").replace("\n", " ")
-        mark = any(k in s for k in keys)
+        pid = p["name"].split("/")[-1]
+        # 数字だけの指定は投稿IDの完全一致、それ以外は本文の部分一致
+        mark = any((k == pid) if k.isdigit() else (k in s) for k in keys)
         if a.dry or mark:
-            print(f"{'★' if mark else '  '} {p.get('createTime','')[:16]} {p['name'].split('/')[-1]} {s[:70]}")
+            print(f"{'★' if mark else '  '} {p.get('createTime','')[:16]} {p['name'].split('/')[-1]} {s[:200] if mark else s[:70]}")
         if mark:
             hit.append(p)
     print(f"対象 {len(hit)} 件")

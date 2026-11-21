@@ -6,7 +6,7 @@ on:
         description: "HP新着情報(news)の記事ID(カンマ区切り)。ゴミ箱へ"
         default: ""
       gbp_keywords:
-        description: "マイビジネス投稿の本文に含まれる語(カンマ区切り)。一致した投稿を削除"
+        description: "マイビジネス投稿のID(数字・完全一致)か本文に含まれる語(カンマ区切り)。一致した投稿を削除"
         default: ""
       dry_run:
         description: "true なら消さずに一覧だけ"
