@@ -1045,6 +1045,21 @@
    },
    "wp": "https://www.kashiba-yanereform.com/news/ig-155-company-kouji-toujitsu/",
    "wp_id": 393
+  },
+  "171_komari_kasagi": {
+   "date": "2026-11-23 07:12",
+   "media_id": "17956393767317749",
+   "url": "https://www.instagram.com/reel/DgD2YfGjr7P/",
+   "category": "komari",
+   "slot": "morning",
+   "gbp_post": {
+    "name": "accounts/117464630818381172478/locations/1380594875886825358/localPosts/6179706580206629746",
+    "state": "PROCESSING",
+    "url": "https://local.google.com/place?id=6100690049524066194&use=posts&lpsid=CAIQACoeChxtc3BfaDp2Sng3Q2liakZ0VEdlTWM3TENySHB3",
+    "date": "2026-11-23 07:12"
+   },
+   "wp": "https://www.kashiba-yanereform.com/news/ig-171-komari-kasagi/",
+   "wp_id": 395
   }
  },
  "replaced": {
