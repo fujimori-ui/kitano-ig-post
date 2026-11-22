@@ -419,6 +419,146 @@
   "speed": 0.8,
   "extra": 2.5
  },
+ "158_miryoku_ame_no_hi_tenken": {
+  "family": "blocks",
+  "head": "down",
+  "foot": "fade_in",
+  "big": "zoom",
+  "small": "slide_l",
+  "order": "top",
+  "speed": 0.8,
+  "extra": 0
+ },
+ "159_miryoku_kakaritsuke": {
+  "family": "scan_zoom",
+  "head": "slide_l",
+  "foot": "slide_l",
+  "big": "blinds",
+  "small": "down",
+  "order": "small_first",
+  "speed": 1.25,
+  "extra": 1.0
+ },
+ "160_mame_keraba_toha": {
+  "family": "iris",
+  "head": "down",
+  "foot": "slide_l",
+  "big": "blinds",
+  "small": "pop",
+  "order": "top",
+  "speed": 0.8,
+  "extra": 1.0
+ },
+ "161_mame_yane_koubai": {
+  "family": "scan_zoom",
+  "head": "slide_l",
+  "foot": "fade_in",
+  "big": "zoom",
+  "small": "wipe_flat",
+  "order": "big_first",
+  "speed": 1.0,
+  "extra": 0.5
+ },
+ "162_mame_kawara_shurui": {
+  "family": "blocks",
+  "head": "fade",
+  "foot": "slide_l",
+  "big": "slide_l",
+  "small": "slide_r",
+  "order": "top",
+  "speed": 0.8,
+  "extra": 3.0
+ },
+ "163_mame_morai_sabi": {
+  "family": "iris",
+  "head": "down",
+  "foot": "slide_r",
+  "big": "zoom",
+  "small": "fade",
+  "order": "small_first",
+  "speed": 1.25,
+  "extra": 2.5
+ },
+ "164_mame_amadoi_katachi": {
+  "family": "blocks",
+  "head": "slide_l",
+  "foot": "slide_l",
+  "big": "wipe_r",
+  "small": "down",
+  "order": "top",
+  "speed": 1.25,
+  "extra": 0
+ },
+ "165_mame_koyaura_kanki": {
+  "family": "focus_items",
+  "head": "down",
+  "foot": "slide_l",
+  "big": "slide_l",
+  "small": "fade",
+  "order": "big_first",
+  "speed": 1.0,
+  "extra": 2.5
+ },
+ "166_season_yuki_no_hi": {
+  "family": "photo_first",
+  "head": "fade",
+  "foot": "slide_r",
+  "big": "curtain",
+  "small": "wipe_flat",
+  "order": "top",
+  "speed": 0.8,
+  "extra": 3.0
+ },
+ "167_season_oosouji_shinai": {
+  "family": "focus_items",
+  "head": "down",
+  "foot": "slide_r",
+  "big": "wipe",
+  "small": "slide_r",
+  "order": "big_first",
+  "speed": 1.0,
+  "extra": 1.5
+ },
+ "168_faq_tenken_junbi": {
+  "family": "blocks",
+  "head": "slide_l",
+  "foot": "slide_l",
+  "big": "slide_l",
+  "small": "fade",
+  "order": "top",
+  "speed": 1.25,
+  "extra": 2.5
+ },
+ "169_faq_tenken_nagare": {
+  "family": "iris",
+  "head": "fade",
+  "foot": "fade_in",
+  "big": "blinds",
+  "small": "pop",
+  "order": "small_first",
+  "speed": 0.8,
+  "extra": 2.0
+ },
+ "170_company_kouji_shurui": {
+  "family": "focus_items",
+  "head": "slide_l",
+  "foot": "fade_in",
+  "big": "slide_l",
+  "small": "wipe_flat",
+  "order": "top",
+  "speed": 1.25,
+  "extra": 2.5
+ },
+ "171_komari_kasagi": {
+  "family": "focus_items",
+  "head": "down",
+  "foot": "slide_r",
+  "big": "blinds",
+  "small": "pop",
+  "order": "small_first",
+  "speed": 1.0,
+  "extra": 0
+ },
  "20_mame_noboranai": {
   "head": "fade",
   "foot": "fade_in",

@@ -349,15 +349,85 @@
   "start": 1.0,
   "len": 25.5
  },
+ "158_miryoku_ame_no_hi_tenken": {
+  "track": "audiostock_1085297.mp3",
+  "start": 12.5,
+  "len": 8.0
+ },
+ "159_miryoku_kakaritsuke": {
+  "track": "audiostock_41613.mp3",
+  "start": 59.5,
+  "len": 9.0
+ },
  "15_komari_yane": {
   "track": "audiostock_41606.mp3",
   "start": 24.5,
   "len": 8.0
  },
+ "160_mame_keraba_toha": {
+  "track": "audiostock_1085297.mp3",
+  "start": 9.0,
+  "len": 9.0
+ },
+ "161_mame_yane_koubai": {
+  "track": "audiostock_41606.mp3",
+  "start": 143.0,
+  "len": 8.5
+ },
+ "162_mame_kawara_shurui": {
+  "track": "audiostock_1085297.mp3",
+  "start": 10.0,
+  "len": 11.0
+ },
+ "163_mame_morai_sabi": {
+  "track": "audiostock_41606.mp3",
+  "start": 148.0,
+  "len": 10.5
+ },
+ "164_mame_amadoi_katachi": {
+  "track": "audiostock_1085297.mp3",
+  "start": 10.5,
+  "len": 8.9
+ },
+ "165_mame_koyaura_kanki": {
+  "track": "audiostock_41606.mp3",
+  "start": 153.0,
+  "len": 10.5
+ },
+ "166_season_yuki_no_hi": {
+  "track": "audiostock_1085297.mp3",
+  "start": 11.5,
+  "len": 11.0
+ },
+ "167_season_oosouji_shinai": {
+  "track": "audiostock_41606.mp3",
+  "start": 158.0,
+  "len": 9.5
+ },
+ "168_faq_tenken_junbi": {
+  "track": "audiostock_41613.mp3",
+  "start": 54.5,
+  "len": 10.5
+ },
+ "169_faq_tenken_nagare": {
+  "track": "audiostock_41606.mp3",
+  "start": 55.5,
+  "len": 10.0
+ },
  "16_komari_amadoi": {
   "track": "audiostock_1085297.mp3",
   "start": 16.0,
   "len": 10.0
+ },
+ "170_company_kouji_shurui": {
+  "track": "audiostock_41606.mp3",
+  "start": 81.0,
+  "len": 10.5
+ },
+ "171_komari_kasagi": {
+  "track": "audiostock_41613.mp3",
+  "start": 49.5,
+  "len": 8.0
  },
  "17_komari_bankin": {
   "track": "audiostock_41606.mp3",

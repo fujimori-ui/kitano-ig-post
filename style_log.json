@@ -150,6 +150,64 @@
   "badge": "circle_blue",
   "shape": "slant"
  },
+ "158_miryoku_ame_no_hi_tenken": {
+  "shape": "tilt"
+ },
+ "159_miryoku_kakaritsuke": {
+  "item": "bar",
+  "badge": "square_blue",
+  "shape": "arch"
+ },
+ "160_mame_keraba_toha": {
+  "shape": "rect",
+  "item": "outline",
+  "badge": "circle_yellow"
+ },
+ "161_mame_yane_koubai": {
+  "shape": "leaf",
+  "item": "outline",
+  "badge": "square_blue"
+ },
+ "162_mame_kawara_shurui": {
+  "shape": "round"
+ },
+ "163_mame_morai_sabi": {
+  "shape": "tilt",
+  "item": "tab",
+  "badge": "circle_yellow"
+ },
+ "164_mame_amadoi_katachi": {
+  "shape": "slant"
+ },
+ "165_mame_koyaura_kanki": {
+  "item": "bar",
+  "badge": "circle_blue",
+  "shape": "rect"
+ },
+ "166_season_yuki_no_hi": {
+  "shape": "frame",
+  "item": "tab",
+  "badge": "square_blue"
+ },
+ "167_season_oosouji_shinai": {
+  "shape": "round",
+  "item": "card",
+  "badge": "circle_blue"
+ },
+ "168_faq_tenken_junbi": {
+  "shape": "rect",
+  "badge": "square_blue"
+ },
+ "169_faq_tenken_nagare": {
+  "shape": "round",
+  "badge": "circle_blue"
+ },
+ "170_company_kouji_shurui": {
+  "shape": "frame"
+ },
+ "171_komari_kasagi": {
+  "shape": "round"
+ },
  "31_season_jikka": {
   "shape": "leaf",
   "item": "outline",
