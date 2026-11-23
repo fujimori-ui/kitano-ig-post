@@ -1075,6 +1075,10 @@
    },
    "wp": "https://www.kashiba-yanereform.com/news/ig-112-mame-shokunin-miru/",
    "wp_id": 397
+  },
+  "172_genba_k_tanidoi_koukan_story": {
+   "manual_blog": "https://www.kashiba-yanereform.com/news/blog-tanidoi-koukan-k/",
+   "requeue": true
   }
  },
  "replaced": {
