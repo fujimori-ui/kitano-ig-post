@@ -1084,6 +1084,21 @@
    "slot": "morning",
    "manual_blog": "https://www.kashiba-yanereform.com/news/blog-tanidoi-koukan-k/",
    "wp": "https://www.kashiba-yanereform.com/news/blog-tanidoi-koukan-k/"
+  },
+  "117_miryoku_oukyu_dake": {
+   "date": "2026-11-24 20:05",
+   "media_id": "18138782383672779",
+   "url": "https://www.instagram.com/reel/DgHzpeIEg0Y/",
+   "category": "miryoku",
+   "slot": "evening",
+   "gbp_post": {
+    "name": "accounts/117464630818381172478/locations/1380594875886825358/localPosts/1134062342435313248",
+    "state": "PROCESSING",
+    "url": "https://local.google.com/place?id=6100690049524066194&use=posts&lpsid=CAIQACoeChxtc3BfaDpQQjhFc1VaOU9JLUp4SHFQRFk1R2JR",
+    "date": "2026-11-24 20:05"
+   },
+   "wp": "https://www.kashiba-yanereform.com/news/ig-117-miryoku-oukyu-dake/",
+   "wp_id": 404
   }
  },
  "replaced": {
