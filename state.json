@@ -1099,6 +1099,21 @@
    },
    "wp": "https://www.kashiba-yanereform.com/news/ig-117-miryoku-oukyu-dake/",
    "wp_id": 404
+  },
+  "168_faq_tenken_junbi": {
+   "date": "2026-11-25 07:12",
+   "media_id": "18133231570698813",
+   "url": "https://www.instagram.com/reel/DgI_8q-FL1Y/",
+   "category": "company",
+   "slot": "morning",
+   "gbp_post": {
+    "name": "accounts/117464630818381172478/locations/1380594875886825358/localPosts/2090987926639281782",
+    "state": "PROCESSING",
+    "url": "https://local.google.com/place?id=6100690049524066194&use=posts&lpsid=CAIQACoeChxtc3BfaDoyNkJKdFVwTDh4SHEtc2JqYmNhYXZB",
+    "date": "2026-11-25 07:12"
+   },
+   "wp": "https://www.kashiba-yanereform.com/news/ig-168-faq-tenken-junbi/",
+   "wp_id": 408
   }
  },
  "replaced": {
