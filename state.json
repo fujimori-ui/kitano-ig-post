@@ -1114,6 +1114,21 @@
    },
    "wp": "https://www.kashiba-yanereform.com/news/ig-168-faq-tenken-junbi/",
    "wp_id": 408
+  },
+  "137_mame_soudan_top5": {
+   "date": "2026-11-25 20:04",
+   "media_id": "18648192778043941",
+   "url": "https://www.instagram.com/reel/DgKYXBZMFDK/",
+   "category": "mame",
+   "slot": "evening",
+   "gbp_post": {
+    "name": "accounts/117464630818381172478/locations/1380594875886825358/localPosts/5412641653242240934",
+    "state": "PROCESSING",
+    "url": "https://local.google.com/place?id=6100690049524066194&use=posts&lpsid=CAIQACoeChxtc3BfaDpxei00M2RZNUVaTC1nZGhEWjVmVXZn",
+    "date": "2026-11-25 20:05"
+   },
+   "wp": "https://www.kashiba-yanereform.com/news/ig-137-mame-soudan-top5/",
+   "wp_id": 410
   }
  },
  "replaced": {
