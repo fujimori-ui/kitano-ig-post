@@ -1189,6 +1189,21 @@
    },
    "wp": "https://www.kashiba-yanereform.com/news/ig-119-miryoku-after-support/",
    "wp_id": 418
+  },
+  "170_company_kouji_shurui": {
+   "date": "2026-11-28 07:12",
+   "media_id": "18102248231408377",
+   "url": "https://www.instagram.com/reel/DgQuUWmBPXZ/",
+   "category": "company",
+   "slot": "morning",
+   "gbp_post": {
+    "name": "accounts/117464630818381172478/locations/1380594875886825358/localPosts/2442060276119589811",
+    "state": "PROCESSING",
+    "url": "https://local.google.com/place?id=6100690049524066194&use=posts&lpsid=CAIQACoeChxtc3BfaDpDVW8zMkFfSWpYZHRTTjVQbjBrQWxB",
+    "date": "2026-11-28 07:12"
+   },
+   "wp": "https://www.kashiba-yanereform.com/news/ig-170-company-kouji-shurui/",
+   "wp_id": 420
   }
  },
  "replaced": {
